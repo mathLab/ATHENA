@@ -12,7 +12,6 @@ __mail__ = 'marcotez@gmail.com, francesco.romor@gmail.com'
 __maintainer__ = __author__
 __status__ = "Beta"
 
-
 from .active import ActiveSubspaces
 from .nas import NonlinearActiveSubspaces
 from .subspaces import Subspaces

@@ -5,11 +5,13 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
+
 class Subspaces(object):
     """Active Subspaces base class
     
     [description]
     """
+
     def __init__(self):
         self.W1 = None
         self.W2 = None
@@ -50,19 +52,26 @@ class Subspaces(object):
         """
         n_pars = gradients.shape[1]
         e_boot = np.zeros((n_pars, nboot))
-        sub_dist = np.zeros((n_pars-1, nboot))
-        
+        sub_dist = np.zeros((n_pars - 1, nboot))
+
         for i in range(nboot):
             gradients0, weights0 = self._bootstrap_replicate(gradients, weights)
-            __, e0, W0 = self._build_decompose_cov_matrix(gradients=gradients0, weights=weights0, method=method)
+            __, e0, W0 = self._build_decompose_cov_matrix(
+                gradients=gradients0, weights=weights0, method=method)
             e_boot[:, i] = e0.reshape((n_pars, ))
-            for j in range(n_pars-1):
-                sub_dist[j, i] = np.linalg.norm(np.dot(self.evects[:, :j+1].T, W0[:, j+1:]), ord=2)
-        
+            for j in range(n_pars - 1):
+                sub_dist[j, i] = np.linalg.norm(
+                    np.dot(self.evects[:, :j + 1].T, W0[:, j + 1:]), ord=2)
+
         # bootstrap ranges for the eigenvalues
-        self.evals_br = np.hstack((np.amin(e_boot, axis=1).reshape((n_pars, 1)), np.amax(e_boot, axis=1).reshape((n_pars, 1))))
+        self.evals_br = np.hstack((np.amin(
+            e_boot, axis=1).reshape((n_pars, 1)), np.amax(
+                e_boot, axis=1).reshape((n_pars, 1))))
         # bootstrap ranges and mean for subspace distance
-        self.subs_br = np.hstack((np.amin(sub_dist, axis=1).reshape((n_pars-1, 1)), np.mean(sub_dist, axis=1).reshape((n_pars-1, 1)), np.amax(sub_dist, axis=1).reshape((n_pars-1, 1))))
+        self.subs_br = np.hstack((np.amin(
+            sub_dist, axis=1).reshape((n_pars - 1, 1)), np.mean(
+                sub_dist, axis=1).reshape((n_pars - 1, 1)), np.amax(
+                    sub_dist, axis=1).reshape((n_pars - 1, 1))))
 
     @staticmethod
     def _bootstrap_replicate(matrix, weights):
@@ -80,8 +89,8 @@ class Subspaces(object):
         """
         """
         raise NotImplementedError(
-            'Subclass must implement abstract method {}._build_decompose_cov_matrix'.format(
-                cls.__name__))
+            'Subclass must implement abstract method {}._build_decompose_cov_matrix'.
+            format(cls.__name__))
 
     def compute(self, *args, **kwargs):
         """
@@ -146,7 +155,9 @@ class Subspaces(object):
             raise TypeError('dim should be an integer')
 
         if dim < 1 or dim > self.evects.shape[0]:
-            raise ValueError('dim ({}) must be positive and less than the dimension of the eigenvectors.'.format(dim))
+            raise ValueError(
+                'dim ({}) must be positive and less than the dimension of the eigenvectors.'.
+                format(dim))
 
         self.W1 = self.evects[:, :dim]
         self.W2 = self.evects[:, dim:]
@@ -165,16 +176,22 @@ class Subspaces(object):
         n_pars = self.evals.shape[0]
         plt.figure(figsize=figsize)
         plt.title(title)
-        plt.semilogy(range(1, n_pars+1), self.evals, 'ko-', markersize=8, linewidth=2)
-        plt.xticks(range(1, n_pars+1))
+        plt.semilogy(
+            range(1, n_pars + 1), self.evals, 'ko-', markersize=8, linewidth=2)
+        plt.xticks(range(1, n_pars + 1))
         plt.xlabel('Index')
         plt.ylabel('Eigenvalues')
         plt.grid(linestyle='dotted')
         if self.evals_br is None:
-            plt.axis([0, n_pars+1, 0.1*np.amin(self.evals), 10*np.amax(self.evals)])
+            plt.axis([0, n_pars + 1, 0.1 * np.amin(self.evals), 10 * np.amax(
+                self.evals)])
         else:
-            plt.fill_between(range(1, n_pars+1), self.evals_br[:, 0], self.evals_br[:, 1], facecolor='0.7', interpolate=True)
-            plt.axis([0, n_pars+1, 0.1*np.amin(self.evals_br[:, 0]), 10*np.amax(self.evals_br[:, 1])])
+            plt.fill_between(
+                range(1, n_pars + 1),
+                self.evals_br[:, 0],
+                self.evals_br[:, 1],
+                facecolor='0.7',
+                interpolate=True)
+            plt.axis([0, n_pars + 1, 0.1 * np.amin(self.evals_br[:, 0]), 10 *
+                      np.amax(self.evals_br[:, 1])])
         plt.show()
-
-

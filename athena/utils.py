@@ -4,8 +4,10 @@
 """
 import numpy as np
 
+
 def initialize_weights(matrix):
     return np.ones((matrix.shape[0], 1)) / matrix.shape[0]
+
 
 def local_linear_gradients(inputs, outputs, weights=None, n_neighbors=None):
     """Estimate a collection of gradients from input/output pairs.
@@ -34,22 +36,25 @@ def local_linear_gradients(inputs, outputs, weights=None, n_neighbors=None):
     -----
     If `n_neighbors` is not specified, the default value is floor(1.7*m).
     """
-    n_samples, n_pars = inputs.shape 
-    
-    if n_samples <= n_pars: 
+    n_samples, n_pars = inputs.shape
+
+    if n_samples <= n_pars:
         raise Exception('Not enough samples for local linear models.')
     if n_neighbors is None:
         n_neighbors = int(min(np.floor(1.7 * n_pars), n_samples))
     elif not isinstance(n_neighbors, int):
-        raise TypeError('n_neighbors ({}) must be an integer.'.format(n_neighbors))
+        raise TypeError('n_neighbors ({}) must be an integer.'.format(
+            n_neighbors))
 
-    if n_neighbors < n_pars+1 or n_neighbors > n_samples:
-        raise Exception('n_neighbors ({}) must be between the number of parameters ({}) and the number of samples ({})'.format(n_neighbors, n_pars, n_samples))
-    
+    if n_neighbors < n_pars + 1 or n_neighbors > n_samples:
+        raise Exception(
+            'n_neighbors ({}) must be between the number of parameters ({}) and the number of samples ({})'.
+            format(n_neighbors, n_pars, n_samples))
+
     if weights is None:
         weights = initialize_weights(inputs)
 
-    MM = min(int(np.ceil(10 * n_pars * np.log(n_pars))), n_samples-1)
+    MM = min(int(np.ceil(10 * n_pars * np.log(n_pars))), n_samples - 1)
     gradients = np.zeros((MM, n_pars))
     for i in range(MM):
         ii = np.random.randint(n_samples)
@@ -57,12 +62,14 @@ def local_linear_gradients(inputs, outputs, weights=None, n_neighbors=None):
         D2 = np.sum((inputs - inputs_rand_row)**2, axis=1)
         ind = np.argsort(D2)
         ind = ind[D2 != 0]
-        A = np.hstack((np.ones((n_neighbors, 1)), inputs[ind[:n_neighbors], :])) * np.sqrt(weights[ii])
+        A = np.hstack((np.ones((n_neighbors, 1)),
+                       inputs[ind[:n_neighbors], :])) * np.sqrt(weights[ii])
         b = outputs[ind[:n_neighbors]] * np.sqrt(weights[ii])
         u = np.linalg.lstsq(A, b, rcond=None)[0]
         gradients[i, :] = u[1:].T
-    
+
     return gradients
+
 
 def sort_eigpairs(matrix):
     """Compute eigenpairs and sort.
@@ -91,6 +98,6 @@ def sort_eigpairs(matrix):
     evals = evals[ind[::-1]]
     evects = evects[:, ind[::-1]]
     s = np.sign(evects[0, :])
-    s[s==0] = 1
+    s[s == 0] = 1
     evects *= s
     return evals.reshape((evals.size, 1)), evects

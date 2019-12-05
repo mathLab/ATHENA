@@ -1,10 +1,9 @@
-
 from unittest import TestCase
 from athena.subspaces import Subspaces
 import numpy as np
 
-class TestUtils(TestCase):
 
+class TestUtils(TestCase):
     def test_init_W1(self):
         ss = Subspaces()
         self.assertIsNone(ss.W1)
@@ -20,11 +19,11 @@ class TestUtils(TestCase):
     def test_init_evects(self):
         ss = Subspaces()
         self.assertIsNone(ss.evects)
-    
+
     def test_init_evals_br(self):
         ss = Subspaces()
         self.assertIsNone(ss.evals_br)
-    
+
     def test_init_subs_br(self):
         ss = Subspaces()
         self.assertIsNone(ss.subs_br)
@@ -54,7 +53,7 @@ class TestUtils(TestCase):
         ss.evects = matrix
         ss.partition(dim=2)
         np.testing.assert_array_almost_equal(matrix[:, :2], ss.W1)
-    
+
     def test_partition_02(self):
         np.random.seed(42)
         matrix = np.random.uniform(-1, 1, 9).reshape(3, 3)
@@ -70,7 +69,7 @@ class TestUtils(TestCase):
         ss.evects = matrix
         with self.assertRaises(TypeError):
             ss.partition(dim=2.0)
-    
+
     def test_partition_04(self):
         np.random.seed(42)
         matrix = np.random.uniform(-1, 1, 9).reshape(3, 3)
@@ -101,9 +100,9 @@ class TestUtils(TestCase):
         weights = np.ones((3, 1)) / 3
         ss = Subspaces()
         mat = ss._bootstrap_replicate(matrix, weights)[0]
-        true_matrix = np.array([[-0.88383278,  0.73235229,  0.20223002],
-                                [ 0.19731697, -0.68796272, -0.68801096],
-                                [-0.25091976,  0.90142861,  0.46398788]])
+        true_matrix = np.array([[-0.88383278, 0.73235229, 0.20223002],
+                                [0.19731697, -0.68796272, -0.68801096],
+                                [-0.25091976, 0.90142861, 0.46398788]])
         np.testing.assert_array_almost_equal(true_matrix, mat)
 
     def test_plot_eigenvalues(self):
