@@ -1,0 +1,62 @@
+
+language: python
+
+matrix:
+    include:
+        - os: linux
+          python: 3.5
+          env: TOXENV=py35
+        - os: osx
+          language: generic
+          env: TOXENV=py35
+
+before_script:
+    - "export DISPLAY=:99.0"
+    - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then
+        sh -e /etc/init.d/xvfb start;
+        sleep 3;
+      fi
+
+
+before_install:
+    # We do this conditionally because it saves us some downloading if the
+    # version is the same.
+    - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then
+        wget https://repo.continuum.io/miniconda/Miniconda-latest-Linux-x86_64.sh -O miniconda.sh;
+      else
+        brew update;
+        brew install python;
+        wget https://repo.continuum.io/miniconda/Miniconda2-latest-MacOSX-x86_64.sh -O miniconda.sh;
+      fi
+    - chmod +x miniconda.sh
+    - bash miniconda.sh -b -p $HOME/miniconda
+    - export PATH="$HOME/miniconda/bin:$HOME/miniconda/lib:$PATH"
+    - hash -r
+    - conda config --set always_yes yes --set changeps1 no
+    - conda update -q conda
+    # Useful for debugging any issues with conda
+    - conda info -a
+    - conda config --add channels conda-forge
+
+install:
+    - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then
+        conda create --yes -n test python=$TRAVIS_PYTHON_VERSION;
+      else
+        conda create --yes -n test python="3.5";
+      fi
+    - source activate test
+    - pip install numpy matplotlib pip nose sphinx==1.4
+    - pip install setuptools
+    - pip install coveralls
+    - pip install coverage
+    - python setup.py install
+
+script: 
+    - coverage run test.py
+
+after_success:
+    - coveralls
+
+branches:
+    only:
+        - master
