@@ -229,12 +229,12 @@ class TestUtils(TestCase):
         with self.assertRaises(ValueError):
             ss.plot_eigenvalues(figsize=(7, 7), title='Eigenvalues')
 
-    def test_plot_eigenvalues1(self):
-        import matplotlib
-        matplotlib.use('MacOSX')
-        np.random.seed(42)
-        gradients = np.random.uniform(-1, 1, 60).reshape(10, 6)
-        weights = np.ones((10, 1)) / 10
-        ss = ActiveSubspaces()
-        ss.compute(gradients=gradients, weights=weights, nboot=200)
-        # ss.plot_eigenvalues(figsize=(7, 7), title='Eigenvalues')
+    # def test_plot_eigenvalues1(self):
+    #     import matplotlib
+    #     matplotlib.use('MacOSX')
+    #     np.random.seed(42)
+    #     gradients = np.random.uniform(-1, 1, 60).reshape(10, 6)
+    #     weights = np.ones((10, 1)) / 10
+    #     ss = ActiveSubspaces()
+    #     ss.compute(gradients=gradients, weights=weights, nboot=200)
+    #     ss.plot_eigenvalues(figsize=(7, 7), title='Eigenvalues')
