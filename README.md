@@ -34,12 +34,17 @@
 
 
 ### Installing from source
+To install the latest version of the package just type:
+```bash
+> pip install git+https://github.com/mathLab/ATHENA.git
+```
+
 The official distribution is on GitHub, and you can clone the repository using
 ```bash
 > git clone https://github.com/mathLab/ATHENA
 ```
 
-To install the package just type:
+To install your own local branch you can use the `setup.py` file
 ```bash
 > python setup.py install
 ```
@@ -77,8 +82,9 @@ You can find useful tutorials on how to use the package in the [tutorials](tutor
 
 
 ## References
-To implement the numerical methods present in this package we follow these works:
-* Constantine. *Active subspaces: Emerging ideas for dimension reduction in parameter studies*. SIAM Spotlights, 2015. [[DOI](https://doi.org/10.1137/1.9781611973860)].
+To implement the numerical methods present in this package we followed these works:
+* Constantine. *Active subspaces: Emerging ideas for dimension reduction in parameter studies*. Volume 2 SIAM Spotlights, 2015. [[DOI](https://doi.org/10.1137/1.9781611973860)].
+* Constantine et al. Python Active-subspaces Utility Library, Journal of Open Source Software, 1(5), 79, 2016. [[DOI](https://doi.org/10.21105/joss.00079)].
 
 
 ### Recent works with ATHENA
