@@ -46,8 +46,10 @@ class TestUtils(TestCase):
         gradients = np.random.uniform(-1, 1, 60).reshape(15, 4)
         weights = np.ones((15, 1)) / 15
         ss = ActiveSubspaces()
-        ss.compute(
-            gradients=gradients, weights=weights, method='exact', nboot=150)
+        ss.compute(gradients=gradients,
+                   weights=weights,
+                   method='exact',
+                   nboot=150)
         true_evals = np.array([[0.571596], [0.465819], [0.272198], [0.175012]])
         np.testing.assert_array_almost_equal(true_evals, ss.evals)
 
@@ -56,8 +58,10 @@ class TestUtils(TestCase):
         gradients = np.random.uniform(-1, 1, 60).reshape(15, 4)
         weights = np.ones((15, 1)) / 15
         ss = ActiveSubspaces()
-        ss.compute(
-            gradients=gradients, weights=weights, method='exact', nboot=200)
+        ss.compute(gradients=gradients,
+                   weights=weights,
+                   method='exact',
+                   nboot=200)
         true_evects = np.array([[0.019091, 0.408566, 0.861223, 0.301669],
                                 [0.767799, -0.199069, 0.268823, -0.546434],
                                 [0.463451, 0.758442, -0.427696, 0.164486],
@@ -69,8 +73,10 @@ class TestUtils(TestCase):
         gradients = np.random.uniform(-1, 1, 60).reshape(15, 4)
         weights = np.ones((15, 1)) / 15
         ss = ActiveSubspaces()
-        ss.compute(
-            gradients=gradients, weights=weights, method='exact', nboot=250)
+        ss.compute(gradients=gradients,
+                   weights=weights,
+                   method='exact',
+                   nboot=250)
         true_cov_matrix = np.array([[0.295783, 0.004661, 0.057825, -0.056819],
                                     [0.004661, 0.427352, 0.086039, 0.160164],
                                     [0.057825, 0.086039, 0.445253, -0.019482],
@@ -219,8 +225,10 @@ class TestUtils(TestCase):
         gradients = np.random.uniform(-1, 1, 60).reshape(30, 2)
         weights = np.ones((30, 1)) / 30
         ss = ActiveSubspaces()
-        ss.compute(
-            gradients=gradients, weights=weights, method='exact', nboot=100)
+        ss.compute(gradients=gradients,
+                   weights=weights,
+                   method='exact',
+                   nboot=100)
         true_bounds_subspace = np.array([[0.00261813, 0.58863862, 0.99998352]])
         np.testing.assert_array_almost_equal(true_bounds_subspace, ss.subs_br)
 
@@ -229,12 +237,29 @@ class TestUtils(TestCase):
         with self.assertRaises(ValueError):
             ss.plot_eigenvalues(figsize=(7, 7), title='Eigenvalues')
 
+    def test_plot_sufficient_summary_01(self):
+        ss = ActiveSubspaces()
+        with self.assertRaises(ValueError):
+            ss.plot_sufficient_summary(10, 10)
+
+    def test_plot_sufficient_summary_02(self):
+        np.random.seed(42)
+        gradients = np.random.uniform(-1, 1, 200).reshape(50, 4)
+        weights = np.ones((50, 1)) / 50
+        ss = ActiveSubspaces()
+        ss.compute(gradients=gradients, weights=weights, nboot=200)
+        ss.partition(3)
+        with self.assertRaises(ValueError):
+            ss.plot_sufficient_summary(10, 10)
+
     # def test_plot_eigenvalues1(self):
     #     import matplotlib
     #     matplotlib.use('MacOSX')
     #     np.random.seed(42)
-    #     gradients = np.random.uniform(-1, 1, 60).reshape(10, 6)
-    #     weights = np.ones((10, 1)) / 10
+    #     gradients = np.random.uniform(-1, 1, 200).reshape(50, 4)
+    #     weights = np.ones((50, 1)) / 50
     #     ss = ActiveSubspaces()
     #     ss.compute(gradients=gradients, weights=weights, nboot=200)
     #     ss.plot_eigenvalues(figsize=(7, 7), title='Eigenvalues')
+    #     ss.partition(2)
+    #     ss.plot_sufficient_summary(np.random.uniform(-1, 1, 100).reshape(25, 4), np.random.uniform(-1, 1, 25).reshape(-1, 1))

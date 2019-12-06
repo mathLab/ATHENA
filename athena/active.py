@@ -12,7 +12,6 @@ class ActiveSubspaces(Subspaces):
     
     [description]
     """
-
     def __init__(self):
         super().__init__()
 
@@ -45,22 +44,27 @@ class ActiveSubspaces(Subspaces):
                 weights = initialize_weights(gradients)
             self.cov_matrix, self.evals, self.evects = self._build_decompose_cov_matrix(
                 gradients=gradients, weights=weights, method=method)
-            self._compute_bootstrap_ranges(
-                gradients, weights, method=method, nboot=nboot)
+            self._compute_bootstrap_ranges(gradients,
+                                           weights,
+                                           method=method,
+                                           nboot=nboot)
 
         # estimate active subspace with local linear models.
         if method == 'local':
             if inputs is None or outputs is None:
                 raise ValueError('inputs or outputs argument is None.')
-            gradients = local_linear_gradients(
-                inputs=inputs, outputs=outputs, weights=weights)
+            gradients = local_linear_gradients(inputs=inputs,
+                                               outputs=outputs,
+                                               weights=weights)
             if weights is None:
                 # use the new gradients to compute the weights, otherwise dimension mismatch accours.
                 weights = initialize_weights(gradients)
             self.cov_matrix, self.evals, self.evects = self._build_decompose_cov_matrix(
                 gradients=gradients, weights=weights, method=method)
-            self._compute_bootstrap_ranges(
-                gradients, weights, method=method, nboot=nboot)
+            self._compute_bootstrap_ranges(gradients,
+                                           weights,
+                                           method=method,
+                                           nboot=nboot)
 
     @staticmethod
     def _build_decompose_cov_matrix(inputs=None,
