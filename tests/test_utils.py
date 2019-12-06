@@ -32,8 +32,10 @@ class TestUtils(TestCase):
         outputs = 2 - 5 * inputs[:, 0] + 4 * inputs[:, 1]
         gradients = local_linear_gradients(inputs, outputs)
         M = gradients.shape[0]
-        np.testing.assert_array_almost_equal(
-            gradients, np.tile(np.array([-5.0, 4.0]), (M, 1)), decimal=9)
+        np.testing.assert_array_almost_equal(gradients,
+                                             np.tile(np.array([-5.0, 4.0]),
+                                                     (M, 1)),
+                                             decimal=9)
 
     def test_local_linear_gradients_02(self):
         np.random.seed(42)
@@ -41,5 +43,7 @@ class TestUtils(TestCase):
         outputs = 2 - 5 * inputs[:, 0] + 4 * inputs[:, 1]
         gradients = local_linear_gradients(inputs, outputs, n_neighbors=8)
         M = gradients.shape[0]
-        np.testing.assert_array_almost_equal(
-            gradients, np.tile(np.array([-5.0, 4.0]), (M, 1)), decimal=9)
+        np.testing.assert_array_almost_equal(gradients,
+                                             np.tile(np.array([-5.0, 4.0]),
+                                                     (M, 1)),
+                                             decimal=9)

@@ -11,7 +11,6 @@ class NonlinearActiveSubspaces(Subspaces):
     
     [description]
     """
-
     def __init__(self):
         super().__init__()
 
