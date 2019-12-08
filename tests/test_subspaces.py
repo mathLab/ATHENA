@@ -46,6 +46,11 @@ class TestUtils(TestCase):
         with self.assertRaises(NotImplementedError):
             ss._build_decompose_cov_matrix()
 
+    def test_backward(self):
+        ss = Subspaces()
+        with self.assertRaises(NotImplementedError):
+            ss.backward(10, 10)
+
     def test_partition_01(self):
         np.random.seed(42)
         matrix = np.random.uniform(-1, 1, 9).reshape(3, 3)
