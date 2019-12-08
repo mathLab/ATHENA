@@ -6,6 +6,9 @@ matrix:
         - os: linux
           python: 3.5
           env: TOXENV=py35
+        - os: linux
+          python: 3.6
+          env: TOXENV=py36
         - os: osx
           language: generic
           env: TOXENV=py35
@@ -56,6 +59,9 @@ script:
 
 after_success:
     - coveralls
+
+notifications:
+    webhooks: https://coveralls.io/webhook
 
 branches:
     only:
