@@ -1,6 +1,20 @@
 from unittest import TestCase
 from athena.active import ActiveSubspaces
 import numpy as np
+from contextlib import contextmanager
+import matplotlib.pyplot as plt
+
+
+@contextmanager
+def assert_plot_figures_added():
+    """
+    Assert that the number of figures is higher than
+    when you started the test
+    """
+    num_figures_before = plt.gcf().number
+    yield
+    num_figures_after = plt.gcf().number
+    assert num_figures_before < num_figures_after
 
 
 class TestUtils(TestCase):
@@ -232,9 +246,18 @@ class TestUtils(TestCase):
         true_bounds_subspace = np.array([[0.00261813, 0.58863862, 0.99998352]])
         np.testing.assert_array_almost_equal(true_bounds_subspace, ss.subs_br)
 
-    def test_plot_eigenvalues(self):
+    def test_plot_eigenvalues_01(self):
         ss = ActiveSubspaces()
         with self.assertRaises(ValueError):
+            ss.plot_eigenvalues(figsize=(7, 7), title='Eigenvalues')
+
+    def test_plot_eigenvalues_02(self):
+        np.random.seed(42)
+        gradients = np.random.uniform(-1, 1, 200).reshape(50, 4)
+        weights = np.ones((50, 1)) / 50
+        ss = ActiveSubspaces()
+        ss.compute(gradients=gradients, weights=weights, nboot=200)
+        with assert_plot_figures_added():
             ss.plot_eigenvalues(figsize=(7, 7), title='Eigenvalues')
 
     def test_plot_sufficient_summary_01(self):
@@ -252,14 +275,14 @@ class TestUtils(TestCase):
         with self.assertRaises(ValueError):
             ss.plot_sufficient_summary(10, 10)
 
-    # def test_plot_eigenvalues1(self):
-    #     import matplotlib
-    #     matplotlib.use('MacOSX')
-    #     np.random.seed(42)
-    #     gradients = np.random.uniform(-1, 1, 200).reshape(50, 4)
-    #     weights = np.ones((50, 1)) / 50
-    #     ss = ActiveSubspaces()
-    #     ss.compute(gradients=gradients, weights=weights, nboot=200)
-    #     ss.plot_eigenvalues(figsize=(7, 7), title='Eigenvalues')
-    #     ss.partition(2)
-    #     ss.plot_sufficient_summary(np.random.uniform(-1, 1, 100).reshape(25, 4), np.random.uniform(-1, 1, 25).reshape(-1, 1))
+    def test_plot_sufficient_summary_03(self):
+        np.random.seed(42)
+        gradients = np.random.uniform(-1, 1, 200).reshape(50, 4)
+        weights = np.ones((50, 1)) / 50
+        ss = ActiveSubspaces()
+        ss.compute(gradients=gradients, weights=weights, nboot=200)
+        ss.partition(2)
+        with assert_plot_figures_added():
+            ss.plot_sufficient_summary(
+                np.random.uniform(-1, 1, 100).reshape(25, 4),
+                np.random.uniform(-1, 1, 25).reshape(-1, 1))
