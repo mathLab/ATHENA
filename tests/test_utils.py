@@ -1,9 +1,36 @@
 from unittest import TestCase
-from athena.utils import initialize_weights, local_linear_gradients, sort_eigpairs
+from athena.utils import Normalizer, initialize_weights, local_linear_gradients, sort_eigpairs
 import numpy as np
 
 
 class TestUtils(TestCase):
+    def test_normalizer_init_lb(self):
+        normalizer = Normalizer(np.arange(5), np.arange(2, 7))
+        np.testing.assert_array_equal(normalizer.lb, np.arange(5))
+
+    def test_normalizer_init_ub(self):
+        normalizer = Normalizer(np.arange(5), np.arange(2, 7))
+        np.testing.assert_array_equal(normalizer.ub, np.arange(2, 7))
+
+    def test_normalizer_normalize(self):
+        np.random.seed(42)
+        normalizer = Normalizer(-2 * np.ones(3), 4 * np.ones(3))
+        inputs = np.random.uniform(-2, 4, 12).reshape(4, 3)
+        ref_inputs = normalizer.normalize(inputs)
+        true_norm = np.array([[-0.25091976, 0.90142861, 0.46398788],
+                              [0.19731697, -0.68796272, -0.68801096],
+                              [-0.88383278, 0.73235229, 0.20223002],
+                              [0.41614516, -0.95883101, 0.9398197]])
+        np.testing.assert_array_almost_equal(true_norm, ref_inputs)
+
+    def test_normalizer_unnormalize(self):
+        np.random.seed(42)
+        normalizer = Normalizer(-2 * np.ones(3), 4 * np.ones(3))
+        ref_inputs = np.array([-1, 0, 1])
+        inputs = normalizer.unnormalize(ref_inputs)
+        true_unnorm = np.array([-2, 1, 4])
+        np.testing.assert_array_equal(true_unnorm, inputs)
+
     def test_initialize_weights(self):
         matrix = np.random.uniform(-1, 1, 9).reshape(3, 3)
         weights = initialize_weights(matrix)
