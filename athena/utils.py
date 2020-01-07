@@ -5,6 +5,46 @@
 import numpy as np
 
 
+class Normalizer(object):
+    """A class for normalizing and unnormalizing bounded inputs.
+    
+    :param numpy.ndarray lb:
+        array n_params-by-1 that contains lower bounds on the simulation inputs
+    :param numpy.ndarray ub:
+        array n_params-by-1 that contains upper bounds on the simulation inputs
+    """
+    def __init__(self, lb, ub):
+        self.lb = lb
+        self.ub = ub
+
+    def normalize(self, inputs):
+        """Return corresponding points shifted and scaled to [-1, 1]^n_params.
+
+        :param numpy.ndarray inputs: contains all input points to normalize.
+            The shape is n_samples-by-n_params. The components of each row of
+            `inputs` should be between `self.lb` and `self.ub`.
+        :return: the normalized inputs. The components of each row should be
+            between -1 and 1.
+        :rtype: numpy.ndarray
+        """
+        inputs_norm = 2.0 * (inputs - self.lb) / (self.ub - self.lb) - 1.0
+        return inputs_norm
+
+    def unnormalize(self, inputs):
+        """Return corresponding points shifted and scaled to
+        `[self.lb, self.ub]`.
+        
+        :param numpy.ndarray inputs: contains all input points to unnormalize.
+            The shape is n_samples-by-n_params. The components of each row of
+            `inputs` should be between -1 and 1.
+        :return: the unnormalized inputs. The components of each row should be
+            between `self.lb` and `self.ub`.
+        :rtype: numpy.ndarray
+        """
+        inputs_unnorm = (self.ub - self.lb) * (inputs + 1.0) / 2.0 + self.lb
+        return inputs_unnorm
+
+
 def initialize_weights(matrix):
     return np.ones((matrix.shape[0], 1)) / matrix.shape[0]
 
