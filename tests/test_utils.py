@@ -1,5 +1,5 @@
 from unittest import TestCase
-from athena.utils import Normalizer, initialize_weights, local_linear_gradients, sort_eigpairs
+from athena.utils import Normalizer, initialize_weights, linear_program_ineq, local_linear_gradients, sort_eigpairs
 import numpy as np
 
 
@@ -37,21 +37,13 @@ class TestUtils(TestCase):
         true_weights = np.array([0.333333, 0.333333, 0.333333]).reshape(3, 1)
         np.testing.assert_array_almost_equal(true_weights, weights)
 
-    def test_sort_eigpairs_evals(self):
-        np.random.seed(42)
-        matrix = np.random.uniform(-1, 1, 9).reshape(3, 3)
-        evals = sort_eigpairs(matrix)[0]
-        true_evals = np.array([[1.466942], [1.025235], [0.294945]])
-        np.testing.assert_array_almost_equal(true_evals, evals)
-
-    def test_sort_eigpairs_evects(self):
-        np.random.seed(42)
-        matrix = np.random.uniform(-1, 1, 9).reshape(3, 3)
-        evects = sort_eigpairs(matrix)[1]
-        true_evects = np.array([[0.511409, 0.515297, 0.687699],
-                                [-0.653819, -0.286001, 0.700517],
-                                [0.557657, -0.807881, 0.190647]])
-        np.testing.assert_array_almost_equal(true_evects, evects)
+    def test_linear_program_ineq(self):
+        c = np.ones((2, 1))
+        A = np.array([[1.0, 0.0], [0.0, 1.0], [1.0, 1.0]])
+        b = np.array([[0.1], [0.1], [0.1]])
+        x = linear_program_ineq(c, A, b)
+        true_x = np.array([0.1, 0.1]).reshape(2, 1)
+        np.testing.assert_array_almost_equal(true_x, x)
 
     def test_local_linear_gradients_01(self):
         np.random.seed(42)
@@ -74,3 +66,19 @@ class TestUtils(TestCase):
                                              np.tile(np.array([-5.0, 4.0]),
                                                      (M, 1)),
                                              decimal=9)
+
+    def test_sort_eigpairs_evals(self):
+        np.random.seed(42)
+        matrix = np.random.uniform(-1, 1, 9).reshape(3, 3)
+        evals = sort_eigpairs(matrix)[0]
+        true_evals = np.array([[1.466942], [1.025235], [0.294945]])
+        np.testing.assert_array_almost_equal(true_evals, evals)
+
+    def test_sort_eigpairs_evects(self):
+        np.random.seed(42)
+        matrix = np.random.uniform(-1, 1, 9).reshape(3, 3)
+        evects = sort_eigpairs(matrix)[1]
+        true_evects = np.array([[0.511409, 0.515297, 0.687699],
+                                [-0.653819, -0.286001, 0.700517],
+                                [0.557657, -0.807881, 0.190647]])
+        np.testing.assert_array_almost_equal(true_evects, evects)

@@ -3,6 +3,7 @@
 [description]
 """
 import numpy as np
+from scipy.optimize import linprog
 
 
 class Normalizer(object):
@@ -47,6 +48,43 @@ class Normalizer(object):
 
 def initialize_weights(matrix):
     return np.ones((matrix.shape[0], 1)) / matrix.shape[0]
+
+
+def linear_program_ineq(c, A, b):
+    """Solves an equality constrained linear program with variable bounds.
+    This method returns the minimizer of the following linear program.
+    minimize  c^T x
+    subject to  A x = b
+    lb <= x <= ub
+    Parameters
+    ----------
+    c : ndarray 
+        m-by-1 matrix for the linear objective function
+    A : ndarray 
+        M-by-m matrix that contains the coefficients of the linear equality 
+        constraints
+    b : ndarray
+        M-by-1 matrix that is the right hand side of the equality 
+        constraints
+    lb : ndarray
+        m-by-1 matrix that contains the lower bounds on the variables
+    ub : ndarray
+        m-by-1 matrix that contains the upper bounds on the variables
+    Returns
+    -------
+    x : ndarray
+        m-by-1 matrix that is the minimizer of the linear program
+    """
+    c = c.reshape(-1, )
+    b = b.reshape(-1, )
+
+    # make unbounded bounds
+    bounds = [(None, None) for i in range(c.shape[0])]
+    res = linprog(c=c, A_ub=-A, b_ub=-b, bounds=bounds)
+    if res.success:
+        return res.x.reshape(-1, 1)
+    else:
+        raise RuntimeError('Scipy did not solve the LP. {}'.format(res.message))
 
 
 def local_linear_gradients(inputs, outputs, weights=None, n_neighbors=None):
