@@ -165,6 +165,106 @@ class TestUtils(TestCase):
         reconstructed_inputs = active.dot(ss.W1.T) + inactive.dot(ss.W2.T)
         np.testing.assert_array_almost_equal(new_inputs, reconstructed_inputs)
 
+    def test_backward_01(self):
+        np.random.seed(42)
+        inputs = np.random.uniform(-1, 1, 60).reshape(15, 4)
+        outputs = np.random.uniform(0, 5, 15)
+        ss = ActiveSubspaces()
+        ss.compute(inputs=inputs, outputs=outputs, method='local', nboot=250)
+        ss.partition(1)
+        new_inputs = np.random.uniform(-1, 1, 8).reshape(2, 4)
+        active = ss.forward(new_inputs)[0]
+        new_inputs = ss.backward(reduced_inputs=active, n_points=5)[0]
+        np.testing.assert_array_almost_equal(np.kron(active, np.ones((5, 1))),
+                                             new_inputs.dot(ss.W1))
+
+    def test_backward_02(self):
+        np.random.seed(42)
+        inputs = np.random.uniform(-1, 1, 80).reshape(16, 5)
+        outputs = np.random.uniform(-1, 3, 16)
+        ss = ActiveSubspaces()
+        ss.compute(inputs=inputs, outputs=outputs, method='local', nboot=250)
+        ss.partition(2)
+        new_inputs = np.random.uniform(-1, 1, 15).reshape(3, 5)
+        active = ss.forward(new_inputs)[0]
+        new_inputs = ss.backward(reduced_inputs=active, n_points=500)[0]
+        np.testing.assert_array_almost_equal(np.kron(active, np.ones((500, 1))),
+                                             new_inputs.dot(ss.W1))
+
+    def test_rejection_sampling_inactive_01(self):
+        np.random.seed(42)
+        inputs = np.random.uniform(-1, 1, 60).reshape(15, 4)
+        outputs = np.random.uniform(0, 5, 15)
+        ss = ActiveSubspaces()
+        ss.compute(inputs=inputs, outputs=outputs, method='local', nboot=250)
+        ss.partition(1)
+        new_inputs = np.random.uniform(-1, 1, 8).reshape(2, 4)
+        active = ss.forward(new_inputs)[0]
+        inactive_swap = np.array([
+            ss._rejection_sampling_inactive(reduced_input=red_inp, n_points=1)
+            for red_inp in active
+        ])
+        inactive_inputs = np.swapaxes(inactive_swap, 1, 2)
+        new_inputs = ss._rotate_x(reduced_inputs=active,
+                                  inactive_inputs=inactive_inputs)[0]
+        np.testing.assert_array_almost_equal(active, new_inputs.dot(ss.W1))
+
+    def test_rejection_sampling_inactive_02(self):
+        np.random.seed(42)
+        inputs = np.random.uniform(-1, 1, 60).reshape(15, 4)
+        outputs = np.random.uniform(0, 5, 15)
+        ss = ActiveSubspaces()
+        ss.compute(inputs=inputs, outputs=outputs, method='local', nboot=250)
+        ss.partition(1)
+        new_inputs = np.random.uniform(-1, 1, 8).reshape(2, 4)
+        active = ss.forward(new_inputs)[0]
+        inactive_swap = np.array([
+            ss._rejection_sampling_inactive(reduced_input=red_inp, n_points=10)
+            for red_inp in active
+        ])
+        inactive_inputs = np.swapaxes(inactive_swap, 1, 2)
+        new_inputs = ss._rotate_x(reduced_inputs=active,
+                                  inactive_inputs=inactive_inputs)[0]
+        np.testing.assert_array_almost_equal(np.kron(active, np.ones((10, 1))),
+                                             new_inputs.dot(ss.W1))
+
+    def test_hit_and_run_inactive_01(self):
+        np.random.seed(42)
+        inputs = np.random.uniform(-1, 1, 60).reshape(15, 4)
+        outputs = np.random.uniform(0, 5, 15)
+        ss = ActiveSubspaces()
+        ss.compute(inputs=inputs, outputs=outputs, method='local', nboot=250)
+        ss.partition(1)
+        new_inputs = np.random.uniform(-1, 1, 8).reshape(2, 4)
+        active = ss.forward(new_inputs)[0]
+        inactive_swap = np.array([
+            ss._hit_and_run_inactive(reduced_input=red_inp, n_points=1)
+            for red_inp in active
+        ])
+        inactive_inputs = np.swapaxes(inactive_swap, 1, 2)
+        new_inputs = ss._rotate_x(reduced_inputs=active,
+                                  inactive_inputs=inactive_inputs)[0]
+        np.testing.assert_array_almost_equal(active, new_inputs.dot(ss.W1))
+
+    def test_hit_and_run_inactive_02(self):
+        np.random.seed(42)
+        inputs = np.random.uniform(-1, 1, 60).reshape(15, 4)
+        outputs = np.random.uniform(0, 5, 15)
+        ss = ActiveSubspaces()
+        ss.compute(inputs=inputs, outputs=outputs, method='local', nboot=250)
+        ss.partition(1)
+        new_inputs = np.random.uniform(-1, 1, 8).reshape(2, 4)
+        active = ss.forward(new_inputs)[0]
+        inactive_swap = np.array([
+            ss._hit_and_run_inactive(reduced_input=red_inp, n_points=10)
+            for red_inp in active
+        ])
+        inactive_inputs = np.swapaxes(inactive_swap, 1, 2)
+        new_inputs = ss._rotate_x(reduced_inputs=active,
+                                  inactive_inputs=inactive_inputs)[0]
+        np.testing.assert_array_almost_equal(np.kron(active, np.ones((10, 1))),
+                                             new_inputs.dot(ss.W1))
+
     def test_partition_01(self):
         np.random.seed(42)
         matrix = np.random.uniform(-1, 1, 9).reshape(3, 3)
