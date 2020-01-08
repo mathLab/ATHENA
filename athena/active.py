@@ -4,7 +4,8 @@
 """
 import numpy as np
 from .subspaces import Subspaces
-from .utils import Normalizer, initialize_weights, linear_program_ineq, local_linear_gradients, sort_eigpairs
+from .utils import (Normalizer, initialize_weights, linear_program_ineq,
+                    local_linear_gradients, sort_eigpairs)
 
 
 class ActiveSubspaces(Subspaces):

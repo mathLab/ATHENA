@@ -1,5 +1,6 @@
 from unittest import TestCase
-from athena.utils import Normalizer, initialize_weights, linear_program_ineq, local_linear_gradients, sort_eigpairs
+from athena.utils import (Normalizer, initialize_weights, linear_program_ineq,
+                          local_linear_gradients, sort_eigpairs)
 import numpy as np
 
 
