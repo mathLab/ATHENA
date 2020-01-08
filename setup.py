@@ -26,6 +26,7 @@ setup(name='athena',
       packages=find_packages(),
       install_requires=[
             'numpy',
+            'scipy',
             'matplotlib',
             'Sphinx>=1.4',
             'sphinx_rtd_theme',
