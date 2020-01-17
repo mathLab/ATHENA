@@ -1,6 +1,4 @@
-"""[summary]
-
-[description]
+"""Utility functions module.
 """
 import numpy as np
 from scipy.optimize import linprog
@@ -9,10 +7,10 @@ from scipy.optimize import linprog
 class Normalizer(object):
     """A class for normalizing and unnormalizing bounded inputs.
     
-    :param numpy.ndarray lb:
-        array n_params-by-1 that contains lower bounds on the simulation inputs
-    :param numpy.ndarray ub:
-        array n_params-by-1 that contains upper bounds on the simulation inputs
+    :param numpy.ndarray lb: array n_params-by-1 that contains lower bounds
+        on the simulation inputs.
+    :param numpy.ndarray ub: array n_params-by-1 that contains upper bounds
+        on the simulation inputs.
     """
     def __init__(self, lb, ub):
         self.lb = lb
@@ -53,27 +51,20 @@ def initialize_weights(matrix):
 def linear_program_ineq(c, A, b):
     """Solves an equality constrained linear program with variable bounds.
     This method returns the minimizer of the following linear program.
+    
     minimize  c^T x
-    subject to  A x = b
-    lb <= x <= ub
-    Parameters
-    ----------
-    c : ndarray 
-        m-by-1 matrix for the linear objective function
-    A : ndarray 
-        M-by-m matrix that contains the coefficients of the linear equality 
-        constraints
-    b : ndarray
-        M-by-1 matrix that is the right hand side of the equality 
-        constraints
-    lb : ndarray
-        m-by-1 matrix that contains the lower bounds on the variables
-    ub : ndarray
-        m-by-1 matrix that contains the upper bounds on the variables
-    Returns
-    -------
-    x : ndarray
-        m-by-1 matrix that is the minimizer of the linear program
+    subject to  A x >= b
+
+    :param numpy.ndarray c: coefficients vector of the linear objective
+        function to be minimized.
+    :param numpy.ndarray A: 2-D array which, when matrix-multiplied by x,
+        gives the values of the lower-bound inequality constraints at x.
+    :param numpy.ndarray b: 1-D array of values representing the lower-bound
+        of each inequality constraint (row) in A.
+    :return: the independent variable vector which minimizes the linear
+        programming problem.
+    :rtype: numpy.ndarray
+    :raises: RuntimeError
     """
     c = c.reshape(-1, )
     b = b.reshape(-1, )
@@ -110,24 +101,28 @@ def local_linear_gradients(inputs, outputs, weights=None, n_neighbors=None):
     gradients : ndarray
         M-by-m matrix that contains estimated partial derivatives approximated 
         by the local linear models
-    Notes
-    -----
-    If `n_neighbors` is not specified, the default value is floor(1.7*m).
+
+    :raises: ValueError, TypeError
+
+    .. note::
+
+        If `n_neighbors` is not specified, the default value is floor(1.7*m).
     """
     n_samples, n_pars = inputs.shape
 
     if n_samples <= n_pars:
-        raise Exception('Not enough samples for local linear models.')
+        raise ValueError('Not enough samples for local linear models.')
     if n_neighbors is None:
         n_neighbors = int(min(np.floor(1.7 * n_pars), n_samples))
     elif not isinstance(n_neighbors, int):
         raise TypeError(
             'n_neighbors ({}) must be an integer.'.format(n_neighbors))
 
-    if n_neighbors < n_pars + 1 or n_neighbors > n_samples:
-        raise Exception(
-            'n_neighbors ({}) must be between the number of parameters ({}) and the number of samples ({})'
-            .format(n_neighbors, n_pars, n_samples))
+    if n_neighbors <= n_pars or n_neighbors > n_samples:
+        raise ValueError(
+            'n_neighbors must be between the number of parameters ' \
+            'and the number of samples. Unsatisfied: {} < {} < {}.'
+            .format(n_pars, n_neighbors, n_samples))
 
     if weights is None:
         weights = initialize_weights(inputs)
@@ -153,23 +148,16 @@ def local_linear_gradients(inputs, outputs, weights=None, n_neighbors=None):
 def sort_eigpairs(matrix):
     """Compute eigenpairs and sort.
     
-    Parameters
-    ----------
-    C : ndarray
-        matrix whose eigenpairs you want
-        
-    Returns
-    -------
-    e : ndarray
-        vector of sorted eigenvalues
-    W : ndarray
-        orthogonal matrix of corresponding eigenvectors
-    
-    Notes
-    -----
-    Eigenvectors are unique up to a sign. We make the choice to normalize the
-    eigenvectors so that the first component of each eigenvector is positive.
-    This normalization is very helpful for the bootstrapping. 
+    :param numpy.ndarray matrix: matrix whose eigenpairs you want.
+    :return: vector of sorted eigenvalues, orthogonal matrix of corresponding
+        eigenvectors.
+    :rtype: numpy.ndarray, numpy.ndarray
+
+    .. note::
+
+        Eigenvectors are unique up to a sign. We make the choice to normalize
+        the eigenvectors so that the first component of each eigenvector is
+        positive. This normalization is very helpful for the bootstrapping. 
     """
     evals, evects = np.linalg.eigh(matrix)
     evals = abs(evals)
@@ -179,4 +167,4 @@ def sort_eigpairs(matrix):
     s = np.sign(evects[0, :])
     s[s == 0] = 1
     evects *= s
-    return evals.reshape((evals.size, 1)), evects
+    return evals.reshape(-1, 1), evects
