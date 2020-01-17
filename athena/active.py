@@ -1,6 +1,4 @@
-"""[summary]
-
-[description]
+"""Active Subspaces module.
 """
 import numpy as np
 from .subspaces import Subspaces
@@ -41,12 +39,14 @@ class ActiveSubspaces(Subspaces):
         gradients : ndarray
             M-by-m matrix containing the gradient samples oriented as rows
         weights : ndarray
-            M-by-1 weight vector, corresponds to numerical quadrature rule used to
-            estimate matrix whose eigenspaces define the active subspace
+            M-by-1 weight vector, corresponds to numerical quadrature rule
+            used to estimate matrix whose eigenspaces define the active
+            subspace.
 
-        Local linear models: This approach is related to the sufficient dimension reduction method known 
-        sometimes as the outer product of gradient method. See the 2001 paper 
-        'Structure adaptive approach for dimension reduction' from Hristache, et al.    
+        Local linear models: This approach is related to the sufficient
+        dimension reduction method known sometimes as the outer product
+        of gradient method. See the 2001 paper 'Structure adaptive approach
+        for dimension reduction' from Hristache, et al.
         """
         if method == 'exact':
             if gradients is None:
@@ -69,7 +69,8 @@ class ActiveSubspaces(Subspaces):
                                                outputs=outputs,
                                                weights=weights)
             if weights is None:
-                # use the new gradients to compute the weights, otherwise dimension mismatch accours.
+                # use the new gradients to compute the weights,
+                # otherwise dimension mismatch accours.
                 weights = initialize_weights(gradients)
             self.cov_matrix, self.evals, self.evects = self._build_decompose_cov_matrix(
                 gradients=gradients, weights=weights, method=method)

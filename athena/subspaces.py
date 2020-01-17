@@ -1,6 +1,4 @@
-"""[summary]
-
-[description]
+"""Base module for Active Subspaces and Non-linear Active Subspaces.
 """
 import numpy as np
 import matplotlib.pyplot as plt
@@ -150,14 +148,16 @@ class Subspaces(object):
         
         A convenience function for partitioning the full set of eigenvectors to
         separate the active from inactive subspaces.
+
+        :raises: TypeError, ValueError
         """
         if not isinstance(dim, int):
-            raise TypeError('dim should be an integer')
+            raise TypeError('dim should be an integer.')
 
         if dim < 1 or dim > self.evects.shape[0]:
             raise ValueError(
-                'dim ({}) must be positive and less than the dimension of the eigenvectors.'
-                .format(dim))
+                'dim must be positive and less than the dimension of the ' \
+                ' eigenvectors: dim = {}.'.format(dim))
         self.dim = dim
         self.W1 = self.evects[:, :dim]
         self.W2 = self.evects[:, dim:]
@@ -218,8 +218,9 @@ class Subspaces(object):
         
         :param str filename: if specified, the plot is saved at `filename`.
         :param tuple(int,int) figsize: tuple in inches defining the figure
-            size. Default is (8, 8).
+            size. Default is (10, 8).
         :param str title: title of the plot.
+        :raises: ValueError
         """
         if self.dim is None:
             raise ValueError('You first have to partition your subspaces.')
@@ -256,7 +257,8 @@ class Subspaces(object):
             plt.colorbar()
         else:
             raise ValueError(
-                'Sufficient summary plots cannot be made in more than 2 dimensions.'
+                'Sufficient summary plots cannot be made in more than 2 ' \
+                'dimensions.'
             )
 
         plt.grid(linestyle='dotted')
