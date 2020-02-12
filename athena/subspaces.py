@@ -73,10 +73,11 @@ class Subspaces(object):
 
     @staticmethod
     def _bootstrap_replicate(matrix, weights):
-        """Return a bootstrap replicate.
+        """
+        Return a bootstrap replicate.
     
-        A bootstrap replicate is a sampling-with-replacement strategy from a given
-        data set. 
+        A bootstrap replicate is a sampling-with-replacement strategy from a
+        given data set. 
         """
         M = weights.shape[0]
         ind = np.random.randint(M, size=(M, ))
@@ -85,6 +86,7 @@ class Subspaces(object):
     @classmethod
     def _build_decompose_cov_matrix(cls, *args, **kwargs):
         """
+        Not implemented, it has to be implemented in subclasses.
         """
         raise NotImplementedError(
             'Subclass must implement abstract method {}._build_decompose_cov_matrix'
@@ -100,23 +102,18 @@ class Subspaces(object):
                 self.__class__.__name__))
 
     def forward(self, inputs):
-        """Map full variables to active variables.
+        """
+        Map full variables to active and inactive variables.
         
-        Map the points in the original input space to the active and inactive
-        variables.
-        Parameters
-        ----------
-        inputs : ndarray
-            an M-by-m matrix, each row of `X` is a point in the original 
-            parameter space
-        Returns
-        -------
-        active : ndarray 
-            M-by-n matrix that contains points in the space of active variables.
-            Each row of `Y` corresponds to a row of `X`.
-        inactive : ndarray 
-            M-by-(m-n) matrix that contains points in the space of inactive 
-            variables. Each row of `Z` corresponds to a row of `X`.
+        Points in the original input space are mapped to the active and
+        inactive subspace.
+        
+        :param numpy.ndarray inputs: array n_samples-by-n_params containing
+            the points in the original parameter space.
+        :return: array n_samples-by-active_dim containing the mapped active
+            variables; array n_samples-by-inactive_dim containing the mapped
+            inactive variables.
+        :rtype: numpy.ndarray, numpy.ndarray
         """
         active = np.dot(inputs, self.W1)
         inactive = np.dot(inputs, self.W2)
@@ -124,31 +121,24 @@ class Subspaces(object):
 
     def backward(self, reduced_inputs, n_points):
         """
-        Abstract method to find points in full space that map to reduced variable points.
+        Abstract method to find points in full space that map to reduced
+        variable points.
         Not implemented, it has to be implemented in subclasses.
         
-        Map the points in the active variable space to the original parameter
-        space.
-        
-        Parameters
-        ----------
-        reduced_inputs : ndarray
-            M-by-n matrix that contains points in the space of active variables
-        n_points : int, optional
-            the number of points in the original parameter space that are 
-            returned that map to the given active variables (default 1)
-
+        :param numpy.ndarray reduced_inputs: n_samples-by-n_params matrix that
+            contains points in the space of active variables.
+        :param int n_points: the number of points in the original parameter
+            space that are returned that map to the given active variables.
         """
         raise NotImplementedError(
             'Subclass must implement abstract method {}.backward'.format(
                 self.__class__.__name__))
 
     def partition(self, dim):
-        """Partition the eigenvectors to define the active subspace.
+        """
+        Partition the eigenvectors to define the active and inactive subspaces.
         
-        A convenience function for partitioning the full set of eigenvectors to
-        separate the active from inactive subspaces.
-
+        :param int dim: dimension of the active subspace.
         :raises: TypeError, ValueError
         """
         if not isinstance(dim, int):
@@ -170,6 +160,10 @@ class Subspaces(object):
         :param tuple(int,int) figsize: tuple in inches defining the figure
             size. Default is (8, 8).
         :param str title: title of the plot.
+        :raises: ValueError
+
+        .. warning::
+            `self.compute` has to be called in advance.
         """
         if self.evals is None:
             raise ValueError('The eigenvalues have not been computed.'
@@ -216,11 +210,20 @@ class Subspaces(object):
         """
         Plot the sufficient summary.
         
+        :param numpy.ndarray inputs: array n_samples-by-n_params containing
+            the points in the full input space.
+        :param numpy.ndarray outputs: array n_samples-by-1 containing the
+            corresponding function evaluations.
         :param str filename: if specified, the plot is saved at `filename`.
         :param tuple(int,int) figsize: tuple in inches defining the figure
-            size. Default is (10, 8).
+            size. Defaults to (10, 8).
         :param str title: title of the plot.
         :raises: ValueError
+
+        .. warning::
+            `self.partition` has to be called in advance. 
+
+            Plot only available for partitions up to dimension 2.
         """
         if self.dim is None:
             raise ValueError('You first have to partition your subspaces.')

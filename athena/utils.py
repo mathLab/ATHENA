@@ -149,7 +149,7 @@ def sort_eigpairs(matrix):
     """Compute eigenpairs and sort.
     
     :param numpy.ndarray matrix: matrix whose eigenpairs you want.
-    :return: vector of sorted eigenvalues, orthogonal matrix of corresponding
+    :return: vector of sorted eigenvalues; orthogonal matrix of corresponding
         eigenvectors.
     :rtype: numpy.ndarray, numpy.ndarray
 
