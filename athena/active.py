@@ -7,7 +7,7 @@ from .utils import (Normalizer, initialize_weights, linear_program_ineq,
 
 
 class ActiveSubspaces(Subspaces):
-    """Active Subspaces base class
+    """Active Subspaces class
     
     [description]
     """
@@ -88,8 +88,7 @@ class ActiveSubspaces(Subspaces):
             contains points in the space of active variables.
         :param int n_points: the number of points in the original parameter
             space that are returned that map to the given active variables.
-            Default is set to 1.
-        
+            Defaults to 1.
         :return: (n_samples * n_points)-by-n_params matrix that contains points
             in the original parameter space, 
             (n_samples * n_points)-by-n_params matrix that contains integer
@@ -98,9 +97,9 @@ class ActiveSubspaces(Subspaces):
             matrix.
         :rtype: numpy.ndarray, numpy.ndarray
 
-        Notes
-        -----
-        The inverse map depends critically on the `regularize_z` function.
+        .. note::
+            The inverse map depends critically on the `self._sample_inactive`
+            method.
         """
         inactive_swap = np.array([
             self._sample_inactive(red_inp, n_points)
@@ -127,22 +126,22 @@ class ActiveSubspaces(Subspaces):
         Z : ndarray
             n_points-by-(m-n) matrix that contains values of the inactive variable that 
             correspond to the given `y`
-        Notes
-        -----
-        The trick here is to sample the inactive variables z so that
-        -1 <= W1*y + W2*z <= 1,
-        where y is the given value of the active variables. In other words, we need
-        to sample z such that it respects the linear equalities
-        W2*z <= 1 - W1*y, -W2*z <= 1 + W1*y.
-        These inequalities define a polytope in R^(m-n). We want to sample `N`
-        points uniformly from the polytope.
-        This function first tries a simple rejection sampling scheme, which (i)
-        finds a bounding hyperbox for the polytope, (ii) draws points uniformly from
-        the bounding hyperbox, and (iii) rejects points outside the polytope.
-        If that method does not return enough samples, the method tries a "hit and
-        run" method for sampling from the polytope.
-        If that doesn't work, it returns an array with `N` copies of a feasible
-        point computed as the Chebyshev center of the polytope.
+        
+        .. note::
+            The trick here is to sample the inactive variables z so that
+            -1 <= W1*y + W2*z <= 1,
+            where y is the given value of the active variables. In other words,
+            we need to sample z such that it respects the linear equalities
+            W2*z <= 1 - W1*y, -W2*z <= 1 + W1*y.
+            These inequalities define a polytope in R^(m-n). We want to sample
+            N points uniformly from the polytope.
+            This function first tries a simple rejection sampling scheme, which
+            finds a bounding hyperbox for the polytope, draws points uniformly
+            from the bounding hyperbox, and rejects points outside the
+            polytope. If that method does not return enough samples, the method
+            tries a "hit and run" method for sampling from the polytope.
+            If that does not work, it returns an array with `N` copies of a
+            feasible point computed as the Chebyshev center of the polytope.
         """
         Z = self._rejection_sampling_inactive(reduced_input, n_points)
         if Z is None:
@@ -168,15 +167,6 @@ class ActiveSubspaces(Subspaces):
         Z : ndarray
             N-by-(m-n) matrix that contains values of the inactive variable that 
             correspond to the given `y`    
-        
-        See Also
-        --------
-        domains.sample_z
-        
-        Notes
-        -----
-        The interface for this implementation is written specifically for 
-        `domains.sample_z`.
         """
         m, n = self.W1.shape
         inactive_dim = m - n
@@ -223,21 +213,12 @@ class ActiveSubspaces(Subspaces):
         Z : ndarray
             N-by-(m-n) matrix that contains values of the inactive variable that 
             correspond to the given `y`    
-        
-        See Also
-        --------
-        domains.sample_z
-        
-        Notes
-        -----
-        The interface for this implementation is written specifically for 
-        `domains.sample_z`.
         """
         m, n = self.W1.shape
         inactive_dim = m - n
 
-        # get an initial feasible point using the Chebyshev center. huge props to
-        # David Gleich for showing me the Chebyshev center.
+        # Get an initial feasible point using the Chebyshev center. Huge props to
+        # David Gleich for the Chebyshev center.
         s = np.dot(self.W1, reduced_input).reshape((m, 1))
         normW2 = np.sqrt(np.sum(np.power(self.W2, 2), axis=1)).reshape((m, 1))
         A = np.hstack((np.vstack(
@@ -297,7 +278,8 @@ class ActiveSubspaces(Subspaces):
         return Z
 
     def _rotate_x(self, reduced_inputs, inactive_inputs):
-        """A convenience function for rotating subspace coordinates to x space.
+        """
+        A convenience function for rotating subspace coordinates to x space.
         """
         NY, n = reduced_inputs.shape
         N = inactive_inputs.shape[2]
