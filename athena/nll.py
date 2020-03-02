@@ -57,7 +57,7 @@ class NonlinearLevelSet(object):
             mapped_inputs = self.forward(inputs)
             loss = self.forward.customized_loss_diff(inputs, mapped_inputs, gradients)
             
-            if i % 10 == 0:
+            if i % 10 == 0 or i == self.epochs-1:
                 print('epoch = {}, loss = {}'.format(i, loss))
                 if interactive:
                     ax1.cla()
@@ -76,8 +76,8 @@ class NonlinearLevelSet(object):
                 self.backward.zero_grad()
         
                 for j in range(self.backward.n_layers):
-                    name_y = 'fc' + str(j+1) + '_y'
-                    name_z = 'fc' + str(j+1) + '_z'
+                    name_y = 'fc{}_y'.format(j+1)
+                    name_z = 'fc{}_z'.format(j+1)
                     getattr(self.backward, name_y).weight = torch.nn.Parameter(getattr(self.forward, name_y).weight)
                     getattr(self.backward, name_z).weight = torch.nn.Parameter(getattr(self.forward, name_z).weight)
                     getattr(self.backward, name_y).bias = torch.nn.Parameter(getattr(self.forward, name_y).bias)
@@ -92,25 +92,6 @@ class NonlinearLevelSet(object):
         
             loss.backward()
             optimizer.step()
-            
-        # Build the inverse network based on the trained forward network
-        self.backward = BackwardNet(n_params=inputs.shape[1],
-                                    n_layers=self.n_layers, 
-                                    dh=self.dh)
-        self.backward.zero_grad()
-        
-        for i in range(self.backward.n_layers):
-            name_y = 'fc{}_y'.format(i+1)
-            name_z = 'fc{}_z'.format(i+1)
-            getattr(self.backward, name_y).weight = torch.nn.Parameter(getattr(self.forward, name_y).weight)
-            getattr(self.backward, name_z).weight = torch.nn.Parameter(getattr(self.forward, name_z).weight)
-            getattr(self.backward, name_y).bias = torch.nn.Parameter(getattr(self.forward, name_y).bias)
-            getattr(self.backward, name_z).bias = torch.nn.Parameter(getattr(self.forward, name_z).bias)    
-        
-        # Test the invertibility of the self.backward
-        if torch.mean(torch.abs(torch.add(-1 * inputs, self.backward(self.forward(inputs))))) > 1e-5:
-            print('self.backward is wrong!')
-            print(torch.mean(torch.abs(torch.add(-1 * inputs, self.backward(self.forward(inputs))))))
 
         if interactive:
             plt.ioff()
