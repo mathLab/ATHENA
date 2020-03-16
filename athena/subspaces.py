@@ -103,7 +103,7 @@ class Subspaces(object):
 
     def forward(self, inputs):
         """
-        Abstract method to ap full variables to active and inactive variables.
+        Abstract method to map full variables to active and inactive variables.
         
         Points in the original input space are mapped to the active and
         inactive subspace.
