@@ -103,7 +103,7 @@ class Subspaces(object):
 
     def forward(self, inputs):
         """
-        Map full variables to active and inactive variables.
+        Abstract method to map full variables to active and inactive variables.
         
         Points in the original input space are mapped to the active and
         inactive subspace.
@@ -115,9 +115,9 @@ class Subspaces(object):
             inactive variables.
         :rtype: numpy.ndarray, numpy.ndarray
         """
-        active = np.dot(inputs, self.W1)
-        inactive = np.dot(inputs, self.W2)
-        return active, inactive
+        raise NotImplementedError(
+            'Subclass must implement abstract method {}.compute'.format(
+                self.__class__.__name__))
 
     def backward(self, reduced_inputs, n_points):
         """

@@ -79,6 +79,24 @@ class ActiveSubspaces(Subspaces):
                                            method=method,
                                            nboot=nboot)
 
+    def forward(self, inputs):
+        """
+        Map full variables to active and inactive variables.
+        
+        Points in the original input space are mapped to the active and
+        inactive subspace.
+        
+        :param numpy.ndarray inputs: array n_samples-by-n_params containing
+            the points in the original parameter space.
+        :return: array n_samples-by-active_dim containing the mapped active
+            variables; array n_samples-by-inactive_dim containing the mapped
+            inactive variables.
+        :rtype: numpy.ndarray, numpy.ndarray
+        """
+        active = np.dot(inputs, self.W1)
+        inactive = np.dot(inputs, self.W2)
+        return active, inactive
+
     def backward(self, reduced_inputs, n_points=1):
         """
         Map the points in the active variable space to the original parameter

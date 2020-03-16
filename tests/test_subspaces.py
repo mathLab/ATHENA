@@ -46,6 +46,11 @@ class TestUtils(TestCase):
         with self.assertRaises(NotImplementedError):
             ss._build_decompose_cov_matrix()
 
+    def test_forward(self):
+        ss = Subspaces()
+        with self.assertRaises(NotImplementedError):
+            ss.forward(42)
+
     def test_backward(self):
         ss = Subspaces()
         with self.assertRaises(NotImplementedError):
