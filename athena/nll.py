@@ -45,7 +45,6 @@ class NonlinearLevelSet(object):
         self.forward = ForwardNet(n_params=inputs.shape[1],
                                   n_layers=self.n_layers, 
                                   dh=self.dh,
-                                  n_train=inputs.shape[0],
                                   active_dim=self.active_dim)
         # Initialize the gradient
         self.forward.zero_grad()
@@ -123,7 +122,7 @@ class NonlinearLevelSet(object):
         plt.grid(linestyle='dotted')
         plt.show()
 
-    def save(self, outfile):
+    def save_forward(self, outfile):
         """
         Save the forward map for future inference.
 
@@ -136,7 +135,7 @@ class NonlinearLevelSet(object):
         """
         torch.save(self.forward.state_dict(), outfile)
 
-    def load(self, infile):
+    def load_forward(self, infile, n_params, n_layers, dh, active_dim):
         """
         Load the forward map for inference.
 
@@ -146,9 +145,36 @@ class NonlinearLevelSet(object):
             A common PyTorch convention is to save models using either a .pt or
             .pth file extension.
         """
-        self.forward = ForwardNet(*args, **kwargs)
+        self.forward = ForwardNet(n_params, n_layers, dh, active_dim)
         self.forward.load_state_dict(torch.load(infile))
         self.forward.eval()
+
+    def save_backward(self, outfile):
+        """
+        Save the backward map for future inference.
+
+        :param str outfile: filename of the net to save.
+            Use either .pt or .pth. See notes below.
+
+        .. note::
+            A common PyTorch convention is to save models using either a .pt or
+            .pth file extension.
+        """
+        torch.save(self.backward.state_dict(), outfile)
+
+    def load_backward(self, infile, n_params, n_layers, dh):
+        """
+        Load the backward map for inference.
+
+        :param str infile: filename of the saved net to load. See notes below.
+
+        .. note::
+            A common PyTorch convention is to save models using either a .pt or
+            .pth file extension.
+        """
+        self.backward = BackwardNet(n_params, n_layers, dh)
+        self.backward.load_state_dict(torch.load(infile))
+        self.backward.eval()
 
 
 class ForwardNet(nn.Module):
@@ -156,12 +182,11 @@ class ForwardNet(nn.Module):
     :cvar slice omega: a slice object indicating the active dimension to keep.
         For example to keep the first two dimension omega=slice(2).
     """
-    def __init__(self, n_params, n_layers, dh, n_train, active_dim):
+    def __init__(self, n_params, n_layers, dh, active_dim):
         super().__init__()
         self.n_params = n_params//2
         self.n_layers = n_layers
         self.dh = dh
-        self.n_train = n_train
         self.omega = slice(active_dim)
 
         for i in range(self.n_layers):
@@ -260,8 +285,8 @@ class ForwardNet(nn.Module):
         loss1[:, self.omega] = 0.0
         loss2 = torch.sqrt(torch.mean(torch.sum(torch.mul(loss1, loss1), 1)))
 
-        J_det = torch.empty(self.n_train)
-        for k in range(self.n_train):
+        J_det = torch.empty(x.shape[0])
+        for k in range(x.shape[0]):
             eee = torch.svd(JJJ[k, :, :])[1]
             J_det[k] = torch.prod(eee)
         loss6 = torch.prod(J_det - 1.0)
