@@ -21,31 +21,22 @@ class Subspaces(object):
 
     def _compute_bootstrap_ranges(self, gradients, weights, method, nboot=100):
         """Compute bootstrap ranges for eigenvalues and subspaces.
-        
+    
         An implementation of the nonparametric bootstrap that we use in 
         conjunction with the subspace estimation methods to estimate the errors in 
         the eigenvalues and subspaces.
         
-        Parameters
-        ----------
-        gradients : ndarray
-            M-by-m matrix of gradient samples
-        weights : ndarray
-            M-by-1 vector of weights corresponding to samples
-        nboot : int, optional
-            number of bootstrap samples (default 100)
-            
-        Returns
-        -------
-        e_br : ndarray
-            m-by-2 matrix, first column contains bootstrap lower bound on 
-            eigenvalues, second column contains bootstrap upper bound on 
-            eigenvalues
-        sub_br : ndarray
-            (m-1)-by-3 matrix, first column contains bootstrap lower bound on 
-            estimated subspace error, second column contains estimated mean of
-            subspace error (a reasonable subspace error estimate), third column
-            contains estimated upper bound on subspace error    
+        param numpy.ndarray gradients: M-by-m matrix of gradient samples.
+        param numpy.ndarray weights: M-by-1 vector of weights.
+        param int nboot: number of bootstrap samples (default 100).
+        return: array e_br is a m-by-2 matrix, first column contains bootstrap
+            lower bound on eigenvalues, second column contains bootstrap upper
+            bound on eigenvalues; array sub_br is a (m-1)-by-3 matrix, first
+            column contains bootstrap lower bound on estimated subspace error,
+            second column contains estimated mean of subspace error (a
+            reasonable subspace error estimate), third column contains
+            estimated upper bound on subspace error.
+        rtype: numpy.ndarray, numpy.ndarray
         """
         n_pars = gradients.shape[1]
         e_boot = np.zeros((n_pars, nboot))
@@ -195,6 +186,66 @@ class Subspaces(object):
                 0, n_pars + 1, 0.1 * np.amin(self.evals_br[:, 0]),
                 10 * np.amax(self.evals_br[:, 1])
             ])
+
+        if filename:
+            plt.savefig(filename)
+        else:
+            plt.show()
+
+    def plot_eigenvectors(self,
+                          n_evects=None,
+                          filename=None,
+                          figsize=None,
+                          labels=None,
+                          title=''):
+        """
+        Plot the eigenvectors.
+        
+        :param int n_evects: number of eigenvectors to plot.
+             Default is self.dim.
+        :param str filename: if specified, the plot is saved at `filename`.
+        :param tuple(int,int) figsize: tuple in inches defining the figure
+            size. Default is (4 * n_evects, 8).
+        :param str labels: labels for the components of the eigenvectors.
+        :param str title: title of the plot.
+        :raises: ValueError
+
+        .. warning::
+            `self.compute` has to be called in advance.
+        """
+        if self.evects is None:
+            raise ValueError('The eigenvectors have not been computed.'
+                             'You have to perform the compute method.')
+        if n_evects is None:
+            n_evects = self.dim
+        if n_evects > self.evects.shape[0]:
+            raise ValueError('Invalid number of eigenvectors to plot.')
+        if figsize is None:
+            figsize = (4 * n_evects, 8)
+
+        m = self.evects.shape[0]
+        fig, axes = plt.subplots(n_evects, 1, figsize=figsize)
+        fig.suptitle(title)
+        fig.tight_layout()
+
+        for i in range(n_evects):
+            axes[i].plot(range(1, m + 1),
+                         self.evects[:m + 1, i],
+                         'ko-',
+                         markersize=8,
+                         linewidth=2)
+
+            if labels:
+                axes[i].set_xticks(range(1, m + 1))
+                axes[i].set_xticklabels(labels)
+                axes[i].margins(0.5)
+            else:
+                axes[i].set_xticks(range(1, m + 1))
+                axes[i].set_xlabel('Components')
+
+            axes[i].set_ylabel('Active eigenvector {}'.format(i + 1))
+            axes[i].grid(linestyle='dotted')
+            axes[i].axis([0, 1 + m, -1, 1])
 
         if filename:
             plt.savefig(filename)
