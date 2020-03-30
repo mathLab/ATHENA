@@ -138,7 +138,8 @@ class NonlinearLevelSet(object):
         """
         plt.figure()
         plt.title('Loss function decay')
-        plt.plot(range(1, self.epochs + 1, 10), self.loss_vec, 'b-')
+        x_range = [i for i in range(1, self.epochs + 1, 10)] + [self.epochs]
+        plt.plot(x_range, self.loss_vec, 'b-')
         plt.xlabel('Epoch')
         plt.ylabel('Loss')
         plt.grid(linestyle='dotted')
@@ -306,13 +307,14 @@ class ForwardNet(nn.Module):
 
             dx = torch.cat((vars()[var_y1], vars()[var_z1]), 1)
 
-            # Test the invertibility
-            if torch.mean(torch.abs(torch.add(-1 * output_dy,
-                                              self.forward(dx)))) > 1e-5:
-                print('Something is wrong in Jacobian computation')
-                print(
-                    torch.mean(
-                        torch.abs(torch.add(-1 * output_dy, self.forward(dx)))))
+            # # Test the invertibility
+            # # TODO it is computational intense
+            # if torch.mean(torch.abs(torch.add(-1 * output_dy,
+            #                                   self.forward(dx)))) > 1e-5:
+            #     print('Something is wrong in Jacobian computation')
+            #     print(
+            #         torch.mean(
+            #             torch.abs(torch.add(-1 * output_dy, self.forward(dx)))))
 
             for k in range(2 * self.n_params):
                 Jacob[:, j, k] = torch.add(dx[:, k], -1 * x[:, k])
