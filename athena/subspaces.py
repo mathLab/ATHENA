@@ -3,8 +3,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
 plt.rcParams.update({'font.size': 16})
-plt.rc('text', usetex=True)
-
 
 class Subspaces(object):
     """Active Subspaces base class
