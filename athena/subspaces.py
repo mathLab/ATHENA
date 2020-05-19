@@ -2,6 +2,8 @@
 """
 import numpy as np
 import matplotlib.pyplot as plt
+plt.rcParams.update({'font.size': 16})
+plt.rc('text', usetex=True)
 
 
 class Subspaces(object):
@@ -205,7 +207,7 @@ class Subspaces(object):
              Default is self.dim.
         :param str filename: if specified, the plot is saved at `filename`.
         :param tuple(int,int) figsize: tuple in inches defining the figure
-            size. Default is (4 * n_evects, 8).
+            size. Default is (8, 2 * n_evects).
         :param str labels: labels for the components of the eigenvectors.
         :param str title: title of the plot.
         :raises: ValueError
@@ -220,32 +222,36 @@ class Subspaces(object):
             n_evects = self.dim
         if n_evects > self.evects.shape[0]:
             raise ValueError('Invalid number of eigenvectors to plot.')
-        if figsize is None:
-            figsize = (4 * n_evects, 8)
 
-        m = self.evects.shape[0]
+        if figsize is None:
+            figsize = (8, 2 * n_evects)
+
+        n_pars = self.evects.shape[0]
         fig, axes = plt.subplots(n_evects, 1, figsize=figsize)
         fig.suptitle(title)
-        fig.tight_layout()
+        # to ensure generality for subplots (1, 1)
+        axes = np.array(axes)
+        for i, ax in enumerate(axes.flat):
+            ax.scatter(range(1, n_pars + 1),
+                       self.evects[:n_pars + 1, i],
+                       c='blue',
+                       s=60,
+                       alpha=0.9,
+                       edgecolors='k')
+            ax.axhline(linewidth=0.7, color='black')
 
-        for i in range(n_evects):
-            axes[i].plot(range(1, m + 1),
-                         self.evects[:m + 1, i],
-                         'ko-',
-                         markersize=8,
-                         linewidth=2)
-
+            ax.set_xticks(range(1, n_pars + 1))
             if labels:
-                axes[i].set_xticks(range(1, m + 1))
-                axes[i].set_xticklabels(labels)
-                axes[i].margins(0.5)
-            else:
-                axes[i].set_xticks(range(1, m + 1))
-                axes[i].set_xlabel('Components')
+                ax.set_xticklabels(labels)
 
-            axes[i].set_ylabel('Active eigenvector {}'.format(i + 1))
-            axes[i].grid(linestyle='dotted')
-            axes[i].axis([0, 1 + m, -1, 1])
+            ax.set_ylabel('Active eigenvector {}'.format(i + 1))
+            ax.grid(linestyle='dotted')
+            ax.axis([0, n_pars + 1, -1, 1])
+
+        axes.flat[-1].set_xlabel('Eigenvector components')
+        fig.tight_layout()
+        # tight_layout does not consider suptitle so we need to adjust it manually
+        plt.subplots_adjust(top=0.94)
 
         if filename:
             plt.savefig(filename)
