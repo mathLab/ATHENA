@@ -1,6 +1,10 @@
-"""[summary]
+"""
+Module for Nonlinear Level-set Learning (NLL).
 
-[description]
+Reference:
+- Guannan Zhang, Jiaxin Zhang, Jacob Hinkle. Learning nonlinear level sets
+for dimensionality reduction in function approximation. 2019.
+arxiv: https://arxiv.org/abs/1902.10652
 """
 import torch
 import torch.nn as nn
@@ -35,6 +39,11 @@ class NonlinearLevelSet(object):
               target_loss=0.0001):
         """
         all the input parameters have to be torch
+
+        :param bool interactive: if True a plot with the loss function decay,
+            and the sufficient summary plot will be showed and updated every
+            10 epochs. Default is False.
+        :param float target_loss: Default is 0.0001.
         """
         if interactive:
             if outputs is None:
@@ -118,32 +127,72 @@ class NonlinearLevelSet(object):
             plt.ioff()
             plt.show()
 
-    def plot_sufficient_summary(self, inputs, outputs):
+    def plot_sufficient_summary(self, 
+                                inputs,
+                                outputs,
+                                filename=None,
+                                figsize=(10, 8),
+                                title=''):
         """
-        inputs torch
-        outputs numpy
-        only for 1 active dim
-        """
-        reduced_inputs = self.forward(inputs)[:, 0]
-        plt.figure()
-        plt.title('Sufficient summary plot')
-        plt.plot(reduced_inputs.detach().numpy(), outputs, 'bo')
-        plt.xlabel('Reduced input')
-        plt.xlabel('Output')
-        plt.grid(linestyle='dotted')
-        plt.show()
+        Plot the sufficient summary.
+        
+        :param torch.DoubleTensor inputs: array n_samples-by-n_params
+            containing the points in the full input space.
+        :param numpy.ndarray outputs: array n_samples-by-1 containing the
+            corresponding function evaluations.
+        :param str filename: if specified, the plot is saved at `filename`.
+        :param tuple(int,int) figsize: tuple in inches defining the figure
+            size. Defaults to (10, 8).
+        :param str title: title of the plot.
+        :raises: ValueError
 
-    def plot_loss(self):
+        .. warning::
+            Plot only available for active dimensions up to 1.
         """
+        plt.figure(figsize=figsize)
+        plt.title(title)
+
+        if self.active_dim == 1:
+            reduced_inputs = self.forward(inputs)[:, 0]
+            plt.plot(reduced_inputs.detach().numpy(), outputs, 'bo')
+            plt.xlabel('Reduced input')
+            plt.xlabel('Output')
+        else:
+            raise ValueError(
+                'Sufficient summary plots cannot be made in more than 1 ' \
+                'dimension.'
+            )
+
+        plt.grid(linestyle='dotted')
+
+        if filename:
+            plt.savefig(filename)
+        else:
+            plt.show()
+
+    def plot_loss(self,
+                  filename=None,
+                  figsize=(10, 8),
+                  title=''):
         """
-        plt.figure()
-        plt.title('Loss function decay')
+        Plot the loss function decay.
+
+        :param str filename: if specified, the plot is saved at `filename`.
+        :param tuple(int,int) figsize: tuple in inches defining the figure
+            size. Defaults to (10, 8).
+        :param str title: title of the plot.
+        """
+        plt.figure(figsize=figsize)
+        plt.title(title)
         x_range = [i for i in range(1, self.epochs + 1, 10)] + [self.epochs]
         plt.plot(x_range, self.loss_vec, 'b-')
         plt.xlabel('Epoch')
         plt.ylabel('Loss')
         plt.grid(linestyle='dotted')
-        plt.show()
+        if filename:
+            plt.savefig(filename)
+        else:
+            plt.show()
 
     def save_forward(self, outfile):
         """
@@ -203,7 +252,7 @@ class NonlinearLevelSet(object):
 class ForwardNet(nn.Module):
     """
     :cvar slice omega: a slice object indicating the active dimension to keep.
-        For example to keep the first two dimension omega=slice(2).
+        For example to keep the first two dimension `omega = slice(2).
     """
     def __init__(self, n_params, n_layers, dh, active_dim):
         super().__init__()
@@ -352,6 +401,9 @@ class BackwardNet(nn.Module):
             setattr(self, name_z, nn.Linear(self.n_params, 2 * self.n_params))
 
     def forward(self, x):
+        """
+
+        """
         y, z = torch.split(x, self.n_params, dim=1)
 
         for i in range(self.n_layers - 1, -1, -1):
