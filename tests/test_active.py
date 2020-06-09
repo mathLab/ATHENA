@@ -360,6 +360,15 @@ class TestUtils(TestCase):
         with assert_plot_figures_added():
             ss.plot_eigenvalues(figsize=(7, 7), title='Eigenvalues')
 
+    def test_plot_eigenvalues_03(self):
+        np.random.seed(42)
+        gradients = np.random.uniform(-1, 1, 200).reshape(50, 4)
+        weights = np.ones((50, 1)) / 50
+        ss = ActiveSubspaces()
+        ss.compute(gradients=gradients, weights=weights, nboot=200)
+        with assert_plot_figures_added():
+            ss.plot_eigenvalues(n_evals=3, figsize=(7, 7), title='Eigenvalues')
+
     def test_plot_eigenvectors_01(self):
         ss = ActiveSubspaces()
         with self.assertRaises(ValueError):

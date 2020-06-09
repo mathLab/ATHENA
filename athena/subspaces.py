@@ -144,10 +144,16 @@ class Subspaces(object):
         self.W1 = self.evects[:, :dim]
         self.W2 = self.evects[:, dim:]
 
-    def plot_eigenvalues(self, filename=None, figsize=(8, 8), title=''):
+    def plot_eigenvalues(self,
+                         n_evals=None,
+                         filename=None,
+                         figsize=(8, 8),
+                         title=''):
         """
         Plot the eigenvalues.
         
+        :param int n_evals: number of eigenvalues to plot. If not provided
+            all the eigenvalues will be plotted.
         :param str filename: if specified, the plot is saved at `filename`.
         :param tuple(int,int) figsize: tuple in inches defining the figure
             size. Default is (8, 8).
@@ -160,32 +166,36 @@ class Subspaces(object):
         if self.evals is None:
             raise ValueError('The eigenvalues have not been computed.'
                              'You have to perform the compute method.')
-        n_pars = self.evals.shape[0]
+        if n_evals is None:
+            n_evals = self.evals.shape[0]
+        if n_evals > self.evals.shape[0]:
+            raise ValueError('Invalid number of eigenvalues to plot.')
+
         plt.figure(figsize=figsize)
         plt.title(title)
-        plt.semilogy(range(1, n_pars + 1),
-                     self.evals,
+        plt.semilogy(range(1, n_evals + 1),
+                     self.evals[:n_evals],
                      'ko-',
                      markersize=8,
                      linewidth=2)
-        plt.xticks(range(1, n_pars + 1))
+        plt.xticks(range(1, n_evals + 1))
         plt.xlabel('Index')
         plt.ylabel('Eigenvalues')
         plt.grid(linestyle='dotted')
         if self.evals_br is None:
             plt.axis([
-                0, n_pars + 1, 0.1 * np.amin(self.evals),
-                10 * np.amax(self.evals)
+                0, n_evals + 1, 0.1 * np.amin(self.evals[:n_evals]),
+                10 * np.amax(self.evals[:n_evals])
             ])
         else:
-            plt.fill_between(range(1, n_pars + 1),
-                             self.evals_br[:, 0],
-                             self.evals_br[:, 1],
+            plt.fill_between(range(1, n_evals + 1),
+                             self.evals_br[:n_evals, 0],
+                             self.evals_br[:n_evals, 1],
                              facecolor='0.7',
                              interpolate=True)
             plt.axis([
-                0, n_pars + 1, 0.1 * np.amin(self.evals_br[:, 0]),
-                10 * np.amax(self.evals_br[:, 1])
+                0, n_evals + 1, 0.1 * np.amin(self.evals_br[:n_evals, 0]),
+                10 * np.amax(self.evals_br[:n_evals, 1])
             ])
 
         if filename:
