@@ -79,15 +79,6 @@ class ActiveSubspaces(Subspaces):
         if method == 'exact':
             if gradients is None:
                 raise ValueError('gradients argument is None.')
-            if weights is None:
-                # default weights is for Monte Carlo
-                weights = initialize_weights(gradients)
-            self.cov_matrix, self.evals, self.evects = self._build_decompose_cov_matrix(
-                gradients=gradients, weights=weights, method=method)
-            self._compute_bootstrap_ranges(gradients,
-                                           weights,
-                                           method=method,
-                                           nboot=nboot)
 
         # estimate active subspace with local linear models.
         if method == 'local':
@@ -96,24 +87,26 @@ class ActiveSubspaces(Subspaces):
             gradients = local_linear_gradients(inputs=inputs,
                                                outputs=outputs,
                                                weights=weights)
-            if weights is None:
-                # use the new gradients to compute the weights,
-                # otherwise dimension mismatch accours.
-                weights = initialize_weights(gradients)
-            self.cov_matrix, self.evals, self.evects = self._build_decompose_cov_matrix(
-                gradients=gradients, weights=weights, method=method)
-            self._compute_bootstrap_ranges(gradients,
-                                           weights,
-                                           method=method,
-                                           nboot=nboot)
+
+        if weights is None:
+            # use the new gradients to compute the weights,
+            # otherwise dimension mismatch accours.
+            weights = initialize_weights(gradients)
+
+        self.cov_matrix, self.evals, self.evects = self._build_decompose_cov_matrix(
+            gradients=gradients, weights=weights, method=method)
+        self._compute_bootstrap_ranges(gradients,
+                                       weights,
+                                       method=method,
+                                       nboot=nboot)
 
     def forward(self, inputs):
         """
         Map full variables to active and inactive variables.
-        
+
         Points in the original input space are mapped to the active and
         inactive subspace.
-        
+
         :param numpy.ndarray inputs: array n_samples-by-n_params containing
             the points in the original parameter space.
         :return: array n_samples-by-active_dim containing the mapped active
@@ -129,7 +122,7 @@ class ActiveSubspaces(Subspaces):
         """
         Map the points in the active variable space to the original parameter
         space.
-        
+
         :param numpy.ndarray reduced_inputs: n_samples-by-n_params matrix that
             contains points in the space of active variables.
         :param int n_points: the number of points in the original parameter
@@ -193,7 +186,7 @@ class ActiveSubspaces(Subspaces):
     def _rejection_sampling_inactive(self, reduced_input, n_points):
         """
         A rejection sampling method for sampling the from a polytope.
-        
+
         :param numpy.ndarray reduced_input: the value of the active variables.
         :param int n_points: the number of inactive variable samples,
         :return: n_points-by-(inactive_dim) matrix that contains values of the
@@ -227,8 +220,9 @@ class ActiveSubspaces(Subspaces):
 
     def _hit_and_run_inactive(self, reduced_input, n_points):
         """
-        A hit and run method for sampling the inactive variables from a polytope.
-        
+        A hit and run method for sampling the inactive variables from a
+        polytope.
+
         :param numpy.ndarray reduced_input: the value of the active variables.
         :param int n_points: the number of inactive variable samples,
         :return: n_points-by-(inactive_dim) matrix that contains values of the
