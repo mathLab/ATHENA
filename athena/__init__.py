@@ -1,7 +1,7 @@
 """
 Athena init
 """
-__all__ = ['active', 'nas', 'subspaces', 'utils']
+__all__ = ['active', 'kas', 'subspaces', 'utils']
 __project__ = 'ATHENA'
 __title__ = "athena"
 __author__ = "Marco Tezzele, Francesco Romor"
@@ -13,7 +13,7 @@ __maintainer__ = __author__
 __status__ = "Beta"
 
 from .active import ActiveSubspaces
-from .nas import NonlinearActiveSubspaces
+from .kas import KernelActiveSubspaces
 from .subspaces import Subspaces
 from .utils import (Normalizer, initialize_weights, linear_program_ineq,
                     local_linear_gradients, sort_eigpairs)
