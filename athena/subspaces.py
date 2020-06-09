@@ -1,4 +1,13 @@
-"""Base module for Active Subspaces and Non-linear Active Subspaces.
+"""
+Base module for Active Subspaces and Kernel-based Active Subspaces.
+
+References:
+- Paul Constantine. Active subspaces: Emerging ideas for dimension reduction in
+parameter studies, vol. 2 of SIAM Spotlights, SIAM, 2015.
+- Francesco Romor, Marco Tezzele, Andrea Lario, Gianluigi Rozza.
+Kernel-based Active Subspaces with application to CFD problems using
+Discontinuous Galerkin Method. 2020. 
+arxiv: 
 """
 import numpy as np
 import matplotlib.pyplot as plt
@@ -27,17 +36,20 @@ class Subspaces(object):
         conjunction with the subspace estimation methods to estimate the errors in 
         the eigenvalues and subspaces.
         
-        param numpy.ndarray gradients: M-by-m matrix of gradient samples.
-        param numpy.ndarray weights: M-by-1 vector of weights.
-        param int nboot: number of bootstrap samples. Default is 100.
-        return: array e_br is a m-by-2 matrix, first column contains bootstrap
+        :param numpy.ndarray gradients: n_samples-by-n_params matrix containing
+            the gradient samples oriented as rows.
+        :param numpy.ndarray weights: n_samples-by-1 weight vector, corresponds
+            to numerical quadrature rule used to estimate matrix whose
+            eigenspaces define the active subspace.
+        :param int nboot: number of bootstrap samples. Default is 100.
+        :return: array e_br is a m-by-2 matrix, first column contains bootstrap
             lower bound on eigenvalues, second column contains bootstrap upper
             bound on eigenvalues; array sub_br is a (m-1)-by-3 matrix, first
             column contains bootstrap lower bound on estimated subspace error,
             second column contains estimated mean of subspace error (a
             reasonable subspace error estimate), third column contains
             estimated upper bound on subspace error.
-        rtype: numpy.ndarray, numpy.ndarray
+        :rtype: numpy.ndarray, numpy.ndarray
         """
         n_pars = gradients.shape[1]
         e_boot = np.zeros((n_pars, nboot))
@@ -70,6 +82,12 @@ class Subspaces(object):
     
         A bootstrap replicate is a sampling-with-replacement strategy from a
         given data set. 
+
+        :param numpy.ndarray matrix: matrix from which will be sampled N rows.
+            N corresponds to the number of rows of weights.
+        :param numpy.ndarray weights: n_samples-by-1 weight vector, corresponds
+            to numerical quadrature rule used to estimate matrix whose
+            eigenspaces define the active subspace.
         """
         M = weights.shape[0]
         ind = np.random.randint(M, size=(M, ))
