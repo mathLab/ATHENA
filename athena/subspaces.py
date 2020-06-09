@@ -4,6 +4,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 plt.rcParams.update({'font.size': 16})
 
+
 class Subspaces(object):
     """Active Subspaces base class
     
@@ -28,7 +29,7 @@ class Subspaces(object):
         
         param numpy.ndarray gradients: M-by-m matrix of gradient samples.
         param numpy.ndarray weights: M-by-1 vector of weights.
-        param int nboot: number of bootstrap samples (default 100).
+        param int nboot: number of bootstrap samples. Default is 100.
         return: array e_br is a m-by-2 matrix, first column contains bootstrap
             lower bound on eigenvalues, second column contains bootstrap upper
             bound on eigenvalues; array sub_br is a (m-1)-by-3 matrix, first
@@ -85,7 +86,7 @@ class Subspaces(object):
 
     def compute(self, *args, **kwargs):
         """
-        Abstract method to compute ...
+        Abstract method to compute the active subspaces.
         Not implemented, it has to be implemented in subclasses.
         """
         raise NotImplementedError(
