@@ -49,7 +49,7 @@ install:
         conda create --yes -n test python="3.6";
       fi
     - source activate test
-    - pip install numpy matplotlib pip nose sphinx
+    - pip install numpy scipy matplotlib pip nose sphinx
     - pip install setuptools
     - pip install coveralls
     - pip install coverage
