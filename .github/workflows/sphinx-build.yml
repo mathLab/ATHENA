@@ -1,4 +1,5 @@
-name: "Deploy Documentation"
+  
+name: "Pull Request Docs Check"
 
 on: 
   push:
@@ -11,30 +12,16 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
-    - name: Setup miniconda
-      uses: goanpeca/setup-miniconda@v1
-      with:
-        auto-update-conda: true
-        python-version: 3.6
-
-    - name: Conda install dependecies
-      shell: bash -l {0}
-      run: conda install --yes -c conda-forge numpy scipy matplotlib nose setuptools coveralls python=3.6
-
-    - name: Conda info
-      shell: pwsh
-      run: conda info -a
-
     - name: Create the new documentation
       uses: ammaraskar/sphinx-action@master
       with:
-        pre-build-command: "python -m pip install pip sphinx_rtd_theme -U"
+        pre-build-command: "python -m pip install pip sphinx_rtd_theme numpy scipy matplotlib -U"
         docs-folder: "docs/"
 
     - name: Deploy
       uses: peaceiris/actions-gh-pages@v3
       with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
-        #deploy_key: ${{ secrets.DEPLOY_PRIVATE_KEY }}
+        #github_token: ${{ secrets.GITHUB_TOKEN }}
+        deploy_key: ${{ secrets.DEPLOY_PRIVATE_KEY }}
         publish_dir: ./docs/build/html
         allow_empty_commit: true
