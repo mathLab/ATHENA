@@ -2,7 +2,8 @@
 Active Subspaces module.
 
 Reference:
-- Paul Constantine. Active subspaces: Emerging ideas for dimension reduction in
+
+* Paul Constantine. Active subspaces: Emerging ideas for dimension reduction in
 parameter studies, vol. 2 of SIAM Spotlights, SIAM, 2015.
 """
 import numpy as np
@@ -183,6 +184,20 @@ class ActiveSubspaces(Subspaces):
             Z = self._hit_and_run_inactive(reduced_input, n_points)
         return Z
 
+    def _compute_A_b(self, reduced_input):
+        """
+        Compute the matrix A and the vector b to build a box around the
+        inactive subspace for uniform sampling.
+        
+        :param numpy.ndarray reduced_input: the value of the active variables.
+        :return: matrix A, and vector b.
+        :rtype: numpy.ndarray, numpy.ndarray
+        """
+        s = np.dot(self.W1, reduced_input).reshape((-1, 1))
+        A = np.vstack((self.W2, -self.W2))
+        b = np.vstack((-1 - s, -1 + s)).reshape((-1, 1))
+        return A, b
+
     def _rejection_sampling_inactive(self, reduced_input, n_points):
         """
         A rejection sampling method for sampling the from a polytope.
@@ -195,12 +210,9 @@ class ActiveSubspaces(Subspaces):
         """
         m, n = self.W1.shape
         inactive_dim = m - n
-        s = np.dot(self.W1, reduced_input).reshape((m, 1))
-
         # Build a box around z for uniform sampling
-        A = np.vstack((self.W2, -self.W2))
-        b = np.vstack((-1 - s, -1 + s)).reshape((2 * m, 1))
-        lbox, ubox = np.zeros((1, m - n)), np.zeros((1, inactive_dim))
+        A, b = self._compute_A_b(reduced_input)
+        lbox, ubox = np.zeros((1, inactive_dim)), np.zeros((1, inactive_dim))
         for i in range(inactive_dim):
             clb = np.zeros((inactive_dim, 1))
             clb[i, 0] = 1.0
@@ -246,13 +258,10 @@ class ActiveSubspaces(Subspaces):
         z0 = zc[:-1].reshape((inactive_dim, 1))
 
         # define the polytope A >= b
-        s = np.dot(self.W1, reduced_input).reshape((m, 1))
-        A = np.vstack((self.W2, -self.W2))
-        b = np.vstack((-1 - s, -1 + s)).reshape((2 * m, 1))
+        A, b = self._compute_A_b(reduced_input)
 
         # tolerance
-        ztol = 1e-6
-        eps0 = ztol / 4.0
+        eps0 = 1e-6 / 4.0
 
         Z = np.zeros((n_points, inactive_dim))
         for i in range(n_points):
