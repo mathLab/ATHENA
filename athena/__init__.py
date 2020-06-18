@@ -1,7 +1,9 @@
 """
 Athena init
 """
-__all__ = ['active', 'kas', 'projection_factory', 'subspaces', 'utils']
+__all__ = [
+    'active', 'feature_map', 'kas', 'projection_factory', 'subspaces', 'utils'
+]
 __project__ = 'ATHENA'
 __title__ = "athena"
 __author__ = "Marco Tezzele, Francesco Romor"
@@ -13,6 +15,7 @@ __maintainer__ = __author__
 __status__ = "Beta"
 
 from .active import ActiveSubspaces
+from .feature_map import (FeatureMap, hadamard, rff_map, rff_jac)
 from .kas import KernelActiveSubspaces
 from .projection_factory import ProjectionFactory
 from .subspaces import Subspaces
