@@ -101,27 +101,43 @@ class TestProjectionFactory(TestCase):
     def test_compute_fmap(self):
         np.random.seed(42)
         fm = FeatureMap(distr='laplace',
-                        bias=np.ones((3, 5)),
+                        bias=np.ones((1, 3)),
                         input_dim=2,
                         n_features=3,
                         params=[0.8, 2.3],
                         sigma_f=0.9)
-        inputs = np.random.uniform(size=(2, 5))
+        inputs = np.random.uniform(size=(5, 2))
         fmap = fm.compute_fmap(inputs=inputs)
-        true_value = np.array(
-            [[0.988002, 0.083741, -0.836717, 0.122198, 0.415287],
-             [-0.487398, -0.611538, -0.775382, -0.677656, 0.802265],
-             [1.019897, 0.891959, 0.15352, 0.709281, 0.991257]])
+        true_value = np.array([[0.70465845, 0.44404558, 0.55780791],
+                               [0.87857849, -0.95074097, 0.54437667],
+                               [0.45910944, 0.24313274, 0.89833969],
+                               [0.84035852, 1.02257209, 0.95970943],
+                               [-0.62313605, -0.58107188, 0.57497268]])
         np.testing.assert_array_almost_equal(true_value, fmap)
 
-    # def test_compute_fmap_jac(self):
-    #     np.random.seed(42)
-    #     fm = FeatureMap(distr='laplace',
-    #                     bias=np.ones((3, 5)),
-    #                     input_dim=2,
-    #                     n_features=3,
-    #                     params=[0.8, 2.3],
-    #                     sigma_f=0.9)
-    #     inputs = np.random.uniform(size=(2, 5))
-    #     fmap_jac = fm.compute_fmap_jac(inputs=inputs)
-        # TO DO: to test
+    def test_compute_fmap_jac(self):
+        np.random.seed(42)
+        fm = FeatureMap(distr='laplace',
+                        bias=np.ones((1, 3)),
+                        input_dim=2,
+                        n_features=3,
+                        params=[0.8, 2.3],
+                        sigma_f=0.9)
+        inputs = np.random.uniform(size=(5, 2))
+        fmap_jac = fm.compute_fmap_jac(inputs=inputs)
+        true_value = np.array([[[-3.53084308, 3.923392],
+                                [-2.20214773, 0.77718418],
+                                [-0.94652067, -0.93418587]],
+                               [[2.56578301, -2.85103934],
+                                [-0.9835101, 0.34710137],
+                                [-0.95558954, -0.94313656]],
+                               [[4.30961695, -4.7887477],
+                                [-2.36809012, 0.83574874],
+                                [0.56400016, 0.55665027]],
+                               [[2.82613179, -3.14033295],
+                                [-0.43435979, 0.15329469],
+                                [-0.43037806, -0.42476949]],
+                               [[3.84444395, -4.2718581],
+                                [-2.01936794, 0.71267736],
+                                [-0.93447546, -0.92229763]]])
+        np.testing.assert_array_almost_equal(true_value, fmap_jac)

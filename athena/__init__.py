@@ -15,7 +15,7 @@ __maintainer__ = __author__
 __status__ = "Beta"
 
 from .active import ActiveSubspaces
-from .feature_map import (FeatureMap, hadamard, rff_map, rff_jac)
+from .feature_map import (FeatureMap, rff_map, rff_jac)
 from .kas import KernelActiveSubspaces
 from .projection_factory import ProjectionFactory
 from .subspaces import Subspaces
