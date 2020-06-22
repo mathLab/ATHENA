@@ -10,11 +10,11 @@ arxiv:
 import numpy as np
 from .subspaces import Subspaces
 from .utils import (initialize_weights, sort_eigpairs, local_linear_gradients)
+from .feature_map import FeatureMap
 
 
 class KernelActiveSubspaces(Subspaces):
     """Kernel Active Subspaces class
-    
     """
     def __init__(self):
         super().__init__()
@@ -23,21 +23,21 @@ class KernelActiveSubspaces(Subspaces):
         self.features = None
         self.pseudo_gradients = None
 
-    def _build_decompose_cov_matrix(self,
+    @staticmethod
+    def _build_decompose_cov_matrix(gradients=None,
                                     weights=None,
                                     method=None,
                                     metric=None):
         """
         Computes the uncentered covariance matrix of the pseudo_gradients.
 
-        :param numpy.ndarray pseudo_gradients: array n_samples-by-n_features containing
-            the psuedo gradients.
         :param numpy.ndarray weights: n_samples-by-1 weight vector, corresponds to numerical
             quadrature rule used to estimate matrix whose eigenspaces define the active
             subspace.
         :param str method: the method used to compute the gradients.
-        :return: array n_features-by-n_features representing the uncentered covariance matrix;
-            array n_features containing the eigenvalues ordered decreasingly in magnitude;
+        :param numpy.ndarray metric: output_dim-byoutput-dim the matrix representing the metric
+            in the output space
+        :return: array n_features containing the eigenvalues ordered decreasingly in magnitude;
             array n_features-by-n_features the columns contain the ordered eigenvectors.
         :rtype: numpy.ndarray, numpy.ndarray, numpy.ndarray
         """
@@ -46,16 +46,15 @@ class KernelActiveSubspaces(Subspaces):
                 cov_matrix = np.array(
                     np.sum([
                         weights[i, 0] *
-                        np.dot(self.pseudo_gradients[i, :, :].T,
-                               np.dot(metric, self.pseudo_gradients[i, :, :]))
-                        for i in range(self.pseudo_gradients.shape[0])
+                        np.dot(gradients[i, :, :].T,
+                               np.dot(metric, gradients[i, :, :]))
+                        for i in range(gradients.shape[0])
                     ],
                            axis=0))
                 evals, evects = sort_eigpairs(cov_matrix)
                 return evals, evects
             else:
-                X = np.squeeze(self.pseudo_gradients *
-                               np.sqrt(weights).reshape(-1, 1, 1))
+                X = np.squeeze(gradients * np.sqrt(weights).reshape(-1, 1, 1))
                 _, singular, evects = np.linalg.svd(X, full_matrices=False)
                 evals = singular**2
                 return evals, evects.T
@@ -73,9 +72,7 @@ class KernelActiveSubspaces(Subspaces):
             inactive variables.
         :rtype: numpy.ndarray, numpy.ndarray
         """
-        features = np.array([
-            self.feature_map.fmap(inputs[i, :]) for i in range(inputs.shape[0])
-        ])
+        features = self.feature_map.compute_fmap(inputs)
         active = np.dot(features, self.W1)
         inactive = np.dot(features, self.W2)
         return active, inactive
@@ -91,7 +88,6 @@ class KernelActiveSubspaces(Subspaces):
             the points in the original parameter space.
         :param numpy.ndarray gradients: array n_samples-by-n_params containing
             the gradient samples oriented as rows.
-        :param feature_map: feature map object.
         :return: array n_samples-by-n_features containing
             the psuedo gradients; array n_samples-by-n_features containing the
             image of the inputs in the feature space.
@@ -100,7 +96,7 @@ class KernelActiveSubspaces(Subspaces):
         n_samples = inputs.shape[0]
 
         # Initialize Jacobian for each input
-        jacobian = self.feature_map.jacobian(inputs)
+        jacobian = self.feature_map.compute_fmap_jac(inputs)
 
         # Compute pseudo gradients
         pseudo_gradients = np.array([
@@ -110,7 +106,7 @@ class KernelActiveSubspaces(Subspaces):
         ])
 
         # Compute features
-        features = self.feature_map.fmap(inputs)
+        features = self.feature_map.compute_fmap(inputs)
 
         return pseudo_gradients, features
 
@@ -144,6 +140,8 @@ class KernelActiveSubspaces(Subspaces):
         :param int nboot: number of bootstrap samples.
         :param int n_features: dimension of the feature space.
         :param feature_map: feature map object.
+        :param numpy.ndarray metric: output_dim-byoutput-dim the matrix representing the metric
+            in the output space
         """
         if method == 'exact':
             if gradients is None or inputs is None:
@@ -155,7 +153,8 @@ class KernelActiveSubspaces(Subspaces):
                 raise ValueError('inputs or outputs argument is None.')
             gradients = local_linear_gradients(inputs=inputs,
                                                outputs=outputs,
-                                               weights=weights)
+                                               weights=weights).reshape(inputs.shape[0], 1, n_features)
+            print(gradients.shape)
 
         if weights is None:
             # default weights is for Monte Carlo
@@ -168,12 +167,12 @@ class KernelActiveSubspaces(Subspaces):
 
         if feature_map is None:
             # default spectral measure is Gaussian
-            self.feature_map = feature_map(distr='multivariate_normal',
-                                           bias=np.ones(1, n_features),
-                                           input_dim=inputs.shape[1],
-                                           n_features=n_features,
-                                           params=np.ones(inputs.shape[1]),
-                                           sigma_f=1)
+            self.feature_map = FeatureMap(distr='multivariate_normal',
+                                          bias=np.ones((1, n_features)),
+                                          input_dim=inputs.shape[1],
+                                          n_features=n_features,
+                                          params=np.ones(inputs.shape[1]),
+                                          sigma_f=1)
         else:
             self.feature_map = feature_map
 
@@ -181,15 +180,15 @@ class KernelActiveSubspaces(Subspaces):
             inputs, gradients)
 
         self.evals, self.evects = self._build_decompose_cov_matrix(
-            weights, method, metric)
+            self.pseudo_gradients, weights, method, metric)
 
         if nboot:
             if nboot < 50:
-                self._compute_bootstrap_ranges(self.psuedo_gradients,
-                                               weights,
+                self._compute_bootstrap_ranges(gradients=self.pseudo_gradients,
+                                               weights=weights,
                                                method=method,
                                                nboot=nboot)
             else:
                 raise ValueError(
-                    'the value of nboot is too high for bootstrap method applied to kas'
+                    'the value of nboot is too high for the bootstrap method applied to kas'
                 )

@@ -49,54 +49,63 @@ class TestUtils(TestCase):
     def test_init_cov_matrix(self):
         ss = KernelActiveSubspaces()
         self.assertIsNone(ss.cov_matrix)
-    
+
     def test_init_n_features(self):
         ss = KernelActiveSubspaces()
         self.assertIsNone(ss.n_features)
-    
+
     def test_init_feature_map(self):
         ss = KernelActiveSubspaces()
         self.assertIsNone(ss.feature_map)
-    
+
     def test_init_features(self):
         ss = KernelActiveSubspaces()
         self.assertIsNone(ss.features)
-    
+
     def test_init_pseudo_gradients(self):
         ss = KernelActiveSubspaces()
         self.assertIsNone(ss.pseudo_gradients)
 
-    # def test_compute_01(self):
-    #     ss = KernelActiveSubspaces()
-    #     with self.assertRaises(ValueError):
-    #         ss.compute()
+    def test_compute_01(self):
+        ss = KernelActiveSubspaces()
+        with self.assertRaises(ValueError):
+            ss.compute()
 
-    # def test_compute_02(self):
-    #     np.random.seed(42)
-    #     gradients = np.random.uniform(-1, 1, 60).reshape(15, 4)
-    #     weights = np.ones((15, 1)) / 15
-    #     ss = KernelActiveSubspaces()
-    #     ss.compute(gradients=gradients,
-    #                weights=weights,
-    #                method='exact',
-    #                nboot=49)
-    #     true_evals = np.array([[0.571596], [0.465819], [0.272198], [0.175012]])
-    #     np.testing.assert_array_almost_equal(true_evals, ss.evals)
+    def test_compute_02(self):
+        np.random.seed(42)
+        gradients = np.random.uniform(-1, 1, 30).reshape(15, 1, 2)
+        inputs = np.random.uniform(-1, 1, 30).reshape(15, 2)
+        weights = np.ones((15, 1)) / 15
+        ss = KernelActiveSubspaces()
+        ss.compute(inputs=inputs,
+                   gradients=gradients,
+                   weights=weights,
+                   method='exact',
+                   nboot=49,
+                   n_features=4,
+                   feature_map=None)
+        true_evals = np.array([0.42588097, 0.19198234, 0.08228976, 0.0068496])
+        np.testing.assert_array_almost_equal(true_evals, ss.evals)
 
-    # def test_compute_03(self):
-    #     np.random.seed(42)
-    #     gradients = np.random.uniform(-1, 1, 60).reshape(15, 4)
-    #     weights = np.ones((15, 1)) / 15
-    #     ss = KernelActiveSubspaces()
-    #     ss.compute(gradients=gradients,
-    #                weights=weights,
-    #                method='exact',
-    #                nboot=200)
-    #     true_evects = np.array([[0.019091, 0.408566, 0.861223, 0.301669],
-    #                             [0.767799, -0.199069, 0.268823, -0.546434],
-    #                             [0.463451, 0.758442, -0.427696, 0.164486],
-    #                             [0.441965, -0.467131, -0.055723, 0.763774]])
-    #     np.testing.assert_array_almost_equal(true_evects, ss.evects)
+    def test_compute_03(self):
+        np.random.seed(42)
+        gradients = np.random.uniform(-1, 1, 30).reshape(15, 1, 2)
+        inputs = np.random.uniform(-1, 1, 30).reshape(15, 2)
+        weights = np.ones((15, 1)) / 15
+        ss = KernelActiveSubspaces()
+        ss.compute(inputs=inputs,
+                   gradients=gradients,
+                   weights=weights,
+                   method='exact',
+                   nboot=49,
+                   n_features=4,
+                   feature_map=None)
+        true_evects = np.array(
+            [[0.74714817, 0.6155644, -0.23414206, -0.08959675],
+             [0.35380297, -0.10917583, 0.91115623, -0.18082704],
+             [-0.50287165, 0.76801638, 0.33072226, 0.21884635],
+             [-0.25241469, 0.1389674, -0.07479708, -0.95466239]])
+        np.testing.assert_array_almost_equal(true_evects, ss.evects)
 
     # def test_compute_04(self):
     #     np.random.seed(42)
@@ -110,25 +119,40 @@ class TestUtils(TestCase):
     #     true_cov_matrix = np.array([[0.295783, 0.004661, 0.057825, -0.056819],
     #                                 [0.004661, 0.427352, 0.086039, 0.160164],
     #                                 [0.057825, 0.086039, 0.445253, -0.019482],
-    #                                 [-0.056819, 0.160164, -0.019482, 0.316237]])
+    #                                 [-0.056819, 0.160164, -0.019482,
+    #                                  0.316237]])
     #     np.testing.assert_array_almost_equal(true_cov_matrix, ss.cov_matrix)
 
     # def test_compute_05(self):
     #     np.random.seed(42)
-    #     inputs = np.random.uniform(-1, 1, 60).reshape(15, 4)
-    #     outputs = np.random.uniform(0, 5, 15)
+    #     inputs = np.random.uniform(-1, 1, 30).reshape(15, 2)
+    #     outputs = np.random.uniform(0, 5, 15).reshape(15, 1)
+    #     weights = np.ones((15, 1)) / 15
     #     ss = KernelActiveSubspaces()
-    #     ss.compute(inputs=inputs, outputs=outputs, method='local', nboot=150)
+    #     ss.compute(inputs=inputs,
+    #                outputs=outputs,
+    #                weights=weights,
+    #                method='local',
+    #                nboot=49,
+    #                n_features=4,
+    #                feature_map=None)
     #     true_evals = np.array([[13.794711], [11.102377], [3.467318],
     #                            [1.116324]])
     #     np.testing.assert_array_almost_equal(true_evals, ss.evals)
 
     # def test_compute_06(self):
     #     np.random.seed(42)
-    #     inputs = np.random.uniform(-1, 1, 60).reshape(15, 4)
-    #     outputs = np.random.uniform(0, 5, 15)
+    #     inputs = np.random.uniform(-1, 1, 30).reshape(15, 2)
+    #     outputs = np.random.uniform(0, 5, 15).reshape(15, 1)
+    #     weights = np.ones((15, 1)) / 15
     #     ss = KernelActiveSubspaces()
-    #     ss.compute(inputs=inputs, outputs=outputs, method='local', nboot=200)
+    #     ss.compute(inputs=inputs,
+    #                outputs=outputs,
+    #                weights=weights,
+    #                method='local',
+    #                nboot=49,
+    #                n_features=4,
+    #                feature_map=None)
     #     true_evects = np.array([[0.164383, 0.717021, 0.237246, 0.634486],
     #                             [0.885808, 0.177628, -0.004112, -0.428691],
     #                             [-0.255722, 0.558199, -0.734083, -0.290071],
@@ -147,179 +171,84 @@ class TestUtils(TestCase):
     #                                 [2.329383, -3.273579, 2.144681, 5.052025]])
     #     np.testing.assert_array_almost_equal(true_cov_matrix, ss.cov_matrix)
 
-    # def test_forward_01(self):
-    #     np.random.seed(42)
-    #     inputs = np.random.uniform(-1, 1, 60).reshape(15, 4)
-    #     outputs = np.random.uniform(0, 5, 15)
-    #     ss = KernelActiveSubspaces()
-    #     ss.compute(inputs=inputs, outputs=outputs, method='local', nboot=250)
-    #     ss.partition(2)
-    #     active = ss.forward(np.random.uniform(-1, 1, 8).reshape(2, 4))[0]
-    #     true_active = np.array([[0.004748, 0.331107], [0.949099, 0.347534]])
-    #     np.testing.assert_array_almost_equal(true_active, active)
+    def test_forward_01(self):
+        np.random.seed(42)
+        gradients = np.random.uniform(-1, 1, 30).reshape(15, 1, 2)
+        inputs = np.random.uniform(-1, 1, 30).reshape(15, 2)
+        weights = np.ones((15, 1)) / 15
+        ss = KernelActiveSubspaces()
+        ss.compute(inputs=inputs,
+                   gradients=gradients,
+                   weights=weights,
+                   method='exact',
+                   nboot=49,
+                   n_features=4,
+                   feature_map=None)
+        ss.partition(2)
+        active = ss.forward(np.random.uniform(-1, 1, 4).reshape(2, 2))[0]
+        true_active = np.array([[1.34199032, 0.02509303],
+                                [1.55021982, -0.29461026]])
+        np.testing.assert_array_almost_equal(true_active, active)
 
-    # def test_forward_02(self):
-    #     np.random.seed(42)
-    #     inputs = np.random.uniform(-1, 1, 60).reshape(15, 4)
-    #     outputs = np.random.uniform(0, 5, 15)
-    #     ss = KernelActiveSubspaces()
-    #     ss.compute(inputs=inputs, outputs=outputs, method='local', nboot=250)
-    #     ss.partition(2)
-    #     inactive = ss.forward(np.random.uniform(-1, 1, 8).reshape(2, 4))[1]
-    #     true_inactive = np.array([[1.035742, 0.046629], [0.498504, 0.371467]])
-    #     np.testing.assert_array_almost_equal(true_inactive, inactive)
+    def test_forward_02(self):
+        np.random.seed(42)
+        gradients = np.random.uniform(-1, 1, 30).reshape(15, 1, 2)
+        inputs = np.random.uniform(-1, 1, 30).reshape(15, 2)
+        weights = np.ones((15, 1)) / 15
+        ss = KernelActiveSubspaces()
+        ss.compute(inputs=inputs,
+                   gradients=gradients,
+                   weights=weights,
+                   method='exact',
+                   nboot=49,
+                   n_features=4,
+                   feature_map=None)
+        ss.partition(2)
+        inactive = ss.forward(np.random.uniform(-1, 1, 4).reshape(2, 2))[1]
+        print(inactive)
+        true_inactive = np.array([[0.47449407, -0.51271165],
+                                  [0.27475082, -0.36433068]])
+        np.testing.assert_array_almost_equal(true_inactive, inactive)
 
-    # def test_forward_03(self):
-    #     np.random.seed(42)
-    #     inputs = np.random.uniform(-1, 1, 60).reshape(15, 4)
-    #     outputs = np.random.uniform(0, 5, 15)
-    #     ss = KernelActiveSubspaces()
-    #     ss.compute(inputs=inputs, outputs=outputs, method='local', nboot=250)
-    #     ss.partition(2)
-    #     new_inputs = np.random.uniform(-1, 1, 8).reshape(2, 4)
-    #     active, inactive = ss.forward(new_inputs)
-    #     reconstructed_inputs = active.dot(ss.W1.T) + inactive.dot(ss.W2.T)
-    #     np.testing.assert_array_almost_equal(new_inputs, reconstructed_inputs)
+    def test_partition_01(self):
+        np.random.seed(42)
+        matrix = np.random.uniform(-1, 1, 9).reshape(3, 3)
+        ss = KernelActiveSubspaces()
+        ss.evects = matrix
+        ss.partition(dim=2)
+        np.testing.assert_array_almost_equal(matrix[:, :2], ss.W1)
 
-    # def test_backward_01(self):
-    #     np.random.seed(42)
-    #     inputs = np.random.uniform(-1, 1, 60).reshape(15, 4)
-    #     outputs = np.random.uniform(0, 5, 15)
-    #     ss = KernelActiveSubspaces()
-    #     ss.compute(inputs=inputs, outputs=outputs, method='local', nboot=250)
-    #     ss.partition(1)
-    #     new_inputs = np.random.uniform(-1, 1, 8).reshape(2, 4)
-    #     active = ss.forward(new_inputs)[0]
-    #     new_inputs = ss.backward(reduced_inputs=active, n_points=5)[0]
-    #     np.testing.assert_array_almost_equal(np.kron(active, np.ones((5, 1))),
-    #                                          new_inputs.dot(ss.W1))
+    def test_partition_02(self):
+        np.random.seed(42)
+        matrix = np.random.uniform(-1, 1, 9).reshape(3, 3)
+        ss = KernelActiveSubspaces()
+        ss.evects = matrix
+        ss.partition(dim=2)
+        np.testing.assert_array_almost_equal(matrix[:, 2:], ss.W2)
 
-    # def test_backward_02(self):
-    #     np.random.seed(42)
-    #     inputs = np.random.uniform(-1, 1, 80).reshape(16, 5)
-    #     outputs = np.random.uniform(-1, 3, 16)
-    #     ss = KernelActiveSubspaces()
-    #     ss.compute(inputs=inputs, outputs=outputs, method='local', nboot=250)
-    #     ss.partition(2)
-    #     new_inputs = np.random.uniform(-1, 1, 15).reshape(3, 5)
-    #     active = ss.forward(new_inputs)[0]
-    #     new_inputs = ss.backward(reduced_inputs=active, n_points=500)[0]
-    #     np.testing.assert_array_almost_equal(np.kron(active, np.ones((500, 1))),
-    #                                          new_inputs.dot(ss.W1))
+    def test_partition_03(self):
+        np.random.seed(42)
+        matrix = np.random.uniform(-1, 1, 9).reshape(3, 3)
+        ss = KernelActiveSubspaces()
+        ss.evects = matrix
+        with self.assertRaises(TypeError):
+            ss.partition(dim=2.0)
 
-    # def test_rejection_sampling_inactive_01(self):
-    #     np.random.seed(42)
-    #     inputs = np.random.uniform(-1, 1, 60).reshape(15, 4)
-    #     outputs = np.random.uniform(0, 5, 15)
-    #     ss = KernelActiveSubspaces()
-    #     ss.compute(inputs=inputs, outputs=outputs, method='local', nboot=250)
-    #     ss.partition(1)
-    #     new_inputs = np.random.uniform(-1, 1, 8).reshape(2, 4)
-    #     active = ss.forward(new_inputs)[0]
-    #     inactive_swap = np.array([
-    #         ss._rejection_sampling_inactive(reduced_input=red_inp, n_points=1)
-    #         for red_inp in active
-    #     ])
-    #     inactive_inputs = np.swapaxes(inactive_swap, 1, 2)
-    #     new_inputs = ss._rotate_x(reduced_inputs=active,
-    #                               inactive_inputs=inactive_inputs)[0]
-    #     np.testing.assert_array_almost_equal(active, new_inputs.dot(ss.W1))
+    def test_partition_04(self):
+        np.random.seed(42)
+        matrix = np.random.uniform(-1, 1, 9).reshape(3, 3)
+        ss = KernelActiveSubspaces()
+        ss.evects = matrix
+        with self.assertRaises(ValueError):
+            ss.partition(dim=0)
 
-    # def test_rejection_sampling_inactive_02(self):
-    #     np.random.seed(42)
-    #     inputs = np.random.uniform(-1, 1, 60).reshape(15, 4)
-    #     outputs = np.random.uniform(0, 5, 15)
-    #     ss = KernelActiveSubspaces()
-    #     ss.compute(inputs=inputs, outputs=outputs, method='local', nboot=250)
-    #     ss.partition(1)
-    #     new_inputs = np.random.uniform(-1, 1, 8).reshape(2, 4)
-    #     active = ss.forward(new_inputs)[0]
-    #     inactive_swap = np.array([
-    #         ss._rejection_sampling_inactive(reduced_input=red_inp, n_points=10)
-    #         for red_inp in active
-    #     ])
-    #     inactive_inputs = np.swapaxes(inactive_swap, 1, 2)
-    #     new_inputs = ss._rotate_x(reduced_inputs=active,
-    #                               inactive_inputs=inactive_inputs)[0]
-    #     np.testing.assert_array_almost_equal(np.kron(active, np.ones((10, 1))),
-    #                                          new_inputs.dot(ss.W1))
-
-    # def test_hit_and_run_inactive_01(self):
-    #     np.random.seed(42)
-    #     inputs = np.random.uniform(-1, 1, 60).reshape(15, 4)
-    #     outputs = np.random.uniform(0, 5, 15)
-    #     ss = KernelActiveSubspaces()
-    #     ss.compute(inputs=inputs, outputs=outputs, method='local', nboot=250)
-    #     ss.partition(1)
-    #     new_inputs = np.random.uniform(-1, 1, 8).reshape(2, 4)
-    #     active = ss.forward(new_inputs)[0]
-    #     inactive_swap = np.array([
-    #         ss._hit_and_run_inactive(reduced_input=red_inp, n_points=1)
-    #         for red_inp in active
-    #     ])
-    #     inactive_inputs = np.swapaxes(inactive_swap, 1, 2)
-    #     new_inputs = ss._rotate_x(reduced_inputs=active,
-    #                               inactive_inputs=inactive_inputs)[0]
-    #     np.testing.assert_array_almost_equal(active, new_inputs.dot(ss.W1))
-
-    # def test_hit_and_run_inactive_02(self):
-    #     np.random.seed(42)
-    #     inputs = np.random.uniform(-1, 1, 60).reshape(15, 4)
-    #     outputs = np.random.uniform(0, 5, 15)
-    #     ss = KernelActiveSubspaces()
-    #     ss.compute(inputs=inputs, outputs=outputs, method='local', nboot=250)
-    #     ss.partition(1)
-    #     new_inputs = np.random.uniform(-1, 1, 8).reshape(2, 4)
-    #     active = ss.forward(new_inputs)[0]
-    #     inactive_swap = np.array([
-    #         ss._hit_and_run_inactive(reduced_input=red_inp, n_points=10)
-    #         for red_inp in active
-    #     ])
-    #     inactive_inputs = np.swapaxes(inactive_swap, 1, 2)
-    #     new_inputs = ss._rotate_x(reduced_inputs=active,
-    #                               inactive_inputs=inactive_inputs)[0]
-    #     np.testing.assert_array_almost_equal(np.kron(active, np.ones((10, 1))),
-    #                                          new_inputs.dot(ss.W1))
-
-    # def test_partition_01(self):
-    #     np.random.seed(42)
-    #     matrix = np.random.uniform(-1, 1, 9).reshape(3, 3)
-    #     ss = KernelActiveSubspaces()
-    #     ss.evects = matrix
-    #     ss.partition(dim=2)
-    #     np.testing.assert_array_almost_equal(matrix[:, :2], ss.W1)
-
-    # def test_partition_02(self):
-    #     np.random.seed(42)
-    #     matrix = np.random.uniform(-1, 1, 9).reshape(3, 3)
-    #     ss = KernelActiveSubspaces()
-    #     ss.evects = matrix
-    #     ss.partition(dim=2)
-    #     np.testing.assert_array_almost_equal(matrix[:, 2:], ss.W2)
-
-    # def test_partition_03(self):
-    #     np.random.seed(42)
-    #     matrix = np.random.uniform(-1, 1, 9).reshape(3, 3)
-    #     ss = KernelActiveSubspaces()
-    #     ss.evects = matrix
-    #     with self.assertRaises(TypeError):
-    #         ss.partition(dim=2.0)
-
-    # def test_partition_04(self):
-    #     np.random.seed(42)
-    #     matrix = np.random.uniform(-1, 1, 9).reshape(3, 3)
-    #     ss = KernelActiveSubspaces()
-    #     ss.evects = matrix
-    #     with self.assertRaises(ValueError):
-    #         ss.partition(dim=0)
-
-    # def test_partition_05(self):
-    #     np.random.seed(42)
-    #     matrix = np.random.uniform(-1, 1, 9).reshape(3, 3)
-    #     ss = KernelActiveSubspaces()
-    #     ss.evects = matrix
-    #     with self.assertRaises(ValueError):
-    #         ss.partition(dim=4)
+    def test_partition_05(self):
+        np.random.seed(42)
+        matrix = np.random.uniform(-1, 1, 9).reshape(3, 3)
+        ss = KernelActiveSubspaces()
+        ss.evects = matrix
+        with self.assertRaises(ValueError):
+            ss.partition(dim=4)
 
     # def test_bootstrap_replicate_01(self):
     #     np.random.seed(42)
@@ -362,79 +291,121 @@ class TestUtils(TestCase):
     #     true_bounds_subspace = np.array([[0.00261813, 0.58863862, 0.99998352]])
     #     np.testing.assert_array_almost_equal(true_bounds_subspace, ss.subs_br)
 
-    # def test_plot_eigenvalues_01(self):
-    #     ss = KernelActiveSubspaces()
-    #     with self.assertRaises(ValueError):
-    #         ss.plot_eigenvalues(figsize=(7, 7), title='Eigenvalues')
+    def test_plot_eigenvalues_01(self):
+        ss = KernelActiveSubspaces()
+        with self.assertRaises(ValueError):
+            ss.plot_eigenvalues(figsize=(7, 7), title='Eigenvalues')
 
-    # def test_plot_eigenvalues_02(self):
-    #     np.random.seed(42)
-    #     gradients = np.random.uniform(-1, 1, 200).reshape(50, 4)
-    #     weights = np.ones((50, 1)) / 50
-    #     ss = KernelActiveSubspaces()
-    #     ss.compute(gradients=gradients, weights=weights, nboot=200)
-    #     with assert_plot_figures_added():
-    #         ss.plot_eigenvalues(figsize=(7, 7), title='Eigenvalues')
+    def test_plot_eigenvalues_02(self):
+        np.random.seed(42)
+        gradients = np.random.uniform(-1, 1, 200).reshape(50, 1, 4)
+        inputs = np.random.uniform(-1, 1, 200).reshape(50, 4)
+        weights = np.ones((50, 1)) / 50
+        ss = KernelActiveSubspaces()
+        ss.compute(inputs=inputs,
+                   gradients=gradients,
+                   weights=weights,
+                   method='exact',
+                   nboot=49,
+                   n_features=8,
+                   feature_map=None)
+        with assert_plot_figures_added():
+            ss.plot_eigenvalues(figsize=(7, 7), title='Eigenvalues')
 
-    # def test_plot_eigenvalues_03(self):
-    #     np.random.seed(42)
-    #     gradients = np.random.uniform(-1, 1, 200).reshape(50, 4)
-    #     weights = np.ones((50, 1)) / 50
-    #     ss = KernelActiveSubspaces()
-    #     ss.compute(gradients=gradients, weights=weights, nboot=200)
-    #     with assert_plot_figures_added():
-    #         ss.plot_eigenvalues(n_evals=3, figsize=(7, 7), title='Eigenvalues')
+    def test_plot_eigenvalues_03(self):
+        np.random.seed(42)
+        gradients = np.random.uniform(-1, 1, 200).reshape(50, 1, 4)
+        inputs = np.random.uniform(-1, 1, 200).reshape(50, 4)
+        weights = np.ones((50, 1)) / 50
+        ss = KernelActiveSubspaces()
+        ss.compute(inputs=inputs,
+                   gradients=gradients,
+                   weights=weights,
+                   method='exact',
+                   nboot=49,
+                   n_features=8,
+                   feature_map=None)
+        with assert_plot_figures_added():
+            ss.plot_eigenvalues(n_evals=3, figsize=(7, 7), title='Eigenvalues')
 
-    # def test_plot_eigenvectors_01(self):
-    #     ss = KernelActiveSubspaces()
-    #     with self.assertRaises(ValueError):
-    #         ss.plot_eigenvectors(figsize=(7, 7), title='Eigenvalues')
+    def test_plot_eigenvectors_01(self):
+        ss = KernelActiveSubspaces()
+        with self.assertRaises(ValueError):
+            ss.plot_eigenvectors(figsize=(7, 7), title='Eigenvalues')
 
-    # def test_plot_eigenvectors_02(self):
-    #     np.random.seed(42)
-    #     gradients = np.random.uniform(-1, 1, 200).reshape(50, 4)
-    #     weights = np.ones((50, 1)) / 50
-    #     ss = KernelActiveSubspaces()
-    #     ss.compute(gradients=gradients, weights=weights, nboot=200)
-    #     with assert_plot_figures_added():
-    #         ss.plot_eigenvectors(n_evects=2,
-    #                              figsize=(7, 7),
-    #                              title='Eigenvectors')
+    def test_plot_eigenvectors_02(self):
+        np.random.seed(42)
+        gradients = np.random.uniform(-1, 1, 200).reshape(50, 1, 4)
+        inputs = np.random.uniform(-1, 1, 200).reshape(50, 4)
+        weights = np.ones((50, 1)) / 50
+        ss = KernelActiveSubspaces()
+        ss.compute(inputs=inputs,
+                   gradients=gradients,
+                   weights=weights,
+                   method='exact',
+                   nboot=49,
+                   n_features=8,
+                   feature_map=None)
+        with assert_plot_figures_added():
+            ss.plot_eigenvectors(n_evects=2,
+                                 figsize=(7, 7),
+                                 title='Eigenvectors')
 
-    # def test_plot_eigenvectors_03(self):
-    #     np.random.seed(42)
-    #     gradients = np.random.uniform(-1, 1, 200).reshape(50, 4)
-    #     weights = np.ones((50, 1)) / 50
-    #     ss = KernelActiveSubspaces()
-    #     ss.compute(gradients=gradients, weights=weights, nboot=200)
-    #     with assert_plot_figures_added():
-    #         ss.plot_eigenvectors(n_evects=2,
-    #                              figsize=(5, 8),
-    #                              labels=[r'$x$', r'$y$', r'$r$', r'$z$'])
+    def test_plot_eigenvectors_03(self):
+        np.random.seed(42)
+        gradients = np.random.uniform(-1, 1, 200).reshape(50, 1, 4)
+        inputs = np.random.uniform(-1, 1, 200).reshape(50, 4)
+        weights = np.ones((50, 1)) / 50
+        ss = KernelActiveSubspaces()
+        ss.compute(inputs=inputs,
+                   gradients=gradients,
+                   weights=weights,
+                   method='exact',
+                   nboot=49,
+                   n_features=8,
+                   feature_map=None)
+        with assert_plot_figures_added():
+            ss.plot_eigenvectors(n_evects=2,
+                                 figsize=(5, 8),
+                                 labels=[r'$x$', r'$y$', r'$r$', r'$z$'])
 
-    # def test_plot_sufficient_summary_01(self):
-    #     ss = KernelActiveSubspaces()
-    #     with self.assertRaises(ValueError):
-    #         ss.plot_sufficient_summary(10, 10)
+    def test_plot_sufficient_summary_01(self):
+        ss = KernelActiveSubspaces()
+        with self.assertRaises(ValueError):
+            ss.plot_sufficient_summary(10, 10)
 
-    # def test_plot_sufficient_summary_02(self):
-    #     np.random.seed(42)
-    #     gradients = np.random.uniform(-1, 1, 200).reshape(50, 4)
-    #     weights = np.ones((50, 1)) / 50
-    #     ss = KernelActiveSubspaces()
-    #     ss.compute(gradients=gradients, weights=weights, nboot=200)
-    #     ss.partition(3)
-    #     with self.assertRaises(ValueError):
-    #         ss.plot_sufficient_summary(10, 10)
+    def test_plot_sufficient_summary_02(self):
+        np.random.seed(42)
+        gradients = np.random.uniform(-1, 1, 200).reshape(50, 1, 4)
+        inputs = np.random.uniform(-1, 1, 200).reshape(50, 4)
+        weights = np.ones((50, 1)) / 50
+        ss = KernelActiveSubspaces()
+        ss.compute(inputs=inputs,
+                   gradients=gradients,
+                   weights=weights,
+                   method='exact',
+                   nboot=49,
+                   n_features=8,
+                   feature_map=None)
+        ss.partition(3)
+        with self.assertRaises(ValueError):
+            ss.plot_sufficient_summary(10, 10)
 
-    # def test_plot_sufficient_summary_03(self):
-    #     np.random.seed(42)
-    #     gradients = np.random.uniform(-1, 1, 200).reshape(50, 4)
-    #     weights = np.ones((50, 1)) / 50
-    #     ss = KernelActiveSubspaces()
-    #     ss.compute(gradients=gradients, weights=weights, nboot=200)
-    #     ss.partition(2)
-    #     with assert_plot_figures_added():
-    #         ss.plot_sufficient_summary(
-    #             np.random.uniform(-1, 1, 100).reshape(25, 4),
-    #             np.random.uniform(-1, 1, 25).reshape(-1, 1))
+    def test_plot_sufficient_summary_03(self):
+        np.random.seed(42)
+        gradients = np.random.uniform(-1, 1, 200).reshape(50, 1, 4)
+        inputs = np.random.uniform(-1, 1, 200).reshape(50, 4)
+        weights = np.ones((50, 1)) / 50
+        ss = KernelActiveSubspaces()
+        ss.compute(inputs=inputs,
+                   gradients=gradients,
+                   weights=weights,
+                   method='exact',
+                   nboot=49,
+                   n_features=8,
+                   feature_map=None)
+        ss.partition(2)
+        with assert_plot_figures_added():
+            ss.plot_sufficient_summary(
+                np.random.uniform(-1, 1, 100).reshape(25, 4),
+                np.random.uniform(-1, 1, 25).reshape(-1, 1))

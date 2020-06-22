@@ -44,13 +44,13 @@ class FeatureMap(object):
         return self.distr(self.input_dim, self.n_features, self.params)
 
     def compute_fmap(self, inputs):
-        if self._pr_matrix == None:
+        if self._pr_matrix is None:
             self._pr_matrix = self._compute_pr_matrix()
         return self.fmap(inputs, self._pr_matrix, self.bias, self.n_features,
                          self.sigma_f)
 
     def compute_fmap_jac(self, inputs):
-        if self._pr_matrix == None:
+        if self._pr_matrix is None:
             self._pr_matrix = self._compute_pr_matrix()
         return self.fmap_jac(inputs, self._pr_matrix, self.bias,
                              self.n_features, self.sigma_f)

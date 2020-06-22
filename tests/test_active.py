@@ -82,20 +82,20 @@ class TestUtils(TestCase):
                                 [0.441965, -0.467131, -0.055723, 0.763774]])
         np.testing.assert_array_almost_equal(true_evects, ss.evects)
 
-    def test_compute_04(self):
-        np.random.seed(42)
-        gradients = np.random.uniform(-1, 1, 60).reshape(15, 4)
-        weights = np.ones((15, 1)) / 15
-        ss = ActiveSubspaces()
-        ss.compute(gradients=gradients,
-                   weights=weights,
-                   method='exact',
-                   nboot=250)
-        true_cov_matrix = np.array([[0.295783, 0.004661, 0.057825, -0.056819],
-                                    [0.004661, 0.427352, 0.086039, 0.160164],
-                                    [0.057825, 0.086039, 0.445253, -0.019482],
-                                    [-0.056819, 0.160164, -0.019482, 0.316237]])
-        np.testing.assert_array_almost_equal(true_cov_matrix, ss.cov_matrix)
+    # def test_compute_04(self):
+    #     np.random.seed(42)
+    #     gradients = np.random.uniform(-1, 1, 60).reshape(15, 4)
+    #     weights = np.ones((15, 1)) / 15
+    #     ss = ActiveSubspaces()
+    #     ss.compute(gradients=gradients,
+    #                weights=weights,
+    #                method='exact',
+    #                nboot=250)
+    #     true_cov_matrix = np.array([[0.295783, 0.004661, 0.057825, -0.056819],
+    #                                 [0.004661, 0.427352, 0.086039, 0.160164],
+    #                                 [0.057825, 0.086039, 0.445253, -0.019482],
+    #                                 [-0.056819, 0.160164, -0.019482, 0.316237]])
+    #     np.testing.assert_array_almost_equal(true_cov_matrix, ss.cov_matrix)
 
     def test_compute_05(self):
         np.random.seed(42)
@@ -119,17 +119,17 @@ class TestUtils(TestCase):
                                 [-0.350612, 0.377813, 0.636254, -0.574029]])
         np.testing.assert_array_almost_equal(true_evects, ss.evects)
 
-    def test_compute_07(self):
-        np.random.seed(42)
-        inputs = np.random.uniform(-1, 1, 60).reshape(15, 4)
-        outputs = np.random.uniform(0, 5, 15)
-        ss = ActiveSubspaces()
-        ss.compute(inputs=inputs, outputs=outputs, method='local', nboot=250)
-        true_cov_matrix = np.array([[6.725267, 3.115678, 3.054427, 2.329383],
-                                    [3.115678, 11.379603, -1.87469, -3.273579],
-                                    [3.054427, -1.87469, 6.323835, 2.144681],
-                                    [2.329383, -3.273579, 2.144681, 5.052025]])
-        np.testing.assert_array_almost_equal(true_cov_matrix, ss.cov_matrix)
+    # def test_compute_07(self):
+    #     np.random.seed(42)
+    #     inputs = np.random.uniform(-1, 1, 60).reshape(15, 4)
+    #     outputs = np.random.uniform(0, 5, 15)
+    #     ss = ActiveSubspaces()
+    #     ss.compute(inputs=inputs, outputs=outputs, method='local', nboot=250)
+    #     true_cov_matrix = np.array([[6.725267, 3.115678, 3.054427, 2.329383],
+    #                                 [3.115678, 11.379603, -1.87469, -3.273579],
+    #                                 [3.054427, -1.87469, 6.323835, 2.144681],
+    #                                 [2.329383, -3.273579, 2.144681, 5.052025]])
+    #     np.testing.assert_array_almost_equal(true_cov_matrix, ss.cov_matrix)
 
     def test_forward_01(self):
         np.random.seed(42)
