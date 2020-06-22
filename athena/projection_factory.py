@@ -2,8 +2,6 @@
 Module for the factory class for projection matrices
 """
 import numpy as np
-from scipy.stats import cauchy
-
 
 class classproperty(object):
     def __init__(self, f):
@@ -33,11 +31,11 @@ class ProjectionFactory(object):
         """
         return np.random.beta(params[0], params[1], (n_features, input_dim))
 
-    def cauchy(n_features, params):
+    def cauchy(input_dim, n_features, params):
         """
         TO DOC
         """
-        return cauchy.rvs(params, size=n_features)
+        return (1/params[0])*np.random.standard_cauchy((n_features, input_dim))
 
     def dirichlet(input_dim, n_features, params):
         """
