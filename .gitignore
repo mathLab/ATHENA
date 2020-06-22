@@ -6,3 +6,5 @@
 pydmd\.egg-info/
 
 tutorials/\.ipynb_checkpoints/
+
+*.egg
