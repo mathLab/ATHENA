@@ -121,11 +121,9 @@ class KernelActiveSubspaces(Subspaces):
                 feature_map=None,
                 metric=None):
         """
-        [Description]
-        Local linear models: This approach is related to the sufficient
-        dimension reduction method known sometimes as the outer product
-        of gradient method. See the 2001 paper 'Structure adaptive approach
-        for dimension reduction' from Hristache, et al.
+        Compute the kernel based active subspaces given the inputs and the 
+        gradients of the model function wrt the input parameters, or given the input/outputs
+        couples. Only two methods are available: 'exact' and 'local'.
 
         :param numpy.ndarray inputs: array n_samples-by-n_params containing
             the points in the original parameter space.
@@ -154,7 +152,6 @@ class KernelActiveSubspaces(Subspaces):
             gradients = local_linear_gradients(inputs=inputs,
                                                outputs=outputs,
                                                weights=weights).reshape(inputs.shape[0], 1, n_features)
-            print(gradients.shape)
 
         if weights is None:
             # default weights is for Monte Carlo
@@ -183,7 +180,7 @@ class KernelActiveSubspaces(Subspaces):
             self.pseudo_gradients, weights, method, metric)
 
         if nboot:
-            if nboot < 50:
+            if nboot <= 50:
                 self._compute_bootstrap_ranges(gradients=self.pseudo_gradients,
                                                weights=weights,
                                                method=method,

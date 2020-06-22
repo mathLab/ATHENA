@@ -92,6 +92,8 @@ class Subspaces(object):
         """
         M = weights.shape[0]
         ind = np.random.randint(M, size=(M, ))
+
+        #matrix has shape 2 if the outputs are scalar and shape 3 if they are vectorial
         if len(matrix.shape)==2:
             return matrix[ind, :].copy(), weights[ind, :].copy()
         elif len(matrix.shape)==3:

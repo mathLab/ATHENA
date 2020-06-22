@@ -250,46 +250,62 @@ class TestUtils(TestCase):
         with self.assertRaises(ValueError):
             ss.partition(dim=4)
 
-    # def test_bootstrap_replicate_01(self):
-    #     np.random.seed(42)
-    #     matrix = np.random.uniform(-1, 1, 9).reshape(3, 3)
-    #     weights = np.ones((3, 1)) / 3
-    #     ss = KernelActiveSubspaces()
-    #     wei = ss._bootstrap_replicate(matrix, weights)[1]
-    #     np.testing.assert_array_almost_equal(weights, wei)
+    def test_bootstrap_replicate_01(self):
+        np.random.seed(42)
+        matrix = np.random.uniform(-1, 1, 9).reshape(3, 3)
+        weights = np.ones((3, 1)) / 3
+        ss = KernelActiveSubspaces()
+        wei = ss._bootstrap_replicate(matrix, weights)[1]
+        np.testing.assert_array_almost_equal(weights, wei)
 
-    # def test_bootstrap_replicate_02(self):
-    #     np.random.seed(42)
-    #     matrix = np.random.uniform(-1, 1, 9).reshape(3, 3)
-    #     weights = np.ones((3, 1)) / 3
-    #     ss = KernelActiveSubspaces()
-    #     mat = ss._bootstrap_replicate(matrix, weights)[0]
-    #     true_matrix = np.array([[-0.88383278, 0.73235229, 0.20223002],
-    #                             [0.19731697, -0.68796272, -0.68801096],
-    #                             [-0.25091976, 0.90142861, 0.46398788]])
-    #     np.testing.assert_array_almost_equal(true_matrix, mat)
+    def test_bootstrap_replicate_02(self):
+        np.random.seed(42)
+        matrix = np.random.uniform(-1, 1, 9).reshape(3, 3)
+        weights = np.ones((3, 1)) / 3
+        ss = KernelActiveSubspaces()
+        mat = ss._bootstrap_replicate(matrix, weights)[0]
+        true_matrix = np.array([[-0.88383278, 0.73235229, 0.20223002],
+                                [0.19731697, -0.68796272, -0.68801096],
+                                [-0.25091976, 0.90142861, 0.46398788]])
+        np.testing.assert_array_almost_equal(true_matrix, mat)
 
-    # def test_compute_bootstrap_ranges_01(self):
-    #     np.random.seed(42)
-    #     gradients = np.random.uniform(-1, 1, 60).reshape(30, 2)
-    #     weights = np.ones((30, 1)) / 30
-    #     ss = KernelActiveSubspaces()
-    #     ss.compute(gradients=gradients, weights=weights, nboot=100)
-    #     true_bounds_evals = np.array([[0.3000497, 0.59008536],
-    #                                   [0.17398718, 0.40959827]])
-    #     np.testing.assert_array_almost_equal(true_bounds_evals, ss.evals_br)
+    def test_compute_bootstrap_ranges_01(self):
+        np.random.seed(42)
+        gradients = np.random.uniform(-1, 1, 60).reshape(30, 1, 2)
+        inputs = np.random.uniform(-1, 1, 60).reshape(30, 2)
+        weights = np.ones((30, 1)) / 30
+        ss = KernelActiveSubspaces()
+        ss.compute(inputs=inputs,
+                   gradients=gradients,
+                   weights=weights,
+                   method='exact',
+                   nboot=49,
+                   n_features=4,
+                   feature_map=None)
+        true_bounds_evals = np.array([[2.59177494, 7.11443789],
+                                      [0.5456548, 1.94294036],
+                                      [0.05855044, 0.84178668],
+                                      [0.01530059, 0.187785]])
 
-    # def test_compute_bootstrap_ranges_02(self):
-    #     np.random.seed(42)
-    #     gradients = np.random.uniform(-1, 1, 60).reshape(30, 2)
-    #     weights = np.ones((30, 1)) / 30
-    #     ss = KernelActiveSubspaces()
-    #     ss.compute(gradients=gradients,
-    #                weights=weights,
-    #                method='exact',
-    #                nboot=100)
-    #     true_bounds_subspace = np.array([[0.00261813, 0.58863862, 0.99998352]])
-    #     np.testing.assert_array_almost_equal(true_bounds_subspace, ss.subs_br)
+        np.testing.assert_array_almost_equal(true_bounds_evals, ss.evals_br)
+
+    def test_compute_bootstrap_ranges_02(self):
+        np.random.seed(42)
+        gradients = np.random.uniform(-1, 1, 60).reshape(30, 1, 2)
+        inputs = np.random.uniform(-1, 1, 60).reshape(30, 2)
+        weights = np.ones((30, 1)) / 30
+        ss = KernelActiveSubspaces()
+        ss.compute(inputs=inputs,
+                   gradients=gradients,
+                   weights=weights,
+                   method='exact',
+                   nboot=49,
+                   n_features=4,
+                   feature_map=None)
+        true_bounds_subspace = np.array([[0.01734317, 0.09791063, 0.19840464],
+                                         [0.05112582, 0.43105485, 0.92323839],
+                                         [0.05890817, 0.27517302, 0.89262039]])
+        np.testing.assert_array_almost_equal(true_bounds_subspace, ss.subs_br)
 
     def test_plot_eigenvalues_01(self):
         ss = KernelActiveSubspaces()
