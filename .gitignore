@@ -8,3 +8,6 @@ pydmd\.egg-info/
 tutorials/\.ipynb_checkpoints/
 
 *.egg
+
+athena.egg-info/
+build/

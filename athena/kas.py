@@ -31,6 +31,8 @@ class KernelActiveSubspaces(Subspaces):
         """
         Computes the uncentered covariance matrix of the pseudo_gradients.
 
+        :param numpy.ndarray gradients: n_samples-by-output_dim-by-n_params matrix containing
+            the pseudo gradients corresponding to each sample.
         :param numpy.ndarray weights: n_samples-by-1 weight vector, corresponds to numerical
             quadrature rule used to estimate matrix whose eigenspaces define the active
             subspace.
@@ -80,7 +82,7 @@ class KernelActiveSubspaces(Subspaces):
     def backward(self, reduced_inputs, n_points):
         pass
 
-    def _reparametrize(self, inputs=None, gradients=None):
+    def _reparametrize(self, inputs, gradients):
         """
         Computes the pseudo-gradients solving an overdetermined linear system.
 
@@ -88,9 +90,9 @@ class KernelActiveSubspaces(Subspaces):
             the points in the original parameter space.
         :param numpy.ndarray gradients: array n_samples-by-n_params containing
             the gradient samples oriented as rows.
-        :return: array n_samples-by-n_features containing
-            the psuedo gradients; array n_samples-by-n_features containing the
-            image of the inputs in the feature space.
+        :return: array n_samples-by-output_dim-by-n_params matrix containing
+            the pseudo gradients corresponding to each sample.; array 
+            n_samples-by-n_features containing the image of the inputs in the feature space.
         :rtype: numpy.ndarray, numpy.ndarray
         """
         n_samples = inputs.shape[0]
@@ -151,8 +153,8 @@ class KernelActiveSubspaces(Subspaces):
                 raise ValueError('inputs or outputs argument is None.')
             gradients = local_linear_gradients(inputs=inputs,
                                                outputs=outputs,
-                                               weights=weights).reshape(inputs.shape[0], 1, n_features)
-
+                                               weights=weights)
+            print(gradients.shape)
         if weights is None:
             # default weights is for Monte Carlo
             weights = initialize_weights(gradients)
