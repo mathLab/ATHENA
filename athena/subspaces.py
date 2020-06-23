@@ -29,7 +29,7 @@ class Subspaces(object):
         self.dim = None
         self.cov_matrix = None
 
-    def _compute_bootstrap_ranges(self, gradients, weights, method, nboot=100):
+    def _compute_bootstrap_ranges(self, gradients, weights, method, metric=None, nboot=100):
         """Compute bootstrap ranges for eigenvalues and subspaces.
     
         An implementation of the nonparametric bootstrap that we use in 
@@ -51,15 +51,16 @@ class Subspaces(object):
             estimated upper bound on subspace error.
         :rtype: numpy.ndarray, numpy.ndarray
         """
-        n_pars = gradients.shape[1]
+        n_pars = gradients.shape[-1]
         e_boot = np.zeros((n_pars, nboot))
         sub_dist = np.zeros((n_pars - 1, nboot))
 
         for i in range(nboot):
             gradients0, weights0 = self._bootstrap_replicate(gradients, weights)
-            __, e0, W0 = self._build_decompose_cov_matrix(gradients=gradients0,
+            e0, W0 = self._build_decompose_cov_matrix(gradients=gradients0,
                                                           weights=weights0,
-                                                          method=method)
+                                                          method=method,
+                                                          metric=metric)
             e_boot[:, i] = e0.reshape((n_pars, ))
             for j in range(n_pars - 1):
                 sub_dist[j, i] = np.linalg.norm(np.dot(self.evects[:, :j + 1].T,
@@ -91,7 +92,12 @@ class Subspaces(object):
         """
         M = weights.shape[0]
         ind = np.random.randint(M, size=(M, ))
-        return matrix[ind, :].copy(), weights[ind, :].copy()
+
+        #matrix has shape 2 if the outputs are scalar and shape 3 if they are vectorial
+        if len(matrix.shape)==2:
+            return matrix[ind, :].copy(), weights[ind, :].copy()
+        elif len(matrix.shape)==3:
+            return matrix[ind, :, :].copy(), weights[ind, :].copy()
 
     @classmethod
     def _build_decompose_cov_matrix(cls, *args, **kwargs):
@@ -316,7 +322,7 @@ class Subspaces(object):
         plt.title(title)
 
         if self.dim == 1:
-            plt.scatter(inputs.dot(self.W1),
+            plt.scatter(self.forward(inputs)[0],
                         outputs,
                         c='blue',
                         s=40,
@@ -326,7 +332,7 @@ class Subspaces(object):
                        fontsize=18)
             plt.ylabel(r'$f \, (\mathbf{\mu})$', fontsize=18)
         elif self.dim == 2:
-            x = inputs.dot(self.W1)
+            x = self.forward(inputs)[0]
             plt.scatter(x[:, 0],
                         x[:, 1],
                         c=outputs.reshape(-1),

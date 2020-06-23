@@ -19,11 +19,10 @@ class ActiveSubspaces(Subspaces):
         super().__init__()
 
     @staticmethod
-    def _build_decompose_cov_matrix(inputs=None,
-                                    outputs=None,
-                                    gradients=None,
+    def _build_decompose_cov_matrix(gradients=None,
                                     weights=None,
-                                    method=None):
+                                    method=None,
+                                    metric=None):
         """
         Build and decompose the covariance matrix of the gradients.
 
@@ -47,7 +46,7 @@ class ActiveSubspaces(Subspaces):
         if method == 'exact' or method == 'local':
             cov_matrix = gradients.T.dot(gradients * weights)
             evals, evects = sort_eigpairs(cov_matrix)
-        return cov_matrix, evals, evects
+        return evals, evects
 
     def compute(self,
                 inputs=None,
@@ -94,7 +93,7 @@ class ActiveSubspaces(Subspaces):
             # otherwise dimension mismatch accours.
             weights = initialize_weights(gradients)
 
-        self.cov_matrix, self.evals, self.evects = self._build_decompose_cov_matrix(
+        self.evals, self.evects = self._build_decompose_cov_matrix(
             gradients=gradients, weights=weights, method=method)
         self._compute_bootstrap_ranges(gradients,
                                        weights,
