@@ -220,7 +220,7 @@ class ActiveSubspaces(Subspaces):
             cub[i, 0] = -1.0
             ubox[0, i] = linear_program_ineq(cub, A, b)[i, 0]
         bn = Normalizer(lbox, ubox)
-        Zbox = bn.unnormalize(
+        Zbox = bn.inverse_transform(
             np.random.uniform(-1.0, 1.0, size=(50 * n_points, inactive_dim)))
         ind = np.all(np.dot(A, Zbox.T) >= b, axis=0)
 

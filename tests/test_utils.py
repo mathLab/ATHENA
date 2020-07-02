@@ -13,22 +13,22 @@ class TestUtils(TestCase):
         normalizer = Normalizer(np.arange(5), np.arange(2, 7))
         np.testing.assert_array_equal(normalizer.ub, np.arange(2, 7))
 
-    def test_normalizer_normalize(self):
+    def test_normalizer_fit_transform(self):
         np.random.seed(42)
         normalizer = Normalizer(-2 * np.ones(3), 4 * np.ones(3))
         inputs = np.random.uniform(-2, 4, 12).reshape(4, 3)
-        ref_inputs = normalizer.normalize(inputs)
+        ref_inputs = normalizer.fit_transform(inputs)
         true_norm = np.array([[-0.25091976, 0.90142861, 0.46398788],
                               [0.19731697, -0.68796272, -0.68801096],
                               [-0.88383278, 0.73235229, 0.20223002],
                               [0.41614516, -0.95883101, 0.9398197]])
         np.testing.assert_array_almost_equal(true_norm, ref_inputs)
 
-    def test_normalizer_unnormalize(self):
+    def test_normalizer_inverse_transform(self):
         np.random.seed(42)
         normalizer = Normalizer(-2 * np.ones(3), 4 * np.ones(3))
         ref_inputs = np.array([-1, 0, 1])
-        inputs = normalizer.unnormalize(ref_inputs)
+        inputs = normalizer.inverse_transform(ref_inputs)
         true_unnorm = np.array([-2, 1, 4])
         np.testing.assert_array_equal(true_unnorm, inputs)
 
