@@ -16,7 +16,7 @@ class Normalizer(object):
         self.lb = lb
         self.ub = ub
 
-    def normalize(self, inputs):
+    def fit_transform(self, inputs):
         """Return corresponding points shifted and scaled to [-1, 1]^n_params.
 
         :param numpy.ndarray inputs: contains all input points to normalize.
@@ -29,7 +29,7 @@ class Normalizer(object):
         inputs_norm = 2.0 * (inputs - self.lb) / (self.ub - self.lb) - 1.0
         return inputs_norm
 
-    def unnormalize(self, inputs):
+    def inverse_transform(self, inputs):
         """Return corresponding points shifted and scaled to
         `[self.lb, self.ub]`.
         
