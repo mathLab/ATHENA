@@ -2,6 +2,7 @@
 Module for the feature map class.
 """
 import numpy as np
+from scipy.optimize import dual_annealing
 from .projection_factory import ProjectionFactory
 
 
@@ -55,6 +56,31 @@ class FeatureMap(object):
         return self.fmap_jac(inputs, self._pr_matrix, self.bias,
                              self.n_features, self.sigma_f)
 
+    def tune_pr_matrix(self, func, bounds, maxiter=30):
+        """
+        Dual Annealing optimization to tune the parameters of the projection
+        matrix.
+        A traditional Generalized Simulated Annealing will be performed with no
+        local search strategy applied.
+
+        :param callable func: the objective function to be minimized.
+            Must be in the form f(x, *args), where x is the argument in the
+            form of a 1-D array and args is a tuple of any additional fixed
+            parameters needed to completely specify the function.
+        :param sequence bounds: shape (n, 2). Bounds for variables.
+            (min, max) pairs for each element in x, defining bounds for the
+            objective function parameter.
+        :param int maxiter: the maximum number of global search iterations.
+            Default value is 30.
+        :return: the optimization result represented as a OptimizeResult
+            object. Important attributes are: `x` the solution array, `fun`
+            the value of the function at the solution, and `message` which
+            describes the cause of the termination.
+        :rtype: scipy.OptimizeResult
+        """
+        opt_res = dual_annealing(func=func, bounds=bounds, maxiter=maxiter, no_local_search=True)
+        self.params = opt_res.x
+        self._pr_matrix = self._compute_pr_matrix()
 
 def rff_map(inputs, pr_matrix, bias, n_features, sigma_f):
     """
