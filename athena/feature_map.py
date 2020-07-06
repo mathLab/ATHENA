@@ -81,7 +81,7 @@ class FeatureMap(object):
             strategy applied.
         :param int maxiter: the maximum number of global search iterations.
             Default value is 50.
-        :raises ValueError
+        :raises: ValueError
         """
         if method is None:
             if len(self.params) < 4:

@@ -74,7 +74,7 @@ class ActiveSubspaces(Subspaces):
             of gradient method. See the 2001 paper 'Structure adaptive approach
             for dimension reduction' from Hristache, et al.
         :param int nboot: number of bootstrap samples. Default is 100.
-        :raises ValueError
+        :raises: ValueError
         """
         if method == 'exact':
             if gradients is None:

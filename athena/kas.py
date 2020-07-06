@@ -142,6 +142,7 @@ class KernelActiveSubspaces(Subspaces):
         :param feature_map: feature map object.
         :param numpy.ndarray metric: output_dim-byoutput-dim the matrix representing the metric
             in the output space
+        :raises: ValueError
         """
         if method == 'exact':
             if gradients is None or inputs is None:

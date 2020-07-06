@@ -8,5 +8,7 @@ Code Documentation
 
    subspaces
    active
-   nas
+   feature_map
+   kas
+   projection_factory
    utils
