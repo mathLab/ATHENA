@@ -6,6 +6,8 @@ import numpy as np
 class classproperty(object):
     def __init__(self, f):
         self.f = f
+        self.__doc__ = f.__doc__
+        self.__name__ = f.__name__
 
     def __get__(self, obj, owner):
         return self.f(owner)
@@ -19,8 +21,8 @@ class ProjectionFactory(object):
 
         >>> from athena import ProjectionFactory
         >>> import numpy as np
-        >>> input_dim = 5
-        >>> n_features = 100
+        >>> input_dim = 2
+        >>> n_features = 40
         >>> params = [1.1, 2.9]
         >>> for pname in ProjectionFactory.projections:
         >>>     y = ProjectionFactory(pname)(input_dim, n_features, params)
@@ -100,5 +102,8 @@ class ProjectionFactory(object):
     def projections(self):
         """
         The available projection matrices.
+
+        :return: the list of all the available projection matrices.
+        :rtype: list
         """
         return list(self.__projections.keys())
