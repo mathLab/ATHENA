@@ -88,12 +88,18 @@ You can find useful tutorials on how to use the package in the [tutorials](tutor
 
 ## References
 To implement the numerical methods present in this package we followed these works:
+
 * Constantine. *Active subspaces: Emerging ideas for dimension reduction in parameter studies*. Volume 2 SIAM Spotlights, 2015. [[DOI](https://doi.org/10.1137/1.9781611973860)].
 * Constantine et al. Python Active-subspaces Utility Library, Journal of Open Source Software, 1(5), 79, 2016. [[DOI](https://doi.org/10.21105/joss.00079)].
 
 
 ### Recent works with ATHENA
 Here there is a list of the scientific works involving **ATHENA** you can consult and/or cite. If you want to add one, please open a PR.
+
+* Demo, Tezzele, Rozza. *A supervised learning approach involving active subspaces for an efficient genetic algorithm in high-dimensional optimization problems*. 2020. [[arXiv](https://arxiv.org/abs/2006.07282)].
+
+* Tezzele, Demo, Stabile, Mola, Rozza. *Enhancing CFD predictions in shape design problems by model and parameter space reduction*. 2020. [[arXiv](https://arxiv.org/abs/2001.05237)].
+
 
 ## Authors and contributors
 **ATHENA** is currently developed and mantained at [SISSA mathLab](http://mathlab.sissa.it/) by
