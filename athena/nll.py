@@ -44,6 +44,7 @@ class NonlinearLevelSet(object):
             and the sufficient summary plot will be showed and updated every
             10 epochs. Default is False.
         :param float target_loss: Default is 0.0001.
+        :raises: ValueError
         """
         if interactive:
             if outputs is None:
@@ -207,7 +208,7 @@ class NonlinearLevelSet(object):
         """
         torch.save(self.forward.state_dict(), outfile)
 
-    def load_forward(self, infile, n_params, n_layers, dh, active_dim):
+    def load_forward(self, infile, n_params):
         """
         Load the forward map for inference.
 
@@ -217,7 +218,7 @@ class NonlinearLevelSet(object):
             A common PyTorch convention is to save models using either a .pt or
             .pth file extension.
         """
-        self.forward = ForwardNet(n_params, n_layers, dh, active_dim)
+        self.forward = ForwardNet(n_params, self.n_layers, self.dh, self.active_dim)
         self.forward.load_state_dict(torch.load(infile))
         self.forward.eval()
 
@@ -234,7 +235,7 @@ class NonlinearLevelSet(object):
         """
         torch.save(self.backward.state_dict(), outfile)
 
-    def load_backward(self, infile, n_params, n_layers, dh):
+    def load_backward(self, infile, n_params):
         """
         Load the backward map for inference.
 
@@ -244,7 +245,7 @@ class NonlinearLevelSet(object):
             A common PyTorch convention is to save models using either a .pt or
             .pth file extension.
         """
-        self.backward = BackwardNet(n_params, n_layers, dh)
+        self.backward = BackwardNet(n_params, self.n_layers, self.dh)
         self.backward.load_state_dict(torch.load(infile))
         self.backward.eval()
 
@@ -268,6 +269,9 @@ class ForwardNet(nn.Module):
             setattr(self, name_z, nn.Linear(self.n_params, 2 * self.n_params))
 
     def forward(self, x):
+        """
+        TO DOC
+        """
         bb = torch.split(x, self.n_params, dim=1)
         vars()['var0_y'] = torch.clone(bb[0])
         vars()['var0_z'] = torch.clone(bb[1])
@@ -297,6 +301,9 @@ class ForwardNet(nn.Module):
         return torch.cat((vars()[var_y1], vars()[var_z1]), 1)
 
     def customized_loss(self, x, output, gradients):
+        """
+        TO DOC
+        """
         # Define the weights and bias of the inverse network
         for i in range(self.n_layers):
             name_y = 'fc{}_y'.format(i + 1)
@@ -383,11 +390,15 @@ class ForwardNet(nn.Module):
         for k in range(x.shape[0]):
             eee = torch.svd(JJJ[k, :, :])[1]
             J_det[k] = torch.prod(eee)
-        loss6 = torch.prod(J_det - 1.0)
-        return loss2 + loss6
+        loss3 = torch.prod(J_det - 1.0)
+        return loss2 + loss3
 
 
 class BackwardNet(nn.Module):
+    """Backward Net class
+    
+    [description]
+    """
     def __init__(self, n_params, n_layers, dh):
         super().__init__()
         self.n_params = n_params // 2
@@ -402,7 +413,7 @@ class BackwardNet(nn.Module):
 
     def forward(self, x):
         """
-
+        TO DOC
         """
         y, z = torch.split(x, self.n_params, dim=1)
 
