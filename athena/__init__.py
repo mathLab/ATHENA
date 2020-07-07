@@ -14,7 +14,6 @@ __mail__ = 'marcotez@gmail.com, francesco.romor@gmail.com'
 __maintainer__ = __author__
 __status__ = "Beta"
 
-
 from .active import ActiveSubspaces
 from .feature_map import (FeatureMap, rff_map, rff_jac)
 from .kas import KernelActiveSubspaces
