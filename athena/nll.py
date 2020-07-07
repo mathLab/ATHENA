@@ -2,9 +2,9 @@
 Module for Nonlinear Level-set Learning (NLL).
 
 Reference:
-- Guannan Zhang, Jiaxin Zhang, Jacob Hinkle. Learning nonlinear level sets
-for dimensionality reduction in function approximation. 2019.
-arxiv: https://arxiv.org/abs/1902.10652
+- Guannan Zhang, Jiaxin Zhang, Jacob Hinkle. 
+Learning nonlinear level sets for dimensionality reduction in function
+approximation. NeurIPS 2019, 13199-13208. https://arxiv.org/abs/1902.10652
 """
 import torch
 import torch.nn as nn
