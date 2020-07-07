@@ -166,7 +166,7 @@ class ActiveSubspaces(Subspaces):
             The trick here is to sample the inactive variables z so that
             -1 <= W1*y + W2*z <= 1,
             where y is the given value of the active variables. In other words,
-            we need to sample z such that it respects the linear equalities
+            we need to sample z such that it respects the linear inequalities
             W2*z <= 1 - W1*y, -W2*z <= 1 + W1*y.
             These inequalities define a polytope in R^(inactive_dim). We want to
             sample N points uniformly from the polytope.

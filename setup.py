@@ -28,6 +28,7 @@ setup(name='athena',
             'numpy',
             'scipy',
             'matplotlib',
+            'torch',
             'Sphinx>=1.4',
             'sphinx_rtd_theme',
             'yapf'
