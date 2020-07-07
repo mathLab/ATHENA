@@ -128,7 +128,7 @@ class NonlinearLevelSet(object):
             plt.ioff()
             plt.show()
 
-    def plot_sufficient_summary(self, 
+    def plot_sufficient_summary(self,
                                 inputs,
                                 outputs,
                                 filename=None,
@@ -171,10 +171,7 @@ class NonlinearLevelSet(object):
         else:
             plt.show()
 
-    def plot_loss(self,
-                  filename=None,
-                  figsize=(10, 8),
-                  title=''):
+    def plot_loss(self, filename=None, figsize=(10, 8), title=''):
         """
         Plot the loss function decay.
 
@@ -218,7 +215,8 @@ class NonlinearLevelSet(object):
             A common PyTorch convention is to save models using either a .pt or
             .pth file extension.
         """
-        self.forward = ForwardNet(n_params, self.n_layers, self.dh, self.active_dim)
+        self.forward = ForwardNet(n_params, self.n_layers, self.dh,
+                                  self.active_dim)
         self.forward.load_state_dict(torch.load(infile))
         self.forward.eval()
 

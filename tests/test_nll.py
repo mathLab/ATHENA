@@ -6,6 +6,7 @@ import os
 from contextlib import contextmanager
 import matplotlib.pyplot as plt
 
+
 @contextmanager
 def assert_plot_figures_added():
     """
@@ -37,37 +38,70 @@ inputs, lift, grad_lift = read_data()
 inputs_torch = torch.as_tensor(inputs, dtype=torch.double)
 grad_torch = torch.as_tensor(grad_lift, dtype=torch.double)
 
+
 class TestNonlinearLevelSet(TestCase):
     def test_init_n_layers(self):
-        nll = NonlinearLevelSet(n_layers=2, active_dim=1, lr=0.1, epochs=100, dh=0.25)
+        nll = NonlinearLevelSet(n_layers=2,
+                                active_dim=1,
+                                lr=0.1,
+                                epochs=100,
+                                dh=0.25)
         self.assertEqual(nll.n_layers, 2)
 
     def test_init_active_dim(self):
-        nll = NonlinearLevelSet(n_layers=2, active_dim=1, lr=0.1, epochs=100, dh=0.25)
+        nll = NonlinearLevelSet(n_layers=2,
+                                active_dim=1,
+                                lr=0.1,
+                                epochs=100,
+                                dh=0.25)
         self.assertEqual(nll.active_dim, 1)
 
     def test_init_lr(self):
-        nll = NonlinearLevelSet(n_layers=2, active_dim=1, lr=0.1, epochs=100, dh=0.25)
+        nll = NonlinearLevelSet(n_layers=2,
+                                active_dim=1,
+                                lr=0.1,
+                                epochs=100,
+                                dh=0.25)
         self.assertEqual(nll.lr, 0.1)
 
     def test_init_epochs(self):
-        nll = NonlinearLevelSet(n_layers=2, active_dim=1, lr=0.1, epochs=100, dh=0.25)
+        nll = NonlinearLevelSet(n_layers=2,
+                                active_dim=1,
+                                lr=0.1,
+                                epochs=100,
+                                dh=0.25)
         self.assertEqual(nll.epochs, 100)
 
     def test_init_dh(self):
-        nll = NonlinearLevelSet(n_layers=2, active_dim=1, lr=0.1, epochs=100, dh=0.25)
+        nll = NonlinearLevelSet(n_layers=2,
+                                active_dim=1,
+                                lr=0.1,
+                                epochs=100,
+                                dh=0.25)
         self.assertEqual(nll.dh, 0.25)
 
     def test_init_forward(self):
-        nll = NonlinearLevelSet(n_layers=2, active_dim=1, lr=0.1, epochs=100, dh=0.25)
+        nll = NonlinearLevelSet(n_layers=2,
+                                active_dim=1,
+                                lr=0.1,
+                                epochs=100,
+                                dh=0.25)
         self.assertIsNone(nll.forward)
 
     def test_init_backward(self):
-        nll = NonlinearLevelSet(n_layers=2, active_dim=1, lr=0.1, epochs=100, dh=0.25)
+        nll = NonlinearLevelSet(n_layers=2,
+                                active_dim=1,
+                                lr=0.1,
+                                epochs=100,
+                                dh=0.25)
         self.assertIsNone(nll.backward)
 
     def test_init_loss_vec(self):
-        nll = NonlinearLevelSet(n_layers=2, active_dim=1, lr=0.1, epochs=100, dh=0.25)
+        nll = NonlinearLevelSet(n_layers=2,
+                                active_dim=1,
+                                lr=0.1,
+                                epochs=100,
+                                dh=0.25)
         self.assertEqual(nll.loss_vec, [])
 
     def test_train_01(self):
@@ -88,12 +122,17 @@ class TestNonlinearLevelSet(TestCase):
     def test_train_04(self):
         nll = NonlinearLevelSet(n_layers=2, active_dim=1, lr=0.02, epochs=1)
         with self.assertRaises(ValueError):
-            nll.train(inputs=inputs_torch, gradients=grad_torch, interactive=True)
+            nll.train(inputs=inputs_torch,
+                      gradients=grad_torch,
+                      interactive=True)
 
     def test_train_05(self):
         nll = NonlinearLevelSet(n_layers=2, active_dim=1, lr=0.02, epochs=1)
         with assert_plot_figures_added():
-            nll.train(inputs=inputs_torch, gradients=grad_torch, outputs=lift, interactive=True)
+            nll.train(inputs=inputs_torch,
+                      gradients=grad_torch,
+                      outputs=lift,
+                      interactive=True)
 
     def test_forward_n_params(self):
         nll = NonlinearLevelSet(n_layers=2, active_dim=1, lr=0.02, epochs=1)
@@ -104,7 +143,7 @@ class TestNonlinearLevelSet(TestCase):
         nll = NonlinearLevelSet(n_layers=2, active_dim=1, lr=0.02, epochs=1)
         nll.train(inputs=inputs_torch, gradients=grad_torch, interactive=False)
         self.assertEqual(nll.backward.n_params, 9)
-    
+
     def test_plot_sufficient_summary_01(self):
         nll = NonlinearLevelSet(n_layers=2, active_dim=1, lr=0.02, epochs=1)
         nll.train(inputs=inputs_torch, gradients=grad_torch, interactive=False)
@@ -115,7 +154,7 @@ class TestNonlinearLevelSet(TestCase):
         nll = NonlinearLevelSet(n_layers=2, active_dim=2, lr=0.02, epochs=1)
         nll.train(inputs=inputs_torch, gradients=grad_torch, interactive=False)
         with self.assertRaises(ValueError):
-            nll.plot_sufficient_summary(inputs=inputs_torch, outputs=lift) 
+            nll.plot_sufficient_summary(inputs=inputs_torch, outputs=lift)
 
     def test_plot_loss(self):
         nll = NonlinearLevelSet(n_layers=2, active_dim=1, lr=0.02, epochs=2)
