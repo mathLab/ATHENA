@@ -11,3 +11,5 @@ tutorials/\.ipynb_checkpoints/
 
 athena.egg-info/
 build/
+
+*.json
