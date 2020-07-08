@@ -1,0 +1,465 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Nonlinear Level Set Learning &mdash; ATHENA 0.0.2 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/graphviz.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="athena.nll.NonlinearLevelSet.load_backward" href="_summaries/athena.nll.NonlinearLevelSet.load_backward.html" />
+    <link rel="prev" title="athena.kas.KernelActiveSubspaces.plot_sufficient_summary" href="_summaries/athena.kas.KernelActiveSubspaces.plot_sufficient_summary.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home" alt="Documentation Home"> ATHENA
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.0.2
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="code.html">Code Documentation</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="subspaces.html">Subspaces</a></li>
+<li class="toctree-l2"><a class="reference internal" href="active.html">Active Subspaces</a></li>
+<li class="toctree-l2"><a class="reference internal" href="feature_map.html">Feature Map</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kas.html">Kernel Active Subspaces</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Nonlinear Level Set Learning</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="_summaries/athena.nll.NonlinearLevelSet.load_backward.html">athena.nll.NonlinearLevelSet.load_backward</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_summaries/athena.nll.NonlinearLevelSet.load_forward.html">athena.nll.NonlinearLevelSet.load_forward</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_summaries/athena.nll.NonlinearLevelSet.plot_loss.html">athena.nll.NonlinearLevelSet.plot_loss</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_summaries/athena.nll.NonlinearLevelSet.plot_sufficient_summary.html">athena.nll.NonlinearLevelSet.plot_sufficient_summary</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_summaries/athena.nll.NonlinearLevelSet.save_backward.html">athena.nll.NonlinearLevelSet.save_backward</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_summaries/athena.nll.NonlinearLevelSet.save_forward.html">athena.nll.NonlinearLevelSet.save_forward</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_summaries/athena.nll.NonlinearLevelSet.train.html">athena.nll.NonlinearLevelSet.train</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_summaries/athena.nll.ForwardNet.customized_loss.html">athena.nll.ForwardNet.customized_loss</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_summaries/athena.nll.ForwardNet.forward.html">athena.nll.ForwardNet.forward</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_summaries/athena.nll.BackwardNet.forward.html">athena.nll.BackwardNet.forward</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="projection_factory.html">Projection Matrix Factory</a></li>
+<li class="toctree-l2"><a class="reference internal" href="utils.html">Utilities</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="contact.html">Contact</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">How to contribute</a></li>
+<li class="toctree-l1"><a class="reference internal" href="LICENSE.html">License</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">ATHENA</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="code.html">Code Documentation</a> &raquo;</li>
+        
+      <li>Nonlinear Level Set Learning</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/nll.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="module-athena.nll">
+<span id="nonlinear-level-set-learning"></span><h1>Nonlinear Level Set Learning<a class="headerlink" href="#module-athena.nll" title="Permalink to this headline">¶</a></h1>
+<p>Module for Nonlinear Level-set Learning (NLL).</p>
+<p>Reference:
+- Guannan Zhang, Jiaxin Zhang, Jacob Hinkle. 
+Learning nonlinear level sets for dimensionality reduction in function
+approximation. NeurIPS 2019, 13199-13208. <a class="reference external" href="https://arxiv.org/abs/1902.10652">https://arxiv.org/abs/1902.10652</a></p>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="_summaries/athena.nll.NonlinearLevelSet.load_backward.html#athena.nll.NonlinearLevelSet.load_backward" title="athena.nll.NonlinearLevelSet.load_backward"><code class="xref py py-obj docutils literal notranslate"><span class="pre">NonlinearLevelSet.load_backward</span></code></a></p></td>
+<td><p>Load the backward map for inference.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="_summaries/athena.nll.NonlinearLevelSet.load_forward.html#athena.nll.NonlinearLevelSet.load_forward" title="athena.nll.NonlinearLevelSet.load_forward"><code class="xref py py-obj docutils literal notranslate"><span class="pre">NonlinearLevelSet.load_forward</span></code></a></p></td>
+<td><p>Load the forward map for inference.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="_summaries/athena.nll.NonlinearLevelSet.plot_loss.html#athena.nll.NonlinearLevelSet.plot_loss" title="athena.nll.NonlinearLevelSet.plot_loss"><code class="xref py py-obj docutils literal notranslate"><span class="pre">NonlinearLevelSet.plot_loss</span></code></a></p></td>
+<td><p>Plot the loss function decay.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="_summaries/athena.nll.NonlinearLevelSet.plot_sufficient_summary.html#athena.nll.NonlinearLevelSet.plot_sufficient_summary" title="athena.nll.NonlinearLevelSet.plot_sufficient_summary"><code class="xref py py-obj docutils literal notranslate"><span class="pre">NonlinearLevelSet.plot_sufficient_summary</span></code></a></p></td>
+<td><p>Plot the sufficient summary.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="_summaries/athena.nll.NonlinearLevelSet.save_backward.html#athena.nll.NonlinearLevelSet.save_backward" title="athena.nll.NonlinearLevelSet.save_backward"><code class="xref py py-obj docutils literal notranslate"><span class="pre">NonlinearLevelSet.save_backward</span></code></a></p></td>
+<td><p>Save the backward map for future inference.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="_summaries/athena.nll.NonlinearLevelSet.save_forward.html#athena.nll.NonlinearLevelSet.save_forward" title="athena.nll.NonlinearLevelSet.save_forward"><code class="xref py py-obj docutils literal notranslate"><span class="pre">NonlinearLevelSet.save_forward</span></code></a></p></td>
+<td><p>Save the forward map for future inference.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="_summaries/athena.nll.NonlinearLevelSet.train.html#athena.nll.NonlinearLevelSet.train" title="athena.nll.NonlinearLevelSet.train"><code class="xref py py-obj docutils literal notranslate"><span class="pre">NonlinearLevelSet.train</span></code></a></p></td>
+<td><p>all the input parameters have to be torch</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="_summaries/athena.nll.ForwardNet.customized_loss.html#athena.nll.ForwardNet.customized_loss" title="athena.nll.ForwardNet.customized_loss"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ForwardNet.customized_loss</span></code></a></p></td>
+<td><p>TO DOC</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="_summaries/athena.nll.ForwardNet.forward.html#athena.nll.ForwardNet.forward" title="athena.nll.ForwardNet.forward"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ForwardNet.forward</span></code></a></p></td>
+<td><p>TO DOC</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="_summaries/athena.nll.BackwardNet.forward.html#athena.nll.BackwardNet.forward" title="athena.nll.BackwardNet.forward"><code class="xref py py-obj docutils literal notranslate"><span class="pre">BackwardNet.forward</span></code></a></p></td>
+<td><p>TO DOC</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="class">
+<dt>
+<em class="property">class </em><code class="sig-name descname">NonlinearLevelSet</code><span class="sig-paren">(</span><em class="sig-param">n_layers</em>, <em class="sig-param">active_dim</em>, <em class="sig-param">lr</em>, <em class="sig-param">epochs</em>, <em class="sig-param">dh=0.25</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/athena/nll.html#NonlinearLevelSet"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>Nonlinear Level Set class</p>
+<p>[description]</p>
+<dl class="method">
+<dt>
+<code class="sig-name descname">load_backward</code><span class="sig-paren">(</span><em class="sig-param">infile</em>, <em class="sig-param">n_params</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/athena/nll.html#NonlinearLevelSet.load_backward"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Load the backward map for inference.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>infile</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – filename of the saved net to load. See notes below.</p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>A common PyTorch convention is to save models using either a .pt or
+.pth file extension.</p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<code class="sig-name descname">load_forward</code><span class="sig-paren">(</span><em class="sig-param">infile</em>, <em class="sig-param">n_params</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/athena/nll.html#NonlinearLevelSet.load_forward"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Load the forward map for inference.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>infile</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – filename of the saved net to load. See notes below.</p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>A common PyTorch convention is to save models using either a .pt or
+.pth file extension.</p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<code class="sig-name descname">plot_loss</code><span class="sig-paren">(</span><em class="sig-param">filename=None</em>, <em class="sig-param">figsize=(10</em>, <em class="sig-param">8)</em>, <em class="sig-param">title=''</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/athena/nll.html#NonlinearLevelSet.plot_loss"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Plot the loss function decay.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – if specified, the plot is saved at <cite>filename</cite>.</p></li>
+<li><p><strong>figsize</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.8)"><em>tuple</em></a><em>(</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a><em>,</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a><em>)</em>) – tuple in inches defining the figure
+size. Defaults to (10, 8).</p></li>
+<li><p><strong>title</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – title of the plot.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<code class="sig-name descname">plot_sufficient_summary</code><span class="sig-paren">(</span><em class="sig-param">inputs</em>, <em class="sig-param">outputs</em>, <em class="sig-param">filename=None</em>, <em class="sig-param">figsize=(10</em>, <em class="sig-param">8)</em>, <em class="sig-param">title=''</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/athena/nll.html#NonlinearLevelSet.plot_sufficient_summary"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Plot the sufficient summary.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>inputs</strong> (<em>torch.DoubleTensor</em>) – array n_samples-by-n_params
+containing the points in the full input space.</p></li>
+<li><p><strong>outputs</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><em>numpy.ndarray</em></a>) – array n_samples-by-1 containing the
+corresponding function evaluations.</p></li>
+<li><p><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – if specified, the plot is saved at <cite>filename</cite>.</p></li>
+<li><p><strong>figsize</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.8)"><em>tuple</em></a><em>(</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a><em>,</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a><em>)</em>) – tuple in inches defining the figure
+size. Defaults to (10, 8).</p></li>
+<li><p><strong>title</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – title of the plot.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p>ValueError</p>
+</dd>
+</dl>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Plot only available for active dimensions up to 1.</p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<code class="sig-name descname">save_backward</code><span class="sig-paren">(</span><em class="sig-param">outfile</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/athena/nll.html#NonlinearLevelSet.save_backward"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Save the backward map for future inference.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>outfile</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – filename of the net to save.
+Use either .pt or .pth. See notes below.</p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>A common PyTorch convention is to save models using either a .pt or
+.pth file extension.</p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<code class="sig-name descname">save_forward</code><span class="sig-paren">(</span><em class="sig-param">outfile</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/athena/nll.html#NonlinearLevelSet.save_forward"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Save the forward map for future inference.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>outfile</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – filename of the net to save.
+Use either .pt or .pth. See notes below.</p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>A common PyTorch convention is to save models using either a .pt or
+.pth file extension.</p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<code class="sig-name descname">train</code><span class="sig-paren">(</span><em class="sig-param">inputs</em>, <em class="sig-param">gradients</em>, <em class="sig-param">outputs=None</em>, <em class="sig-param">interactive=False</em>, <em class="sig-param">target_loss=0.0001</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/athena/nll.html#NonlinearLevelSet.train"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>all the input parameters have to be torch</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>interactive</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a>) – if True a plot with the loss function decay,
+and the sufficient summary plot will be showed and updated every
+10 epochs. Default is False.</p></li>
+<li><p><strong>target_loss</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a>) – Default is 0.0001.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p>ValueError</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt>
+<em class="property">class </em><code class="sig-name descname">ForwardNet</code><span class="sig-paren">(</span><em class="sig-param">n_params</em>, <em class="sig-param">n_layers</em>, <em class="sig-param">dh</em>, <em class="sig-param">active_dim</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/athena/nll.html#ForwardNet"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">torch.nn.modules.module.Module</span></code></p>
+<dl class="field-list simple">
+<dt class="field-odd">Variables</dt>
+<dd class="field-odd"><p><strong>omega</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#slice" title="(in Python v3.8)"><em>slice</em></a>) – a slice object indicating the active dimension to keep.
+For example to keep the first two dimension <a href="#id1"><span class="problematic" id="id2">`</span></a>omega = slice(2).</p>
+</dd>
+</dl>
+<p>Initializes internal Module state, shared by both nn.Module and ScriptModule.</p>
+<dl class="method">
+<dt>
+<code class="sig-name descname">customized_loss</code><span class="sig-paren">(</span><em class="sig-param">x</em>, <em class="sig-param">output</em>, <em class="sig-param">gradients</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/athena/nll.html#ForwardNet.customized_loss"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>TO DOC</p>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<code class="sig-name descname">forward</code><span class="sig-paren">(</span><em class="sig-param">x</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/athena/nll.html#ForwardNet.forward"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>TO DOC</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt>
+<em class="property">class </em><code class="sig-name descname">BackwardNet</code><span class="sig-paren">(</span><em class="sig-param">n_params</em>, <em class="sig-param">n_layers</em>, <em class="sig-param">dh</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/athena/nll.html#BackwardNet"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">torch.nn.modules.module.Module</span></code></p>
+<p>Backward Net class</p>
+<p>[description]</p>
+<p>Initializes internal Module state, shared by both nn.Module and ScriptModule.</p>
+<dl class="method">
+<dt>
+<code class="sig-name descname">forward</code><span class="sig-paren">(</span><em class="sig-param">x</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/athena/nll.html#BackwardNet.forward"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>TO DOC</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="_summaries/athena.nll.NonlinearLevelSet.load_backward.html" class="btn btn-neutral float-right" title="athena.nll.NonlinearLevelSet.load_backward" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="_summaries/athena.kas.KernelActiveSubspaces.plot_sufficient_summary.html" class="btn btn-neutral float-left" title="athena.kas.KernelActiveSubspaces.plot_sufficient_summary" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright Copyright 2019-2020, Athena contributors
+      <span class="lastupdated">
+        Last updated on Jul 08, 2020.
+      </span>
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

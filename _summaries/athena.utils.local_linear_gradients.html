@@ -1,0 +1,283 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>athena.utils.local_linear_gradients &mdash; ATHENA 0.0.2 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/graphviz.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="athena.utils.sort_eigpairs" href="athena.utils.sort_eigpairs.html" />
+    <link rel="prev" title="athena.utils.linear_program_ineq" href="athena.utils.linear_program_ineq.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home" alt="Documentation Home"> ATHENA
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.0.2
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../code.html">Code Documentation</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../subspaces.html">Subspaces</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../active.html">Active Subspaces</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../feature_map.html">Feature Map</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../kas.html">Kernel Active Subspaces</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../nll.html">Nonlinear Level Set Learning</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../projection_factory.html">Projection Matrix Factory</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../utils.html">Utilities</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="athena.utils.Normalizer.fit_transform.html">athena.utils.Normalizer.fit_transform</a></li>
+<li class="toctree-l3"><a class="reference internal" href="athena.utils.Normalizer.inverse_transform.html">athena.utils.Normalizer.inverse_transform</a></li>
+<li class="toctree-l3"><a class="reference internal" href="athena.utils.initialize_weights.html">athena.utils.initialize_weights</a></li>
+<li class="toctree-l3"><a class="reference internal" href="athena.utils.linear_program_ineq.html">athena.utils.linear_program_ineq</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">athena.utils.local_linear_gradients</a></li>
+<li class="toctree-l3"><a class="reference internal" href="athena.utils.sort_eigpairs.html">athena.utils.sort_eigpairs</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../contact.html">Contact</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../contributing.html">How to contribute</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../LICENSE.html">License</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">ATHENA</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../code.html">Code Documentation</a> &raquo;</li>
+        
+          <li><a href="../utils.html">Utilities</a> &raquo;</li>
+        
+      <li>athena.utils.local_linear_gradients</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/_summaries/athena.utils.local_linear_gradients.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="athena-utils-local-linear-gradients">
+<h1>athena.utils.local_linear_gradients<a class="headerlink" href="#athena-utils-local-linear-gradients" title="Permalink to this headline">¶</a></h1>
+<dl class="function">
+<dt id="athena.utils.local_linear_gradients">
+<code class="sig-name descname">local_linear_gradients</code><span class="sig-paren">(</span><em class="sig-param">inputs</em>, <em class="sig-param">outputs</em>, <em class="sig-param">weights=None</em>, <em class="sig-param">n_neighbors=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/athena/utils.html#local_linear_gradients"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#athena.utils.local_linear_gradients" title="Permalink to this definition">¶</a></dt>
+<dd><p>Estimate a collection of gradients from input/output pairs.</p>
+<p>Given a set of input/output pairs, choose subsets of neighboring points and
+build a local linear model for each subset. The gradients of these local
+linear models comprise estimates of sampled gradients.
+Parameters
+———-
+inputs : ndarray</p>
+<blockquote>
+<div><p>M-by-m matrix that contains the m-dimensional inputs</p>
+</div></blockquote>
+<dl class="simple">
+<dt>outputs<span class="classifier">ndarray </span></dt><dd><p>M-by-1 matrix that contains scalar outputs</p>
+</dd>
+<dt>n_neighbors<span class="classifier">int, optional</span></dt><dd><p>how many nearest neighbors to use when constructing the local linear 
+model (default 1)</p>
+</dd>
+<dt>weights<span class="classifier">ndarray, optional</span></dt><dd><p>M-by-1 matrix that contains the weights for each observation (default 
+None)</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>gradients<span class="classifier">ndarray</span></dt><dd><p>M-by-m matrix that contains estimated partial derivatives approximated 
+by the local linear models</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><p>ValueError, TypeError</p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If <cite>n_neighbors</cite> is not specified, the default value is floor(1.7*m).</p>
+</div>
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="athena.utils.sort_eigpairs.html" class="btn btn-neutral float-right" title="athena.utils.sort_eigpairs" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="athena.utils.linear_program_ineq.html" class="btn btn-neutral float-left" title="athena.utils.linear_program_ineq" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright Copyright 2019-2020, Athena contributors
+      <span class="lastupdated">
+        Last updated on Jul 08, 2020.
+      </span>
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

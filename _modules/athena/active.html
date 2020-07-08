@@ -1,15 +1,19 @@
 
 
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8">
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>athena.active &mdash; ATHENA 0.0.1 documentation</title>
+  <title>athena.active &mdash; ATHENA 0.0.2 documentation</title>
   
+
+  
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/graphviz.css" type="text/css" />
 
   
   
@@ -17,7 +21,9 @@
   
 
   
-  <script type="text/javascript" src="../../_static/js/modernizr.min.js"></script>
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
@@ -29,11 +35,6 @@
     <script type="text/javascript" src="../../_static/js/theme.js"></script>
 
     
-
-  
-  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="../../_static/graphviz.css" type="text/css" />
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" /> 
 </head>
@@ -49,7 +50,7 @@
           
 
           
-            <a href="../../index.html" class="icon icon-home"> ATHENA
+            <a href="../../index.html" class="icon icon-home" alt="Documentation Home"> ATHENA
           
 
           
@@ -59,7 +60,7 @@
             
             
               <div class="version">
-                0.0.1
+                0.0.2
               </div>
             
           
@@ -76,6 +77,7 @@
           
         </div>
 
+        
         <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
           
             
@@ -93,6 +95,7 @@
             
           
         </div>
+        
       </div>
     </nav>
 
@@ -131,7 +134,7 @@
 
   <ul class="wy-breadcrumbs">
     
-      <li><a href="../../index.html">Docs</a> &raquo;</li>
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
         
           <li><a href="../index.html">Module code</a> &raquo;</li>
         
@@ -155,7 +158,8 @@
 <span class="sd">Active Subspaces module.</span>
 
 <span class="sd">Reference:</span>
-<span class="sd">- Paul Constantine. Active subspaces: Emerging ideas for dimension reduction in</span>
+
+<span class="sd">* Paul Constantine. Active subspaces: Emerging ideas for dimension reduction in</span>
 <span class="sd">parameter studies, vol. 2 of SIAM Spotlights, SIAM, 2015.</span>
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
@@ -171,11 +175,10 @@
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
 
 <div class="viewcode-block" id="ActiveSubspaces._build_decompose_cov_matrix"><a class="viewcode-back" href="../../active.html#athena.active.ActiveSubspaces._build_decompose_cov_matrix">[docs]</a>    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">_build_decompose_cov_matrix</span><span class="p">(</span><span class="n">inputs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                                    <span class="n">outputs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                                    <span class="n">gradients</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="k">def</span> <span class="nf">_build_decompose_cov_matrix</span><span class="p">(</span><span class="n">gradients</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                                     <span class="n">weights</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                                    <span class="n">method</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+                                    <span class="n">method</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                                    <span class="n">metric</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Build and decompose the covariance matrix of the gradients.</span>
 
@@ -199,7 +202,7 @@
         <span class="k">if</span> <span class="n">method</span> <span class="o">==</span> <span class="s1">&#39;exact&#39;</span> <span class="ow">or</span> <span class="n">method</span> <span class="o">==</span> <span class="s1">&#39;local&#39;</span><span class="p">:</span>
             <span class="n">cov_matrix</span> <span class="o">=</span> <span class="n">gradients</span><span class="o">.</span><span class="n">T</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">gradients</span> <span class="o">*</span> <span class="n">weights</span><span class="p">)</span>
             <span class="n">evals</span><span class="p">,</span> <span class="n">evects</span> <span class="o">=</span> <span class="n">sort_eigpairs</span><span class="p">(</span><span class="n">cov_matrix</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">cov_matrix</span><span class="p">,</span> <span class="n">evals</span><span class="p">,</span> <span class="n">evects</span></div>
+        <span class="k">return</span> <span class="n">evals</span><span class="p">,</span> <span class="n">evects</span></div>
 
 <div class="viewcode-block" id="ActiveSubspaces.compute"><a class="viewcode-back" href="../../active.html#athena.active.ActiveSubspaces.compute">[docs]</a>    <span class="k">def</span> <span class="nf">compute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
                 <span class="n">inputs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
@@ -227,7 +230,7 @@
 <span class="sd">            of gradient method. See the 2001 paper &#39;Structure adaptive approach</span>
 <span class="sd">            for dimension reduction&#39; from Hristache, et al.</span>
 <span class="sd">        :param int nboot: number of bootstrap samples. Default is 100.</span>
-<span class="sd">        :raises ValueError</span>
+<span class="sd">        :raises: ValueError</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">method</span> <span class="o">==</span> <span class="s1">&#39;exact&#39;</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">gradients</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -246,7 +249,7 @@
             <span class="c1"># otherwise dimension mismatch accours.</span>
             <span class="n">weights</span> <span class="o">=</span> <span class="n">initialize_weights</span><span class="p">(</span><span class="n">gradients</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">cov_matrix</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">evals</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">evects</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_build_decompose_cov_matrix</span><span class="p">(</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">evals</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">evects</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_build_decompose_cov_matrix</span><span class="p">(</span>
             <span class="n">gradients</span><span class="o">=</span><span class="n">gradients</span><span class="p">,</span> <span class="n">weights</span><span class="o">=</span><span class="n">weights</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="n">method</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_compute_bootstrap_ranges</span><span class="p">(</span><span class="n">gradients</span><span class="p">,</span>
                                        <span class="n">weights</span><span class="p">,</span>
@@ -319,7 +322,7 @@
 <span class="sd">            The trick here is to sample the inactive variables z so that</span>
 <span class="sd">            -1 &lt;= W1*y + W2*z &lt;= 1,</span>
 <span class="sd">            where y is the given value of the active variables. In other words,</span>
-<span class="sd">            we need to sample z such that it respects the linear equalities</span>
+<span class="sd">            we need to sample z such that it respects the linear inequalities</span>
 <span class="sd">            W2*z &lt;= 1 - W1*y, -W2*z &lt;= 1 + W1*y.</span>
 <span class="sd">            These inequalities define a polytope in R^(inactive_dim). We want to</span>
 <span class="sd">            sample N points uniformly from the polytope.</span>
@@ -336,6 +339,20 @@
             <span class="n">Z</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hit_and_run_inactive</span><span class="p">(</span><span class="n">reduced_input</span><span class="p">,</span> <span class="n">n_points</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">Z</span></div>
 
+<div class="viewcode-block" id="ActiveSubspaces._compute_A_b"><a class="viewcode-back" href="../../active.html#athena.active.ActiveSubspaces._compute_A_b">[docs]</a>    <span class="k">def</span> <span class="nf">_compute_A_b</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reduced_input</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Compute the matrix A and the vector b to build a box around the</span>
+<span class="sd">        inactive subspace for uniform sampling.</span>
+<span class="sd">        </span>
+<span class="sd">        :param numpy.ndarray reduced_input: the value of the active variables.</span>
+<span class="sd">        :return: matrix A, and vector b.</span>
+<span class="sd">        :rtype: numpy.ndarray, numpy.ndarray</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">s</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">W1</span><span class="p">,</span> <span class="n">reduced_input</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+        <span class="n">A</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">W2</span><span class="p">,</span> <span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">W2</span><span class="p">))</span>
+        <span class="n">b</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">((</span><span class="o">-</span><span class="mi">1</span> <span class="o">-</span> <span class="n">s</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span> <span class="o">+</span> <span class="n">s</span><span class="p">))</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">A</span><span class="p">,</span> <span class="n">b</span></div>
+
 <div class="viewcode-block" id="ActiveSubspaces._rejection_sampling_inactive"><a class="viewcode-back" href="../../active.html#athena.active.ActiveSubspaces._rejection_sampling_inactive">[docs]</a>    <span class="k">def</span> <span class="nf">_rejection_sampling_inactive</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reduced_input</span><span class="p">,</span> <span class="n">n_points</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        A rejection sampling method for sampling the from a polytope.</span>
@@ -348,12 +365,9 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">m</span><span class="p">,</span> <span class="n">n</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">W1</span><span class="o">.</span><span class="n">shape</span>
         <span class="n">inactive_dim</span> <span class="o">=</span> <span class="n">m</span> <span class="o">-</span> <span class="n">n</span>
-        <span class="n">s</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">W1</span><span class="p">,</span> <span class="n">reduced_input</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="n">m</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
-
         <span class="c1"># Build a box around z for uniform sampling</span>
-        <span class="n">A</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">W2</span><span class="p">,</span> <span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">W2</span><span class="p">))</span>
-        <span class="n">b</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">((</span><span class="o">-</span><span class="mi">1</span> <span class="o">-</span> <span class="n">s</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span> <span class="o">+</span> <span class="n">s</span><span class="p">))</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="mi">2</span> <span class="o">*</span> <span class="n">m</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
-        <span class="n">lbox</span><span class="p">,</span> <span class="n">ubox</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="n">m</span> <span class="o">-</span> <span class="n">n</span><span class="p">)),</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="n">inactive_dim</span><span class="p">))</span>
+        <span class="n">A</span><span class="p">,</span> <span class="n">b</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_compute_A_b</span><span class="p">(</span><span class="n">reduced_input</span><span class="p">)</span>
+        <span class="n">lbox</span><span class="p">,</span> <span class="n">ubox</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="n">inactive_dim</span><span class="p">)),</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="n">inactive_dim</span><span class="p">))</span>
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">inactive_dim</span><span class="p">):</span>
             <span class="n">clb</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">inactive_dim</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
             <span class="n">clb</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.0</span>
@@ -362,7 +376,7 @@
             <span class="n">cub</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="mf">1.0</span>
             <span class="n">ubox</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">linear_program_ineq</span><span class="p">(</span><span class="n">cub</span><span class="p">,</span> <span class="n">A</span><span class="p">,</span> <span class="n">b</span><span class="p">)[</span><span class="n">i</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
         <span class="n">bn</span> <span class="o">=</span> <span class="n">Normalizer</span><span class="p">(</span><span class="n">lbox</span><span class="p">,</span> <span class="n">ubox</span><span class="p">)</span>
-        <span class="n">Zbox</span> <span class="o">=</span> <span class="n">bn</span><span class="o">.</span><span class="n">unnormalize</span><span class="p">(</span>
+        <span class="n">Zbox</span> <span class="o">=</span> <span class="n">bn</span><span class="o">.</span><span class="n">inverse_transform</span><span class="p">(</span>
             <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="o">-</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="mi">50</span> <span class="o">*</span> <span class="n">n_points</span><span class="p">,</span> <span class="n">inactive_dim</span><span class="p">)))</span>
         <span class="n">ind</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">Zbox</span><span class="o">.</span><span class="n">T</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="n">b</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
 
@@ -399,13 +413,10 @@
         <span class="n">z0</span> <span class="o">=</span> <span class="n">zc</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="n">inactive_dim</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
 
         <span class="c1"># define the polytope A &gt;= b</span>
-        <span class="n">s</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">W1</span><span class="p">,</span> <span class="n">reduced_input</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="n">m</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
-        <span class="n">A</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">W2</span><span class="p">,</span> <span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">W2</span><span class="p">))</span>
-        <span class="n">b</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">((</span><span class="o">-</span><span class="mi">1</span> <span class="o">-</span> <span class="n">s</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span> <span class="o">+</span> <span class="n">s</span><span class="p">))</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="mi">2</span> <span class="o">*</span> <span class="n">m</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+        <span class="n">A</span><span class="p">,</span> <span class="n">b</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_compute_A_b</span><span class="p">(</span><span class="n">reduced_input</span><span class="p">)</span>
 
         <span class="c1"># tolerance</span>
-        <span class="n">ztol</span> <span class="o">=</span> <span class="mf">1e-6</span>
-        <span class="n">eps0</span> <span class="o">=</span> <span class="n">ztol</span> <span class="o">/</span> <span class="mf">4.0</span>
+        <span class="n">eps0</span> <span class="o">=</span> <span class="mf">1e-6</span> <span class="o">/</span> <span class="mf">4.0</span>
 
         <span class="n">Z</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">n_points</span><span class="p">,</span> <span class="n">inactive_dim</span><span class="p">))</span>
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_points</span><span class="p">):</span>
@@ -481,14 +492,22 @@
 
   <div role="contentinfo">
     <p>
+        
         &copy; Copyright Copyright 2019-2020, Athena contributors
       <span class="lastupdated">
-        Last updated on Jun 10, 2020.
+        Last updated on Jul 08, 2020.
       </span>
 
     </p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
 
@@ -499,7 +518,6 @@
 
   </div>
   
-
 
   <script type="text/javascript">
       jQuery(function () {

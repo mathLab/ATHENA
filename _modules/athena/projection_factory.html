@@ -1,0 +1,317 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>athena.projection_factory &mdash; ATHENA 0.0.2 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/graphviz.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../index.html" class="icon icon-home" alt="Documentation Home"> ATHENA
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.0.2
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../code.html">Code Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../contact.html">Contact</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../contributing.html">How to contribute</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../LICENSE.html">License</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">ATHENA</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>athena.projection_factory</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for athena.projection_factory</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Module for the factory class for projection matrices</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="k">class</span> <span class="nc">classproperty</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">f</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">f</span> <span class="o">=</span> <span class="n">f</span>
+        <span class="bp">self</span><span class="o">.</span><span class="vm">__doc__</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="vm">__doc__</span>
+        <span class="bp">self</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="vm">__name__</span>
+
+    <span class="k">def</span> <span class="fm">__get__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">,</span> <span class="n">owner</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">f</span><span class="p">(</span><span class="n">owner</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="ProjectionFactory"><a class="viewcode-back" href="../../projection_factory.html#athena.projection_factory.ProjectionFactory">[docs]</a><span class="k">class</span> <span class="nc">ProjectionFactory</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Factory class that spawns projection matrices.</span>
+
+<span class="sd">    :Example:</span>
+
+<span class="sd">        &gt;&gt;&gt; from athena import ProjectionFactory</span>
+<span class="sd">        &gt;&gt;&gt; import numpy as np</span>
+<span class="sd">        &gt;&gt;&gt; input_dim = 2</span>
+<span class="sd">        &gt;&gt;&gt; n_features = 40</span>
+<span class="sd">        &gt;&gt;&gt; params = [1.1, 2.9]</span>
+<span class="sd">        &gt;&gt;&gt; for pname in ProjectionFactory.projections:</span>
+<span class="sd">        &gt;&gt;&gt;     y = ProjectionFactory(pname)(input_dim, n_features, params)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+<div class="viewcode-block" id="ProjectionFactory.beta"><a class="viewcode-back" href="../../projection_factory.html#athena.projection_factory.ProjectionFactory.beta">[docs]</a>    <span class="k">def</span> <span class="nf">beta</span><span class="p">(</span><span class="n">input_dim</span><span class="p">,</span> <span class="n">n_features</span><span class="p">,</span> <span class="n">params</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        TO DOC</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">beta</span><span class="p">(</span><span class="n">params</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">params</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="p">(</span><span class="n">n_features</span><span class="p">,</span> <span class="n">input_dim</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="ProjectionFactory.cauchy"><a class="viewcode-back" href="../../projection_factory.html#athena.projection_factory.ProjectionFactory.cauchy">[docs]</a>    <span class="k">def</span> <span class="nf">cauchy</span><span class="p">(</span><span class="n">input_dim</span><span class="p">,</span> <span class="n">n_features</span><span class="p">,</span> <span class="n">params</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        TO DOC</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="n">params</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">standard_cauchy</span><span class="p">((</span><span class="n">n_features</span><span class="p">,</span> <span class="n">input_dim</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="ProjectionFactory.dirichlet"><a class="viewcode-back" href="../../projection_factory.html#athena.projection_factory.ProjectionFactory.dirichlet">[docs]</a>    <span class="k">def</span> <span class="nf">dirichlet</span><span class="p">(</span><span class="n">input_dim</span><span class="p">,</span> <span class="n">n_features</span><span class="p">,</span> <span class="n">params</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        TO DOC</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">dirichlet</span><span class="p">(</span><span class="n">params</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">input_dim</span><span class="p">),</span> <span class="n">n_features</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="ProjectionFactory.laplace"><a class="viewcode-back" href="../../projection_factory.html#athena.projection_factory.ProjectionFactory.laplace">[docs]</a>    <span class="k">def</span> <span class="nf">laplace</span><span class="p">(</span><span class="n">input_dim</span><span class="p">,</span> <span class="n">n_features</span><span class="p">,</span> <span class="n">params</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        TO DOC</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">laplace</span><span class="p">(</span><span class="n">params</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">params</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="p">(</span><span class="n">n_features</span><span class="p">,</span> <span class="n">input_dim</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="ProjectionFactory.multivariate_normal"><a class="viewcode-back" href="../../projection_factory.html#athena.projection_factory.ProjectionFactory.multivariate_normal">[docs]</a>    <span class="k">def</span> <span class="nf">multivariate_normal</span><span class="p">(</span><span class="n">input_dim</span><span class="p">,</span> <span class="n">n_features</span><span class="p">,</span> <span class="n">params</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        TO DOC</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">multivariate_normal</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">input_dim</span><span class="p">),</span>
+                                             <span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">params</span><span class="p">),</span> <span class="n">n_features</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="ProjectionFactory.normal"><a class="viewcode-back" href="../../projection_factory.html#athena.projection_factory.ProjectionFactory.normal">[docs]</a>    <span class="k">def</span> <span class="nf">normal</span><span class="p">(</span><span class="n">input_dim</span><span class="p">,</span> <span class="n">n_features</span><span class="p">,</span> <span class="n">params</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        TO DOC</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">params</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="p">(</span><span class="n">n_features</span><span class="p">,</span> <span class="n">input_dim</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="ProjectionFactory.uniform"><a class="viewcode-back" href="../../projection_factory.html#athena.projection_factory.ProjectionFactory.uniform">[docs]</a>    <span class="k">def</span> <span class="nf">uniform</span><span class="p">(</span><span class="n">input_dim</span><span class="p">,</span> <span class="n">n_features</span><span class="p">,</span> <span class="n">params</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        TO DOC</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="n">params</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">params</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="p">(</span><span class="n">n_features</span><span class="p">,</span> <span class="n">input_dim</span><span class="p">))</span></div>
+
+    <span class="c1">###########################################################################</span>
+    <span class="c1">##                                                                       ##</span>
+    <span class="c1">## PROJECTION FUNCTION dictionary                                        ##</span>
+    <span class="c1">##                                                                       ##</span>
+    <span class="c1">## New implementation must be added here.                                ##</span>
+    <span class="c1">##                                                                       ##</span>
+    <span class="c1">###########################################################################</span>
+    <span class="n">__projections</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s1">&#39;beta&#39;</span><span class="p">:</span> <span class="n">beta</span><span class="p">,</span>
+        <span class="s1">&#39;cauchy&#39;</span><span class="p">:</span> <span class="n">cauchy</span><span class="p">,</span>
+        <span class="s1">&#39;dirichlet&#39;</span><span class="p">:</span> <span class="n">dirichlet</span><span class="p">,</span>
+        <span class="s1">&#39;laplace&#39;</span><span class="p">:</span> <span class="n">laplace</span><span class="p">,</span>
+        <span class="s1">&#39;multivariate_normal&#39;</span><span class="p">:</span> <span class="n">multivariate_normal</span><span class="p">,</span>
+        <span class="s1">&#39;normal&#39;</span><span class="p">:</span> <span class="n">normal</span><span class="p">,</span>
+        <span class="s1">&#39;uniform&#39;</span><span class="p">:</span> <span class="n">uniform</span>
+    <span class="p">}</span>
+
+<div class="viewcode-block" id="ProjectionFactory.__new__"><a class="viewcode-back" href="../../projection_factory.html#athena.projection_factory.ProjectionFactory.__new__">[docs]</a>    <span class="k">def</span> <span class="fm">__new__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fname</span><span class="p">):</span>
+        <span class="c1"># to make the str callable we have to use a dictionary with all the</span>
+        <span class="c1"># implemented projection matrices</span>
+        <span class="k">if</span> <span class="n">fname</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">projections</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__projections</span><span class="p">[</span><span class="n">fname</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">NameError</span><span class="p">(</span>
+                <span class="sd">&quot;&quot;&quot;The name of the projection matrix is not correct or not</span>
+<span class="sd">                implemented. Check the documentation for all the available</span>
+<span class="sd">                possibilities.&quot;&quot;&quot;</span><span class="p">)</span></div>
+
+    <span class="nd">@classproperty</span>
+    <span class="k">def</span> <span class="nf">projections</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        The available projection matrices.</span>
+
+<span class="sd">        :return: the list of all the available projection matrices.</span>
+<span class="sd">        :rtype: list</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__projections</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright Copyright 2019-2020, Athena contributors
+      <span class="lastupdated">
+        Last updated on Jul 08, 2020.
+      </span>
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

@@ -1,15 +1,19 @@
 
 
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8">
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Subspaces &mdash; ATHENA 0.0.1 documentation</title>
+  <title>Subspaces &mdash; ATHENA 0.0.2 documentation</title>
   
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/graphviz.css" type="text/css" />
 
   
   
@@ -17,7 +21,9 @@
   
 
   
-  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
@@ -29,14 +35,9 @@
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
     
-
-  
-  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="_static/graphviz.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="ActiveSubspaces" href="active.html" />
+    <link rel="next" title="athena.subspaces.Subspaces._bootstrap_replicate" href="_summaries/athena.subspaces.Subspaces._bootstrap_replicate.html" />
     <link rel="prev" title="Code Documentation" href="code.html" /> 
 </head>
 
@@ -51,7 +52,7 @@
           
 
           
-            <a href="index.html" class="icon icon-home"> ATHENA
+            <a href="index.html" class="icon icon-home" alt="Documentation Home"> ATHENA
           
 
           
@@ -61,7 +62,7 @@
             
             
               <div class="version">
-                0.0.1
+                0.0.2
               </div>
             
           
@@ -78,6 +79,7 @@
           
         </div>
 
+        
         <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
           
             
@@ -87,8 +89,25 @@
             
               <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="code.html">Code Documentation</a><ul class="current">
-<li class="toctree-l2 current"><a class="current reference internal" href="#">Subspaces</a></li>
-<li class="toctree-l2"><a class="reference internal" href="active.html">ActiveSubspaces</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Subspaces</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="_summaries/athena.subspaces.Subspaces._bootstrap_replicate.html">athena.subspaces.Subspaces._bootstrap_replicate</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_summaries/athena.subspaces.Subspaces._build_decompose_cov_matrix.html">athena.subspaces.Subspaces._build_decompose_cov_matrix</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_summaries/athena.subspaces.Subspaces._compute_bootstrap_ranges.html">athena.subspaces.Subspaces._compute_bootstrap_ranges</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_summaries/athena.subspaces.Subspaces.backward.html">athena.subspaces.Subspaces.backward</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_summaries/athena.subspaces.Subspaces.compute.html">athena.subspaces.Subspaces.compute</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_summaries/athena.subspaces.Subspaces.forward.html">athena.subspaces.Subspaces.forward</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_summaries/athena.subspaces.Subspaces.partition.html">athena.subspaces.Subspaces.partition</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_summaries/athena.subspaces.Subspaces.plot_eigenvalues.html">athena.subspaces.Subspaces.plot_eigenvalues</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_summaries/athena.subspaces.Subspaces.plot_eigenvectors.html">athena.subspaces.Subspaces.plot_eigenvectors</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_summaries/athena.subspaces.Subspaces.plot_sufficient_summary.html">athena.subspaces.Subspaces.plot_sufficient_summary</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="active.html">Active Subspaces</a></li>
+<li class="toctree-l2"><a class="reference internal" href="feature_map.html">Feature Map</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kas.html">Kernel Active Subspaces</a></li>
+<li class="toctree-l2"><a class="reference internal" href="nll.html">Nonlinear Level Set Learning</a></li>
+<li class="toctree-l2"><a class="reference internal" href="projection_factory.html">Projection Matrix Factory</a></li>
+<li class="toctree-l2"><a class="reference internal" href="utils.html">Utilities</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="contact.html">Contact</a></li>
@@ -99,6 +118,7 @@
             
           
         </div>
+        
       </div>
     </nav>
 
@@ -137,7 +157,7 @@
 
   <ul class="wy-breadcrumbs">
     
-      <li><a href="index.html">Docs</a> &raquo;</li>
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
         
           <li><a href="code.html">Code Documentation</a> &raquo;</li>
         
@@ -176,34 +196,34 @@ arxiv:</p>
 <col style="width: 90%" />
 </colgroup>
 <tbody>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">Subspaces._bootstrap_replicate</span></code></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="_summaries/athena.subspaces.Subspaces._bootstrap_replicate.html#athena.subspaces.Subspaces._bootstrap_replicate" title="athena.subspaces.Subspaces._bootstrap_replicate"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Subspaces._bootstrap_replicate</span></code></a></p></td>
 <td><p>Return a bootstrap replicate.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">Subspaces._build_decompose_cov_matrix</span></code></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="_summaries/athena.subspaces.Subspaces._build_decompose_cov_matrix.html#athena.subspaces.Subspaces._build_decompose_cov_matrix" title="athena.subspaces.Subspaces._build_decompose_cov_matrix"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Subspaces._build_decompose_cov_matrix</span></code></a></p></td>
 <td><p>Not implemented, it has to be implemented in subclasses.</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">Subspaces._compute_bootstrap_ranges</span></code></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="_summaries/athena.subspaces.Subspaces._compute_bootstrap_ranges.html#athena.subspaces.Subspaces._compute_bootstrap_ranges" title="athena.subspaces.Subspaces._compute_bootstrap_ranges"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Subspaces._compute_bootstrap_ranges</span></code></a></p></td>
 <td><p>Compute bootstrap ranges for eigenvalues and subspaces.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">Subspaces.backward</span></code></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="_summaries/athena.subspaces.Subspaces.backward.html#athena.subspaces.Subspaces.backward" title="athena.subspaces.Subspaces.backward"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Subspaces.backward</span></code></a></p></td>
 <td><p>Abstract method to find points in full space that map to reduced variable points.</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">Subspaces.compute</span></code></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="_summaries/athena.subspaces.Subspaces.compute.html#athena.subspaces.Subspaces.compute" title="athena.subspaces.Subspaces.compute"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Subspaces.compute</span></code></a></p></td>
 <td><p>Abstract method to compute the active subspaces.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">Subspaces.forward</span></code></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="_summaries/athena.subspaces.Subspaces.forward.html#athena.subspaces.Subspaces.forward" title="athena.subspaces.Subspaces.forward"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Subspaces.forward</span></code></a></p></td>
 <td><p>Abstract method to map full variables to active and inactive variables.</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">Subspaces.partition</span></code></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="_summaries/athena.subspaces.Subspaces.partition.html#athena.subspaces.Subspaces.partition" title="athena.subspaces.Subspaces.partition"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Subspaces.partition</span></code></a></p></td>
 <td><p>Partition the eigenvectors to define the active and inactive subspaces.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">Subspaces.plot_eigenvalues</span></code></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="_summaries/athena.subspaces.Subspaces.plot_eigenvalues.html#athena.subspaces.Subspaces.plot_eigenvalues" title="athena.subspaces.Subspaces.plot_eigenvalues"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Subspaces.plot_eigenvalues</span></code></a></p></td>
 <td><p>Plot the eigenvalues.</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">Subspaces.plot_eigenvectors</span></code></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="_summaries/athena.subspaces.Subspaces.plot_eigenvectors.html#athena.subspaces.Subspaces.plot_eigenvectors" title="athena.subspaces.Subspaces.plot_eigenvectors"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Subspaces.plot_eigenvectors</span></code></a></p></td>
 <td><p>Plot the eigenvectors.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">Subspaces.plot_sufficient_summary</span></code></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="_summaries/athena.subspaces.Subspaces.plot_sufficient_summary.html#athena.subspaces.Subspaces.plot_sufficient_summary" title="athena.subspaces.Subspaces.plot_sufficient_summary"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Subspaces.plot_sufficient_summary</span></code></a></p></td>
 <td><p>Plot the sufficient summary.</p></td>
 </tr>
 </tbody>
@@ -211,7 +231,7 @@ arxiv:</p>
 <dl class="class">
 <dt>
 <em class="property">class </em><code class="sig-name descname">Subspaces</code><a class="reference internal" href="_modules/athena/subspaces.html#Subspaces"><span class="viewcode-link">[source]</span></a></dt>
-<dd><p>Bases: <a class="reference external" href="https://docs.python.org/2/library/functions.html#object" title="(in Python v2.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
 <p>Active Subspaces base class</p>
 <p>[description]</p>
 <dl class="method">
@@ -223,9 +243,9 @@ given data set.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>matrix</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.18)"><em>numpy.ndarray</em></a>) – matrix from which will be sampled N rows.
+<li><p><strong>matrix</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><em>numpy.ndarray</em></a>) – matrix from which will be sampled N rows.
 N corresponds to the number of rows of weights.</p></li>
-<li><p><strong>weights</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.18)"><em>numpy.ndarray</em></a>) – n_samples-by-1 weight vector, corresponds
+<li><p><strong>weights</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><em>numpy.ndarray</em></a>) – n_samples-by-1 weight vector, corresponds
 to numerical quadrature rule used to estimate matrix whose
 eigenspaces define the active subspace.</p></li>
 </ul>
@@ -241,7 +261,7 @@ eigenspaces define the active subspace.</p></li>
 
 <dl class="method">
 <dt>
-<code class="sig-name descname">_compute_bootstrap_ranges</code><span class="sig-paren">(</span><em class="sig-param">gradients</em>, <em class="sig-param">weights</em>, <em class="sig-param">method</em>, <em class="sig-param">nboot=100</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/athena/subspaces.html#Subspaces._compute_bootstrap_ranges"><span class="viewcode-link">[source]</span></a></dt>
+<code class="sig-name descname">_compute_bootstrap_ranges</code><span class="sig-paren">(</span><em class="sig-param">gradients</em>, <em class="sig-param">weights</em>, <em class="sig-param">method</em>, <em class="sig-param">metric=None</em>, <em class="sig-param">nboot=100</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/athena/subspaces.html#Subspaces._compute_bootstrap_ranges"><span class="viewcode-link">[source]</span></a></dt>
 <dd><p>Compute bootstrap ranges for eigenvalues and subspaces.</p>
 <p>An implementation of the nonparametric bootstrap that we use in 
 conjunction with the subspace estimation methods to estimate the errors in 
@@ -249,12 +269,12 @@ the eigenvalues and subspaces.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>gradients</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.18)"><em>numpy.ndarray</em></a>) – n_samples-by-n_params matrix containing
+<li><p><strong>gradients</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><em>numpy.ndarray</em></a>) – n_samples-by-n_params matrix containing
 the gradient samples oriented as rows.</p></li>
-<li><p><strong>weights</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.18)"><em>numpy.ndarray</em></a>) – n_samples-by-1 weight vector, corresponds
+<li><p><strong>weights</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><em>numpy.ndarray</em></a>) – n_samples-by-1 weight vector, corresponds
 to numerical quadrature rule used to estimate matrix whose
 eigenspaces define the active subspace.</p></li>
-<li><p><strong>nboot</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) – number of bootstrap samples. Default is 100.</p></li>
+<li><p><strong>nboot</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – number of bootstrap samples. Default is 100.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -267,7 +287,7 @@ reasonable subspace error estimate), third column contains
 estimated upper bound on subspace error.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.18)">numpy.ndarray</a>, <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.18)">numpy.ndarray</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)">numpy.ndarray</a>, <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)">numpy.ndarray</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -281,9 +301,9 @@ Not implemented, it has to be implemented in subclasses.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>reduced_inputs</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.18)"><em>numpy.ndarray</em></a>) – n_samples-by-n_params matrix that
+<li><p><strong>reduced_inputs</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><em>numpy.ndarray</em></a>) – n_samples-by-n_params matrix that
 contains points in the space of active variables.</p></li>
-<li><p><strong>n_points</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) – the number of points in the original parameter
+<li><p><strong>n_points</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – the number of points in the original parameter
 space that are returned that map to the given active variables.</p></li>
 </ul>
 </dd>
@@ -305,7 +325,7 @@ Not implemented, it has to be implemented in subclasses.</p>
 inactive subspace.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>inputs</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.18)"><em>numpy.ndarray</em></a>) – array n_samples-by-n_params containing
+<dd class="field-odd"><p><strong>inputs</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><em>numpy.ndarray</em></a>) – array n_samples-by-n_params containing
 the points in the original parameter space.</p>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -314,7 +334,7 @@ variables; array n_samples-by-inactive_dim containing the mapped
 inactive variables.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.18)">numpy.ndarray</a>, <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.18)">numpy.ndarray</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)">numpy.ndarray</a>, <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)">numpy.ndarray</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -325,7 +345,7 @@ inactive variables.</p>
 <dd><p>Partition the eigenvectors to define the active and inactive subspaces.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>dim</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) – dimension of the active subspace.</p>
+<dd class="field-odd"><p><strong>dim</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – dimension of the active subspace.</p>
 </dd>
 <dt class="field-even">Raises</dt>
 <dd class="field-even"><p>TypeError, ValueError</p>
@@ -340,12 +360,12 @@ inactive variables.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>n_evals</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) – number of eigenvalues to plot. If not provided
+<li><p><strong>n_evals</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – number of eigenvalues to plot. If not provided
 all the eigenvalues will be plotted.</p></li>
-<li><p><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) – if specified, the plot is saved at <cite>filename</cite>.</p></li>
-<li><p><strong>figsize</strong> (<em>tuple</em><em>(</em><a class="reference external" href="https://docs.python.org/2/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a><em>,</em><a class="reference external" href="https://docs.python.org/2/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a><em>)</em>) – tuple in inches defining the figure
+<li><p><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – if specified, the plot is saved at <cite>filename</cite>.</p></li>
+<li><p><strong>figsize</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.8)"><em>tuple</em></a><em>(</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a><em>,</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a><em>)</em>) – tuple in inches defining the figure
 size. Default is (8, 8).</p></li>
-<li><p><strong>title</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) – title of the plot.</p></li>
+<li><p><strong>title</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – title of the plot.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Raises</dt>
@@ -365,13 +385,13 @@ size. Default is (8, 8).</p></li>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>n_evects</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) – number of eigenvectors to plot.
+<li><p><strong>n_evects</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – number of eigenvectors to plot.
 Default is self.dim.</p></li>
-<li><p><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) – if specified, the plot is saved at <cite>filename</cite>.</p></li>
-<li><p><strong>figsize</strong> (<em>tuple</em><em>(</em><a class="reference external" href="https://docs.python.org/2/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a><em>,</em><a class="reference external" href="https://docs.python.org/2/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a><em>)</em>) – tuple in inches defining the figure
+<li><p><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – if specified, the plot is saved at <cite>filename</cite>.</p></li>
+<li><p><strong>figsize</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.8)"><em>tuple</em></a><em>(</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a><em>,</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a><em>)</em>) – tuple in inches defining the figure
 size. Default is (8, 2 * n_evects).</p></li>
-<li><p><strong>labels</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) – labels for the components of the eigenvectors.</p></li>
-<li><p><strong>title</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) – title of the plot.</p></li>
+<li><p><strong>labels</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – labels for the components of the eigenvectors.</p></li>
+<li><p><strong>title</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – title of the plot.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Raises</dt>
@@ -391,14 +411,14 @@ size. Default is (8, 2 * n_evects).</p></li>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>inputs</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.18)"><em>numpy.ndarray</em></a>) – array n_samples-by-n_params containing
+<li><p><strong>inputs</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><em>numpy.ndarray</em></a>) – array n_samples-by-n_params containing
 the points in the full input space.</p></li>
-<li><p><strong>outputs</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.18)"><em>numpy.ndarray</em></a>) – array n_samples-by-1 containing the
+<li><p><strong>outputs</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><em>numpy.ndarray</em></a>) – array n_samples-by-1 containing the
 corresponding function evaluations.</p></li>
-<li><p><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) – if specified, the plot is saved at <cite>filename</cite>.</p></li>
-<li><p><strong>figsize</strong> (<em>tuple</em><em>(</em><a class="reference external" href="https://docs.python.org/2/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a><em>,</em><a class="reference external" href="https://docs.python.org/2/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a><em>)</em>) – tuple in inches defining the figure
+<li><p><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – if specified, the plot is saved at <cite>filename</cite>.</p></li>
+<li><p><strong>figsize</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.8)"><em>tuple</em></a><em>(</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a><em>,</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a><em>)</em>) – tuple in inches defining the figure
 size. Defaults to (10, 8).</p></li>
-<li><p><strong>title</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) – title of the plot.</p></li>
+<li><p><strong>title</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – title of the plot.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Raises</dt>
@@ -424,7 +444,7 @@ size. Defaults to (10, 8).</p></li>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="active.html" class="btn btn-neutral float-right" title="ActiveSubspaces" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="_summaries/athena.subspaces.Subspaces._bootstrap_replicate.html" class="btn btn-neutral float-right" title="athena.subspaces.Subspaces._bootstrap_replicate" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="code.html" class="btn btn-neutral float-left" title="Code Documentation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
@@ -436,14 +456,22 @@ size. Defaults to (10, 8).</p></li>
 
   <div role="contentinfo">
     <p>
+        
         &copy; Copyright Copyright 2019-2020, Athena contributors
       <span class="lastupdated">
-        Last updated on Jun 10, 2020.
+        Last updated on Jul 08, 2020.
       </span>
 
     </p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
 
@@ -454,7 +482,6 @@ size. Defaults to (10, 8).</p></li>
 
   </div>
   
-
 
   <script type="text/javascript">
       jQuery(function () {

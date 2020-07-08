@@ -1,0 +1,252 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>athena.projection_factory.ProjectionFactory.laplace &mdash; ATHENA 0.0.2 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/graphviz.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="athena.projection_factory.ProjectionFactory.multivariate_normal" href="athena.projection_factory.ProjectionFactory.multivariate_normal.html" />
+    <link rel="prev" title="athena.projection_factory.ProjectionFactory.dirichlet" href="athena.projection_factory.ProjectionFactory.dirichlet.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home" alt="Documentation Home"> ATHENA
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.0.2
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../code.html">Code Documentation</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../subspaces.html">Subspaces</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../active.html">Active Subspaces</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../feature_map.html">Feature Map</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../kas.html">Kernel Active Subspaces</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../nll.html">Nonlinear Level Set Learning</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../projection_factory.html">Projection Matrix Factory</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="athena.projection_factory.ProjectionFactory.beta.html">athena.projection_factory.ProjectionFactory.beta</a></li>
+<li class="toctree-l3"><a class="reference internal" href="athena.projection_factory.ProjectionFactory.cauchy.html">athena.projection_factory.ProjectionFactory.cauchy</a></li>
+<li class="toctree-l3"><a class="reference internal" href="athena.projection_factory.ProjectionFactory.dirichlet.html">athena.projection_factory.ProjectionFactory.dirichlet</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">athena.projection_factory.ProjectionFactory.laplace</a></li>
+<li class="toctree-l3"><a class="reference internal" href="athena.projection_factory.ProjectionFactory.multivariate_normal.html">athena.projection_factory.ProjectionFactory.multivariate_normal</a></li>
+<li class="toctree-l3"><a class="reference internal" href="athena.projection_factory.ProjectionFactory.normal.html">athena.projection_factory.ProjectionFactory.normal</a></li>
+<li class="toctree-l3"><a class="reference internal" href="athena.projection_factory.ProjectionFactory.projections.html">athena.projection_factory.ProjectionFactory.projections</a></li>
+<li class="toctree-l3"><a class="reference internal" href="athena.projection_factory.ProjectionFactory.uniform.html">athena.projection_factory.ProjectionFactory.uniform</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../utils.html">Utilities</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../contact.html">Contact</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../contributing.html">How to contribute</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../LICENSE.html">License</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">ATHENA</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../code.html">Code Documentation</a> &raquo;</li>
+        
+          <li><a href="../projection_factory.html">Projection Matrix Factory</a> &raquo;</li>
+        
+      <li>athena.projection_factory.ProjectionFactory.laplace</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/_summaries/athena.projection_factory.ProjectionFactory.laplace.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="athena-projection-factory-projectionfactory-laplace">
+<h1>athena.projection_factory.ProjectionFactory.laplace<a class="headerlink" href="#athena-projection-factory-projectionfactory-laplace" title="Permalink to this headline">¶</a></h1>
+<dl class="method">
+<dt id="athena.projection_factory.ProjectionFactory.laplace">
+<code class="sig-prename descclassname">ProjectionFactory.</code><code class="sig-name descname">laplace</code><span class="sig-paren">(</span><em class="sig-param">n_features</em>, <em class="sig-param">params</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/athena/projection_factory.html#ProjectionFactory.laplace"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#athena.projection_factory.ProjectionFactory.laplace" title="Permalink to this definition">¶</a></dt>
+<dd><p>TO DOC</p>
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="athena.projection_factory.ProjectionFactory.multivariate_normal.html" class="btn btn-neutral float-right" title="athena.projection_factory.ProjectionFactory.multivariate_normal" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="athena.projection_factory.ProjectionFactory.dirichlet.html" class="btn btn-neutral float-left" title="athena.projection_factory.ProjectionFactory.dirichlet" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright Copyright 2019-2020, Athena contributors
+      <span class="lastupdated">
+        Last updated on Jul 08, 2020.
+      </span>
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

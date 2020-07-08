@@ -1,0 +1,280 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>athena.feature_map.FeatureMap.tune_pr_matrix &mdash; ATHENA 0.0.2 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/graphviz.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="athena.feature_map.rff_map" href="athena.feature_map.rff_map.html" />
+    <link rel="prev" title="athena.feature_map.FeatureMap.pr_matrix" href="athena.feature_map.FeatureMap.pr_matrix.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home" alt="Documentation Home"> ATHENA
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.0.2
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../code.html">Code Documentation</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../subspaces.html">Subspaces</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../active.html">Active Subspaces</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../feature_map.html">Feature Map</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="athena.feature_map.FeatureMap._compute_pr_matrix.html">athena.feature_map.FeatureMap._compute_pr_matrix</a></li>
+<li class="toctree-l3"><a class="reference internal" href="athena.feature_map.FeatureMap.compute_fmap.html">athena.feature_map.FeatureMap.compute_fmap</a></li>
+<li class="toctree-l3"><a class="reference internal" href="athena.feature_map.FeatureMap.compute_fmap_jac.html">athena.feature_map.FeatureMap.compute_fmap_jac</a></li>
+<li class="toctree-l3"><a class="reference internal" href="athena.feature_map.FeatureMap.pr_matrix.html">athena.feature_map.FeatureMap.pr_matrix</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">athena.feature_map.FeatureMap.tune_pr_matrix</a></li>
+<li class="toctree-l3"><a class="reference internal" href="athena.feature_map.rff_map.html">athena.feature_map.rff_map</a></li>
+<li class="toctree-l3"><a class="reference internal" href="athena.feature_map.rff_jac.html">athena.feature_map.rff_jac</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../kas.html">Kernel Active Subspaces</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../nll.html">Nonlinear Level Set Learning</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../projection_factory.html">Projection Matrix Factory</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../utils.html">Utilities</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../contact.html">Contact</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../contributing.html">How to contribute</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../LICENSE.html">License</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">ATHENA</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../code.html">Code Documentation</a> &raquo;</li>
+        
+          <li><a href="../feature_map.html">Feature Map</a> &raquo;</li>
+        
+      <li>athena.feature_map.FeatureMap.tune_pr_matrix</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/_summaries/athena.feature_map.FeatureMap.tune_pr_matrix.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="athena-feature-map-featuremap-tune-pr-matrix">
+<h1>athena.feature_map.FeatureMap.tune_pr_matrix<a class="headerlink" href="#athena-feature-map-featuremap-tune-pr-matrix" title="Permalink to this headline">¶</a></h1>
+<dl class="method">
+<dt id="athena.feature_map.FeatureMap.tune_pr_matrix">
+<code class="sig-prename descclassname">FeatureMap.</code><code class="sig-name descname">tune_pr_matrix</code><span class="sig-paren">(</span><em class="sig-param">func</em>, <em class="sig-param">bounds</em>, <em class="sig-param">args=()</em>, <em class="sig-param">method=None</em>, <em class="sig-param">maxiter=50</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/athena/feature_map.html#FeatureMap.tune_pr_matrix"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#athena.feature_map.FeatureMap.tune_pr_matrix" title="Permalink to this definition">¶</a></dt>
+<dd><p>TO DOC
+ADD EXAMPLE for bounds</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>func</strong> (<em>callable</em>) – the objective function to be minimized.
+Must be in the form f(x, <a href="#id1"><span class="problematic" id="id2">*</span></a>args), where x is the argument in the
+form of a 1-D array and args is a tuple of any additional fixed
+parameters needed to completely specify the function.</p></li>
+<li><p><strong>bounds</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.8)"><em>tuple</em></a>) – each component of the bounds tuple must be a
+slice tuple of the form (low, high, step). It defines bounds for
+the objective function parameter. Step will be ignored for
+‘dual_annealing’ method.</p></li>
+<li><p><strong>args</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.8)"><em>tuple</em></a>) – any additional fixed parameters needed to
+completely specify the objective function.</p></li>
+<li><p><strong>method</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – method used to optimize the objective function.
+Possible values are ‘brute’, or ‘dual_annealing’.
+Default value is None, and the choice is made automatically wrt
+the dimension of <cite>self.params</cite>. If the dimension is less than 4
+brute force is used, otherwise a traditional Generalized
+Simulated Annealing will be performed with no local search
+strategy applied.</p></li>
+<li><p><strong>maxiter</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – the maximum number of global search iterations.
+Default value is 50.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p>ValueError</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="athena.feature_map.rff_map.html" class="btn btn-neutral float-right" title="athena.feature_map.rff_map" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="athena.feature_map.FeatureMap.pr_matrix.html" class="btn btn-neutral float-left" title="athena.feature_map.FeatureMap.pr_matrix" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright Copyright 2019-2020, Athena contributors
+      <span class="lastupdated">
+        Last updated on Jul 08, 2020.
+      </span>
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
