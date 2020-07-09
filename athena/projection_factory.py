@@ -4,6 +4,9 @@ Module for the factory class for projection matrices
 import numpy as np
 
 class classproperty(object):
+    """
+    Custom decorator.
+    """
     def __init__(self, f):
         self.f = f
         self.__doc__ = f.__doc__

@@ -6,7 +6,7 @@ from scipy.optimize import linprog
 
 class Normalizer(object):
     """A class for normalizing and unnormalizing bounded inputs.
-    
+
     :param numpy.ndarray lb: array n_params-by-1 that contains lower bounds
         on the simulation inputs.
     :param numpy.ndarray ub: array n_params-by-1 that contains upper bounds
@@ -45,6 +45,9 @@ class Normalizer(object):
 
 
 def initialize_weights(matrix):
+    """
+    TO DOC
+    """
     return np.ones((matrix.shape[0], 1)) / matrix.shape[0]
 
 
@@ -92,7 +95,7 @@ def local_linear_gradients(inputs, outputs, weights=None, n_neighbors=None):
         M-by-1 matrix that contains scalar outputs
     n_neighbors : int, optional
         how many nearest neighbors to use when constructing the local linear 
-        model (default 1)
+        model. the default value is floor(1.7*m)
     weights : ndarray, optional
         M-by-1 matrix that contains the weights for each observation (default 
         None)
@@ -103,10 +106,6 @@ def local_linear_gradients(inputs, outputs, weights=None, n_neighbors=None):
         by the local linear models
 
     :raises: ValueError, TypeError
-
-    .. note::
-
-        If `n_neighbors` is not specified, the default value is floor(1.7*m).
     """
     n_samples, n_pars = inputs.shape
 
@@ -157,7 +156,7 @@ def sort_eigpairs(matrix):
 
         Eigenvectors are unique up to a sign. We make the choice to normalize
         the eigenvectors so that the first component of each eigenvector is
-        positive. This normalization is very helpful for the bootstrapping. 
+        positive. This normalization is very helpful for the bootstrapping.
     """
     evals, evects = np.linalg.eigh(matrix)
     evals = abs(evals)

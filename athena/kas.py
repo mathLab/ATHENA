@@ -4,7 +4,7 @@ Module for Kernel-based Active Subspaces.
 Reference:
 - Francesco Romor, Marco Tezzele, Andrea Lario, Gianluigi Rozza.
 Kernel-based Active Subspaces with application to CFD problems using
-Discontinuous Galerkin Method. 2020. 
+Discontinuous Galerkin Method. 2020.
 arxiv: 
 """
 import numpy as np
@@ -55,11 +55,10 @@ class KernelActiveSubspaces(Subspaces):
                            axis=0))
                 evals, evects = sort_eigpairs(cov_matrix)
                 return evals, evects
-            else:
-                X = np.squeeze(gradients * np.sqrt(weights).reshape(-1, 1, 1))
-                _, singular, evects = np.linalg.svd(X, full_matrices=False)
-                evals = singular**2
-                return evals, evects.T
+            X = np.squeeze(gradients * np.sqrt(weights).reshape(-1, 1, 1))
+            _, singular, evects = np.linalg.svd(X, full_matrices=False)
+            evals = singular**2
+            return evals, evects.T
 
     def forward(self, inputs):
         """
@@ -190,5 +189,5 @@ class KernelActiveSubspaces(Subspaces):
                                                nboot=nboot)
             else:
                 raise ValueError(
-                    'the value of nboot is too high for the bootstrap method applied to kas'
+                    'nboot is too high for the bootstrap method applied to kas'
                 )

@@ -2,7 +2,8 @@
 Athena init
 """
 __all__ = [
-    'active', 'feature_map', 'kas', 'projection_factory', 'nll', 'subspaces', 'utils'
+    'active', 'feature_map', 'kas', 'projection_factory', 'nll', 'subspaces',
+    'utils'
 ]
 __project__ = 'ATHENA'
 __title__ = "athena"

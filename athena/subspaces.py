@@ -6,8 +6,8 @@ References:
 parameter studies, vol. 2 of SIAM Spotlights, SIAM, 2015.
 - Francesco Romor, Marco Tezzele, Andrea Lario, Gianluigi Rozza.
 Kernel-based Active Subspaces with application to CFD problems using
-Discontinuous Galerkin Method. 2020. 
-arxiv: 
+Discontinuous Galerkin Method. 2020.
+arxiv:
 """
 import numpy as np
 import matplotlib.pyplot as plt
@@ -16,7 +16,7 @@ plt.rcParams.update({'font.size': 16})
 
 class Subspaces(object):
     """Active Subspaces base class
-    
+
     [description]
     """
     def __init__(self):
@@ -58,9 +58,9 @@ class Subspaces(object):
         for i in range(nboot):
             gradients0, weights0 = self._bootstrap_replicate(gradients, weights)
             e0, W0 = self._build_decompose_cov_matrix(gradients=gradients0,
-                                                          weights=weights0,
-                                                          method=method,
-                                                          metric=metric)
+                                                      weights=weights0,
+                                                      method=method,
+                                                      metric=metric)
             e_boot[:, i] = e0.reshape((n_pars, ))
             for j in range(n_pars - 1):
                 sub_dist[j, i] = np.linalg.norm(np.dot(self.evects[:, :j + 1].T,
@@ -82,7 +82,7 @@ class Subspaces(object):
         Return a bootstrap replicate.
     
         A bootstrap replicate is a sampling-with-replacement strategy from a
-        given data set. 
+        given data set.
 
         :param numpy.ndarray matrix: matrix from which will be sampled N rows.
             N corresponds to the number of rows of weights.
@@ -90,14 +90,15 @@ class Subspaces(object):
             to numerical quadrature rule used to estimate matrix whose
             eigenspaces define the active subspace.
         """
-        M = weights.shape[0]
-        ind = np.random.randint(M, size=(M, ))
+        ind = np.random.randint(weights.shape[0], size=(weights.shape[0], ))
 
-        #matrix has shape 2 if the outputs are scalar and shape 3 if they are vectorial
-        if len(matrix.shape)==2:
+        # matrix has shape 2 if the outputs are scalar and shape 3 if they are
+        # vectorial.
+        if len(matrix.shape) == 2:
             return matrix[ind, :].copy(), weights[ind, :].copy()
-        elif len(matrix.shape)==3:
+        elif len(matrix.shape) == 3:
             return matrix[ind, :, :].copy(), weights[ind, :].copy()
+        return None, None
 
     @classmethod
     def _build_decompose_cov_matrix(cls, *args, **kwargs):
@@ -132,8 +133,8 @@ class Subspaces(object):
         :rtype: numpy.ndarray, numpy.ndarray
         """
         raise NotImplementedError(
-            'Subclass must implement abstract method {}.compute'.format(
-                self.__class__.__name__))
+            'Subclass must implement abstract method ' \
+            '{}.compute'.format(self.__class__.__name__))
 
     def backward(self, reduced_inputs, n_points):
         """
@@ -283,7 +284,7 @@ class Subspaces(object):
 
         axes.flat[-1].set_xlabel('Eigenvector components')
         fig.tight_layout()
-        # tight_layout does not consider suptitle so we need to adjust it manually
+        # tight_layout does not consider suptitle so we adjust it manually
         plt.subplots_adjust(top=0.94)
 
         if filename:
@@ -311,7 +312,7 @@ class Subspaces(object):
         :raises: ValueError
 
         .. warning::
-            `self.partition` has to be called in advance. 
+            `self.partition` has to be called in advance.
 
             Plot only available for partitions up to dimension 2.
         """
