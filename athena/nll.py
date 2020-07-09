@@ -2,14 +2,13 @@
 Module for Nonlinear Level-set Learning (NLL).
 
 Reference:
-- Guannan Zhang, Jiaxin Zhang, Jacob Hinkle. 
+- Guannan Zhang, Jiaxin Zhang, Jacob Hinkle.
 Learning nonlinear level sets for dimensionality reduction in function
 approximation. NeurIPS 2019, 13199-13208. https://arxiv.org/abs/1902.10652
 """
 import torch
 import torch.nn as nn
 import torch.optim as optim
-import numpy as np
 import matplotlib.pyplot as plt
 
 # Define the overall data type
@@ -19,7 +18,11 @@ torch.set_default_tensor_type(torch.DoubleTensor)
 class NonlinearLevelSet(object):
     """Nonlinear Level Set class
     
-    [description]
+    :param int n_layers:
+    :param int active_dim:
+    :param float lr:
+    :param int epochs:
+    :param float dh:
     """
     def __init__(self, n_layers, active_dim, lr, epochs, dh=0.25):
         self.n_layers = n_layers
@@ -261,10 +264,10 @@ class ForwardNet(nn.Module):
         self.omega = slice(active_dim)
 
         for i in range(self.n_layers):
-            name_y = 'fc{}_y'.format(i + 1)
-            name_z = 'fc{}_z'.format(i + 1)
-            setattr(self, name_y, nn.Linear(self.n_params, 2 * self.n_params))
-            setattr(self, name_z, nn.Linear(self.n_params, 2 * self.n_params))
+            setattr(self, 'fc{}_y'.format(i + 1),
+                    nn.Linear(self.n_params, 2 * self.n_params))
+            setattr(self, 'fc{}_z'.format(i + 1),
+                    nn.Linear(self.n_params, 2 * self.n_params))
 
     def forward(self, x):
         """
@@ -366,19 +369,16 @@ class ForwardNet(nn.Module):
             # if torch.mean(torch.abs(torch.add(-1 * output_dy,
             #                                   self.forward(dx)))) > 1e-5:
             #     print('Something is wrong in Jacobian computation')
-            #     print(
-            #         torch.mean(
-            #             torch.abs(torch.add(-1 * output_dy, self.forward(dx)))))
+            #     print(torch.mean(
+            #         torch.abs(torch.add(-1 * output_dy, self.forward(dx)))))
 
             for k in range(2 * self.n_params):
                 Jacob[:, j, k] = torch.add(dx[:, k], -1 * x[:, k])
 
-        ex_data = torch.unsqueeze(gradients, 2)
-        norm_data = torch.sqrt(torch.sum(torch.mul(ex_data, ex_data), 1))
-
         JJ2 = torch.unsqueeze(torch.sqrt(torch.sum(torch.mul(Jacob, Jacob), 2)),
                               2)
         JJJ = torch.div(Jacob, JJ2.expand(-1, -1, 2 * self.n_params))
+        ex_data = torch.unsqueeze(gradients, 2)
         loss1 = torch.clone(torch.squeeze(torch.matmul(JJJ, ex_data), 2))
         # anisotropy weigths
         loss1[:, self.omega] = 0.0
@@ -404,10 +404,10 @@ class BackwardNet(nn.Module):
         self.dh = dh
 
         for i in range(self.n_layers):
-            name_y = 'fc{}_y'.format(i + 1)
-            name_z = 'fc{}_z'.format(i + 1)
-            setattr(self, name_y, nn.Linear(self.n_params, 2 * self.n_params))
-            setattr(self, name_z, nn.Linear(self.n_params, 2 * self.n_params))
+            setattr(self, 'fc{}_y'.format(i + 1),
+                    nn.Linear(self.n_params, 2 * self.n_params))
+            setattr(self, 'fc{}_z'.format(i + 1),
+                    nn.Linear(self.n_params, 2 * self.n_params))
 
     def forward(self, x):
         """
