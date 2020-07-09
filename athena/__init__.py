@@ -5,6 +5,7 @@ __all__ = [
     'active', 'feature_map', 'kas', 'projection_factory', 'nll', 'subspaces',
     'utils'
 ]
+
 __project__ = 'ATHENA'
 __title__ = "athena"
 __author__ = "Marco Tezzele, Francesco Romor"
