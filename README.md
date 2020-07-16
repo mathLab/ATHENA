@@ -83,7 +83,16 @@ To run tests locally (`nose` is required):
 ```
 
 ## Examples and Tutorials
-You can find useful tutorials on how to use the package in the [tutorials](tutorials/README.md) folder.
+You can find useful tutorials on how to use the package in the [tutorials](tutorials/README.md) folder. 
+
+In the following some illustrative examples of what you can do with this package.
+
+<p align="center">
+<img src="readme/as_video.gif" alt>
+</p>
+<p align="center">
+<em>A 7-dimensional quadratic function with a 1-dimensional active subspace.</em>
+</p>
 
 
 ## References
