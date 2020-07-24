@@ -350,12 +350,12 @@ class TestUtils(TestCase):
                    weights=weights,
                    method='exact',
                    nboot=49,
-                   n_features=8,
+                   n_features=5,
                    feature_map=None)
         with assert_plot_figures_added():
             ss.plot_eigenvectors(n_evects=2,
                                  figsize=(5, 8),
-                                 labels=[r'$x$', r'$y$', r'$r$', r'$z$'])
+                                 labels=[r'$x$', r'$y$', 'q', r'$r$', r'$z$'])
 
     def test_plot_sufficient_summary_01(self):
         ss = KernelActiveSubspaces()
