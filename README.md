@@ -1,4 +1,8 @@
-
+<p align="center">
+  <a href="http://mathlab.github.io/PyDMD/" target="_blank" >
+    <img alt="ATHENA logo" src="readme/logo_athena.png" width="200" />
+  </a>
+</p>
 <p align="center">
     <a href="https://github.com/mathLab/ATHENA/blob/master/LICENSE" target="_blank">
         <img alt="Software License" src="https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square">
@@ -94,6 +98,12 @@ In the following some illustrative examples of what you can do with this package
 <em>A 7-dimensional quadratic function with a 1-dimensional active subspace.</em>
 </p>
 
+<p align="center">
+<img src="readme/nll_video.gif" alt>
+</p>
+<p align="center">
+<em>Parameter space deformation using the nonlinear level-set learning technique for a 2-dimensional cubic function.</em>
+</p>
 
 ## References
 To implement the numerical methods present in this package we followed these works:
