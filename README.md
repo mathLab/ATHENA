@@ -1,5 +1,5 @@
 <p align="center">
-  <a href="http://mathlab.github.io/PyDMD/" target="_blank" >
+  <a href="http://mathlab.github.io/ATHENA/" target="_blank" >
     <img alt="ATHENA logo" src="readme/logo_athena.png" width="200" />
   </a>
 </p>
