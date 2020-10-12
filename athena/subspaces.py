@@ -29,7 +29,7 @@ class Subspaces(object):
         self.dim = None
         self.cov_matrix = None
 
-    def _compute_bootstrap_ranges(self, gradients, weights, method, metric=None, nboot=100):
+    def _compute_bootstrap_ranges(self, gradients, weights, method, nboot=100):
         """Compute bootstrap ranges for eigenvalues and subspaces.
     
         An implementation of the nonparametric bootstrap that we use in 
@@ -59,8 +59,7 @@ class Subspaces(object):
             gradients0, weights0 = self._bootstrap_replicate(gradients, weights)
             e0, W0 = self._build_decompose_cov_matrix(gradients=gradients0,
                                                       weights=weights0,
-                                                      method=method,
-                                                      metric=metric)
+                                                      method=method)
             e_boot[:, i] = e0.reshape((n_pars, ))
             for j in range(n_pars - 1):
                 sub_dist[j, i] = np.linalg.norm(np.dot(self.evects[:, :j + 1].T,
