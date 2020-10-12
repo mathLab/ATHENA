@@ -21,8 +21,7 @@ class ActiveSubspaces(Subspaces):
     @staticmethod
     def _build_decompose_cov_matrix(gradients=None,
                                     weights=None,
-                                    method=None,
-                                    metric=None):
+                                    method=None):
         """
         Build and decompose the covariance matrix of the gradients.
 
