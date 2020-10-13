@@ -14,5 +14,3 @@ build/
 
 *.json
 
-
-tests/data/backward_test.pth
