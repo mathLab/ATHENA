@@ -1,6 +1,6 @@
 from unittest import TestCase
-from athena import NonlinearLevelSet, ForwardNet, BackwardNet, Normalizer
 import numpy as np
+from athena import NonlinearLevelSet, ForwardNet, BackwardNet, Normalizer
 import torch
 import os
 from contextlib import contextmanager

@@ -1,6 +1,6 @@
 from unittest import TestCase
-from athena import ProjectionFactory
 import numpy as np
+from athena import ProjectionFactory
 
 
 class TestProjectionFactory(TestCase):

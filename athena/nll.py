@@ -375,12 +375,11 @@ class ForwardNet(nn.Module):
             for k in range(2 * self.n_params):
                 Jacob[:, j, k] = torch.add(dx[:, k], -1 * x[:, k])
 
-        JJ2 = torch.unsqueeze(
-            torch.sqrt(torch.sum(torch.mul(Jacob, Jacob), 2)), 2)
+        JJ2 = torch.unsqueeze(torch.sqrt(torch.sum(torch.mul(Jacob, Jacob), 2)),
+                              2)
         JJJ = torch.div(Jacob, JJ2.expand(-1, -1, 2 * self.n_params))
         ex_data = torch.unsqueeze(gradients, 2)
-        loss_weights = torch.clone(
-            torch.squeeze(torch.matmul(JJJ, ex_data), 2))
+        loss_weights = torch.clone(torch.squeeze(torch.matmul(JJJ, ex_data), 2))
         # anisotropy weigths
         loss_weights[:, self.omega] = 0.0
         loss_anisotropy = torch.sqrt(
