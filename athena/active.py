@@ -132,8 +132,7 @@ class ActiveSubspaces(Subspaces):
         :param int n_points: the number of inactive variable samples,
         :return: n_points-by-(inactive_dim) matrix that contains values of the
             inactive variable that correspond to the given `reduced_input`.
-        :rtype:
-        numpy.ndarray
+        :rtype: numpy.ndarray
 
         .. note:: The trick here is to sample the inactive variables z so that
             -1 <= W1*y + W2*z <= 1, where y is the given value of the active

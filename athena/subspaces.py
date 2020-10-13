@@ -96,8 +96,8 @@ class Subspaces(object):
             matrix, first column contains bootstrap lower bound on estimated
             subspace error, second column contains estimated mean of subspace
             error (a reasonable subspace error estimate), third column contains
-            estimated upper bound on subspace error. :rtype: numpy.ndarray,
-            numpy.ndarray
+            estimated upper bound on subspace error.
+        :rtype: numpy.ndarray, numpy.ndarray
         """
         n_pars = gradients.shape[-1]
         e_boot = np.zeros((n_pars, nboot))
@@ -193,8 +193,8 @@ class Subspaces(object):
         """
         Partition the eigenvectors to define the active and inactive subspaces.
 
-        :param int dim: dimension of the active subspace. :raises: TypeError,
-        ValueError
+        :param int dim: dimension of the active subspace.
+        :raises: TypeError, ValueError
         """
         if not isinstance(dim, int):
             raise TypeError('dim should be an integer.')
@@ -357,7 +357,8 @@ class Subspaces(object):
             corresponding function evaluations.
         :param str filename: if specified, the plot is saved at `filename`.
         :param tuple(int,int) figsize: tuple in inches defining the figure
-            size. Defaults to (10, 8). :param str title: title of the plot.
+            size. Defaults to (10, 8).
+        :param str title: title of the plot.
         :raises: ValueError
 
         .. warning:: `self.partition` has to be called in advance.
