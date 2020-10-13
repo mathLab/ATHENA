@@ -32,7 +32,7 @@ class Normalizer(object):
     def inverse_transform(self, inputs):
         """Return corresponding points shifted and scaled to
         `[self.lb, self.ub]`.
-        
+
         :param numpy.ndarray inputs: contains all input points to unnormalize.
             The shape is n_samples-by-n_params. The components of each row of
             `inputs` should be between -1 and 1.
@@ -54,7 +54,7 @@ def initialize_weights(matrix):
 def linear_program_ineq(c, A, b):
     """Solves an equality constrained linear program with variable bounds.
     This method returns the minimizer of the following linear program.
-    
+
     minimize  c^T x
     subject to  A x >= b
 
@@ -83,26 +83,26 @@ def linear_program_ineq(c, A, b):
 
 def local_linear_gradients(inputs, outputs, weights=None, n_neighbors=None):
     """Estimate a collection of gradients from input/output pairs.
-    
+
     Given a set of input/output pairs, choose subsets of neighboring points and
     build a local linear model for each subset. The gradients of these local
     linear models comprise estimates of sampled gradients.
     Parameters
     ----------
-    inputs : ndarray 
+    inputs : ndarray
         M-by-m matrix that contains the m-dimensional inputs
-    outputs : ndarray 
+    outputs : ndarray
         M-by-1 matrix that contains scalar outputs
     n_neighbors : int, optional
-        how many nearest neighbors to use when constructing the local linear 
+        how many nearest neighbors to use when constructing the local linear
         model. the default value is floor(1.7*m)
     weights : ndarray, optional
-        M-by-1 matrix that contains the weights for each observation (default 
+        M-by-1 matrix that contains the weights for each observation (default
         None)
     Returns
     -------
     gradients : ndarray
-        M-by-m matrix that contains estimated partial derivatives approximated 
+        M-by-m matrix that contains estimated partial derivatives approximated
         by the local linear models
 
     :raises: ValueError, TypeError
@@ -119,15 +119,24 @@ def local_linear_gradients(inputs, outputs, weights=None, n_neighbors=None):
 
     if n_neighbors <= n_pars or n_neighbors > n_samples:
         raise ValueError(
-            'n_neighbors must be between the number of parameters ' \
-            'and the number of samples. Unsatisfied: {} < {} < {}.'
-            .format(n_pars, n_neighbors, n_samples))
+            'n_neighbors must be between the number of parameters '
+            'and the number of samples. Unsatisfied: {} < {} < {}.'.format(
+                n_pars, n_neighbors, n_samples))
 
     if weights is None:
         weights = initialize_weights(inputs)
 
     MM = min(int(np.ceil(10 * n_pars * np.log(n_pars))), n_samples - 1)
-    gradients = np.zeros((MM, n_pars))
+
+    # distinguish between scalar and vectorial outputs
+    if len(outputs.shape) == 1 or outputs.shape[1] == 0:
+        gradients = np.zeros((MM, n_pars))
+    else:
+        gradients = np.zeros((MM, outputs.shape[1], n_pars))
+
+    # new inputs are defined since MM is different from n_samples
+    new_inputs = np.zeros((MM, n_pars))
+
     for i in range(MM):
         ii = np.random.randint(n_samples)
         inputs_rand_row = inputs[ii, :]
@@ -139,14 +148,15 @@ def local_linear_gradients(inputs, outputs, weights=None, n_neighbors=None):
                 weights[ii])
         b = outputs[ind[:n_neighbors]] * np.sqrt(weights[ii])
         u = np.linalg.lstsq(A, b, rcond=None)[0]
-        gradients[i, :] = u[1:].T
-
-    return gradients
+        gradients[i] = u[1:].T
+        new_inputs[i, :] = (1 / n_neighbors) * np.sum(
+            inputs[ind[:n_neighbors], :], axis=0)
+    return gradients, new_inputs
 
 
 def sort_eigpairs(matrix):
     """Compute eigenpairs and sort.
-    
+
     :param numpy.ndarray matrix: matrix whose eigenpairs you want.
     :return: vector of sorted eigenvalues; orthogonal matrix of corresponding
         eigenvectors.

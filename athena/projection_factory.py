@@ -3,6 +3,7 @@ Module for the factory class for projection matrices
 """
 import numpy as np
 
+
 class classproperty(object):
     """
     Custom decorator.
@@ -40,7 +41,8 @@ class ProjectionFactory(object):
         """
         TO DOC
         """
-        return (1/params[0])*np.random.standard_cauchy((n_features, input_dim))
+        return (1 / params[0]) * np.random.standard_cauchy(
+            (n_features, input_dim))
 
     def dirichlet(input_dim, n_features, params):
         """

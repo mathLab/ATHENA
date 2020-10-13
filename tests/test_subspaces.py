@@ -1,6 +1,6 @@
 from unittest import TestCase
-from athena.subspaces import Subspaces
 import numpy as np
+from athena.subspaces import Subspaces
 
 
 class TestUtils(TestCase):
@@ -40,11 +40,6 @@ class TestUtils(TestCase):
         ss = Subspaces()
         with self.assertRaises(NotImplementedError):
             ss.compute()
-
-    def test_build_decompose_cov_matrix(self):
-        ss = Subspaces()
-        with self.assertRaises(NotImplementedError):
-            ss._build_decompose_cov_matrix()
 
     def test_forward(self):
         ss = Subspaces()

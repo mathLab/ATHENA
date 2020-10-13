@@ -1,6 +1,6 @@
 from unittest import TestCase
-from athena import FeatureMap, rff_map, rff_jac
 import numpy as np
+from athena import FeatureMap, rff_map, rff_jac
 
 
 class TestProjectionFactory(TestCase):

@@ -36,7 +36,7 @@ class FeatureMap(object):
     def pr_matrix(self):
         """
         Get the projection matrix.
-        
+
         :return: the projection matrix.
         :rtype: numpy.ndarray
         """

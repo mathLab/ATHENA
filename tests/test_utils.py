@@ -1,7 +1,7 @@
 from unittest import TestCase
+import numpy as np
 from athena.utils import (Normalizer, initialize_weights, linear_program_ineq,
                           local_linear_gradients, sort_eigpairs)
-import numpy as np
 
 
 class TestUtils(TestCase):
@@ -50,7 +50,7 @@ class TestUtils(TestCase):
         np.random.seed(42)
         inputs = np.random.uniform(-1.0, 1.0, size=(200, 2))
         outputs = 2 - 5 * inputs[:, 0] + 4 * inputs[:, 1]
-        gradients = local_linear_gradients(inputs, outputs)
+        gradients = local_linear_gradients(inputs, outputs)[0]
         M = gradients.shape[0]
         np.testing.assert_array_almost_equal(gradients,
                                              np.tile(np.array([-5.0, 4.0]),
@@ -61,7 +61,7 @@ class TestUtils(TestCase):
         np.random.seed(42)
         inputs = np.random.uniform(-1.0, 1.0, size=(200, 2))
         outputs = 2 - 5 * inputs[:, 0] + 4 * inputs[:, 1]
-        gradients = local_linear_gradients(inputs, outputs, n_neighbors=8)
+        gradients = local_linear_gradients(inputs, outputs, n_neighbors=8)[0]
         M = gradients.shape[0]
         np.testing.assert_array_almost_equal(gradients,
                                              np.tile(np.array([-5.0, 4.0]),

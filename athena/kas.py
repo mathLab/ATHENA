@@ -5,11 +5,11 @@ Reference:
 - Francesco Romor, Marco Tezzele, Andrea Lario, Gianluigi Rozza.
 Kernel-based Active Subspaces with application to CFD problems using
 Discontinuous Galerkin Method. 2020.
-arxiv: 
+arxiv:
 """
 import numpy as np
 from .subspaces import Subspaces
-from .utils import (initialize_weights, sort_eigpairs, local_linear_gradients)
+from .utils import (initialize_weights, local_linear_gradients)
 from .feature_map import FeatureMap
 
 
@@ -22,43 +22,6 @@ class KernelActiveSubspaces(Subspaces):
         self.feature_map = None
         self.features = None
         self.pseudo_gradients = None
-
-    @staticmethod
-    def _build_decompose_cov_matrix(gradients=None,
-                                    weights=None,
-                                    method=None,
-                                    metric=None):
-        """
-        Computes the uncentered covariance matrix of the pseudo_gradients.
-
-        :param numpy.ndarray gradients: n_samples-by-output_dim-by-n_params matrix containing
-            the pseudo gradients corresponding to each sample.
-        :param numpy.ndarray weights: n_samples-by-1 weight vector, corresponds to numerical
-            quadrature rule used to estimate matrix whose eigenspaces define the active
-            subspace.
-        :param str method: the method used to compute the gradients.
-        :param numpy.ndarray metric: output_dim-byoutput-dim the matrix representing the metric
-            in the output space
-        :return: array n_features containing the eigenvalues ordered decreasingly in magnitude;
-            array n_features-by-n_features the columns contain the ordered eigenvectors.
-        :rtype: numpy.ndarray, numpy.ndarray, numpy.ndarray
-        """
-        if method == 'exact' or method == 'local':
-            if metric:
-                cov_matrix = np.array(
-                    np.sum([
-                        weights[i, 0] *
-                        np.dot(gradients[i, :, :].T,
-                               np.dot(metric, gradients[i, :, :]))
-                        for i in range(gradients.shape[0])
-                    ],
-                           axis=0))
-                evals, evects = sort_eigpairs(cov_matrix)
-                return evals, evects
-            X = np.squeeze(gradients * np.sqrt(weights).reshape(-1, 1, 1))
-            _, singular, evects = np.linalg.svd(X, full_matrices=False)
-            evals = singular**2
-            return evals, evects.T
 
     def forward(self, inputs):
         """
@@ -90,7 +53,7 @@ class KernelActiveSubspaces(Subspaces):
         :param numpy.ndarray gradients: array n_samples-by-n_params containing
             the gradient samples oriented as rows.
         :return: array n_samples-by-output_dim-by-n_params matrix containing
-            the pseudo gradients corresponding to each sample.; array 
+            the pseudo gradients corresponding to each sample.; array
             n_samples-by-n_features containing the image of the inputs in the feature space.
         :rtype: numpy.ndarray, numpy.ndarray
         """
@@ -122,7 +85,7 @@ class KernelActiveSubspaces(Subspaces):
                 feature_map=None,
                 metric=None):
         """
-        Compute the kernel based active subspaces given the inputs and the 
+        Compute the kernel based active subspaces given the inputs and the
         gradients of the model function wrt the input parameters, or given the input/outputs
         couples. Only two methods are available: 'exact' and 'local'.
 
@@ -147,6 +110,10 @@ class KernelActiveSubspaces(Subspaces):
             if gradients is None or inputs is None:
                 raise ValueError('gradients or inputs argument is None.')
 
+        if len(gradients.shape) == 2:
+            gradients = gradients.reshape(gradients.shape[0], 1,
+                                          gradients.shape[1])
+
         # estimate active subspace with local linear models.
         elif method == 'local':
             if inputs is None or outputs is None:
@@ -154,9 +121,10 @@ class KernelActiveSubspaces(Subspaces):
             gradients = local_linear_gradients(inputs=inputs,
                                                outputs=outputs,
                                                weights=weights)
-            print(gradients.shape)
-        if weights is None:
-            # default weights is for Monte Carlo
+
+        if weights is None or method == 'local':
+            # use the new gradients to compute the weights, otherwise dimension
+            # mismatch accours.
             weights = initialize_weights(gradients)
 
         if n_features is None:
@@ -175,6 +143,9 @@ class KernelActiveSubspaces(Subspaces):
         else:
             self.feature_map = feature_map
 
+        if metric is None:
+            metric = np.diag(np.ones(gradients.shape[1]))
+
         self.pseudo_gradients, self.features = self._reparametrize(
             inputs, gradients)
 
@@ -186,8 +157,8 @@ class KernelActiveSubspaces(Subspaces):
                 self._compute_bootstrap_ranges(gradients=self.pseudo_gradients,
                                                weights=weights,
                                                method=method,
-                                               nboot=nboot)
+                                               nboot=nboot,
+                                               metric=metric)
             else:
                 raise ValueError(
-                    'nboot is too high for the bootstrap method applied to kas'
-                )
+                    'nboot is too high for the bootstrap method applied to kas')

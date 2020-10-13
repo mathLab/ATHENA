@@ -1,6 +1,6 @@
 from unittest import TestCase
-from athena.kas import KernelActiveSubspaces
 import numpy as np
+from athena.kas import KernelActiveSubspaces
 from contextlib import contextmanager
 import matplotlib.pyplot as plt
 
@@ -73,7 +73,7 @@ class TestUtils(TestCase):
 
     def test_compute_02(self):
         np.random.seed(42)
-        gradients = np.random.uniform(-1, 1, 30).reshape(15, 1, 2)
+        gradients = np.random.uniform(-1, 1, 30).reshape(15, 2)
         inputs = np.random.uniform(-1, 1, 30).reshape(15, 2)
         weights = np.ones((15, 1)) / 15
         ss = KernelActiveSubspaces()
@@ -89,7 +89,7 @@ class TestUtils(TestCase):
 
     def test_compute_03(self):
         np.random.seed(42)
-        gradients = np.random.uniform(-1, 1, 30).reshape(15, 1, 2)
+        gradients = np.random.uniform(-1, 1, 30).reshape(15, 2)
         inputs = np.random.uniform(-1, 1, 30).reshape(15, 2)
         weights = np.ones((15, 1)) / 15
         ss = KernelActiveSubspaces()
@@ -101,10 +101,10 @@ class TestUtils(TestCase):
                    n_features=4,
                    feature_map=None)
         true_evects = np.array(
-            [[0.74714817, 0.6155644, -0.23414206, -0.08959675],
-             [0.35380297, -0.10917583, 0.91115623, -0.18082704],
-             [-0.50287165, 0.76801638, 0.33072226, 0.21884635],
-             [-0.25241469, 0.1389674, -0.07479708, -0.95466239]])
+            [[0.74714817, 0.6155644, 0.23414206, 0.08959675],
+             [0.35380297, -0.10917583, -0.91115623, 0.18082704],
+             [-0.50287165, 0.76801638, -0.33072226, -0.21884635],
+             [-0.25241469, 0.1389674, 0.07479708, 0.95466239]])
         np.testing.assert_array_almost_equal(true_evects, ss.evects)
 
     # def test_compute_05(self):
@@ -178,8 +178,8 @@ class TestUtils(TestCase):
         ss.partition(2)
         inactive = ss.forward(np.random.uniform(-1, 1, 4).reshape(2, 2))[1]
         print(inactive)
-        true_inactive = np.array([[0.47449407, -0.51271165],
-                                  [0.27475082, -0.36433068]])
+        true_inactive = np.array([[-0.47449407, 0.51271165],
+                                  [-0.27475082, 0.36433068]])
         np.testing.assert_array_almost_equal(true_inactive, inactive)
 
     def test_partition_01(self):
@@ -243,7 +243,7 @@ class TestUtils(TestCase):
 
     def test_compute_bootstrap_ranges_01(self):
         np.random.seed(42)
-        gradients = np.random.uniform(-1, 1, 60).reshape(30, 1, 2)
+        gradients = np.random.uniform(-1, 1, 60).reshape(30, 2)
         inputs = np.random.uniform(-1, 1, 60).reshape(30, 2)
         weights = np.ones((30, 1)) / 30
         ss = KernelActiveSubspaces()

@@ -4,75 +4,46 @@ Active Subspaces module.
 Reference:
 
 * Paul Constantine. Active subspaces: Emerging ideas for dimension reduction in
-parameter studies, vol. 2 of SIAM Spotlights, SIAM, 2015.
+  parameter studies, vol. 2 of SIAM Spotlights, SIAM, 2015.
 """
 import numpy as np
 from .subspaces import Subspaces
 from .utils import (Normalizer, initialize_weights, linear_program_ineq,
-                    local_linear_gradients, sort_eigpairs)
+                    local_linear_gradients)
 
 
 class ActiveSubspaces(Subspaces):
     """Active Subspaces class
     """
-    def __init__(self):
-        super().__init__()
-
-    @staticmethod
-    def _build_decompose_cov_matrix(gradients=None,
-                                    weights=None,
-                                    method=None):
-        """
-        Build and decompose the covariance matrix of the gradients.
-
-        :param numpy.ndarray inputs: input parameters oriented as rows.
-        :param numpy.ndarray outputs: corresponding outputs oriented as rows.
-        :param numpy.ndarray gradients: n_samples-by-n_params matrix containing
-            the gradient samples oriented as rows.
-        :param numpy.ndarray weights: n_samples-by-1 weight vector, corresponds
-            to numerical quadrature rule used to estimate matrix whose
-            eigenspaces define the active subspace.
-        :param str method: method to compute the AS. Possible choices are
-            'exact' when the gradients are provided, or 'local' to use
-            local linear models. This approach is related to the sufficient
-            dimension reduction method known sometimes as the outer product
-            of gradient method. See the 2001 paper 'Structure adaptive approach
-            for dimension reduction' from Hristache, et al.
-        :return: the covariance matrix, the sorted eigenvalues, and the
-            corresponding eigenvectors.
-        :rtype: numpy.ndarray, numpy.ndarray, numpy.ndarray
-        """
-        if method == 'exact' or method == 'local':
-            cov_matrix = gradients.T.dot(gradients * weights)
-            evals, evects = sort_eigpairs(cov_matrix)
-        return evals, evects
-
     def compute(self,
                 inputs=None,
                 outputs=None,
                 gradients=None,
                 weights=None,
                 method='exact',
-                nboot=100):
+                nboot=100,
+                metric=None):
         """
-        Compute the active subspaces given the gradients of the model
-        function wrt the input parameters, or given the input/outputs
-        couples. Only two methods are available: 'exact' and 'local'.
+        Compute the active subspaces given the gradients of the model function
+        wrt the input parameters, or given the input/outputs couples. Only two
+        methods are available: 'exact' and 'local'.
 
         :param numpy.ndarray inputs: input parameters oriented as rows.
         :param numpy.ndarray outputs: corresponding outputs oriented as rows.
-        :param numpy.ndarray gradients: n_samples-by-n_params matrix containing
-            the gradient samples oriented as rows.
+        :param numpy.ndarray gradients: n_samples-by-n_params matrix containing the
+            gradient samples oriented as rows.
         :param numpy.ndarray weights: n_samples-by-1 weight vector, corresponds
-            to numerical quadrature rule used to estimate matrix whose
-            eigenspaces define the active subspace.
+            to numerical quadrature rule used to estimate matrix whose eigenspaces
+            define the active subspace.
         :param str method: method to compute the AS. Possible choices are
-            'exact' when the gradients are provided, or 'local' to use
-            local linear models. This approach is related to the sufficient
-            dimension reduction method known sometimes as the outer product
-            of gradient method. See the 2001 paper 'Structure adaptive approach
-            for dimension reduction' from Hristache, et al.
+            'exact' when the gradients are provided, or 'local' to use local linear
+            models. This approach is related to the sufficient dimension reduction
+            method known sometimes as the outer product of gradient method. See the
+            2001 paper 'Structure adaptive approach for dimension reduction' from
+            Hristache, et al.
         :param int nboot: number of bootstrap samples. Default is 100.
+        :param numpy.ndarray metric: metric matrix for vectorial active
+            subspaces.
         :raises: ValueError
         """
         if method == 'exact':
@@ -85,32 +56,37 @@ class ActiveSubspaces(Subspaces):
                 raise ValueError('inputs or outputs argument is None.')
             gradients = local_linear_gradients(inputs=inputs,
                                                outputs=outputs,
-                                               weights=weights)
+                                               weights=weights)[0]
 
-        if weights is None:
-            # use the new gradients to compute the weights,
-            # otherwise dimension mismatch accours.
+        if weights is None or method == 'local':
+            # use the new gradients to compute the weights, otherwise dimension
+            # mismatch accours.
             weights = initialize_weights(gradients)
 
+        if len(gradients.shape) == 3 and metric is None:
+            metric = np.diag(np.ones(gradients.shape[1]))
+
         self.evals, self.evects = self._build_decompose_cov_matrix(
-            gradients=gradients, weights=weights, method=method)
+            gradients=gradients, weights=weights, method=method, metric=metric)
+
         self._compute_bootstrap_ranges(gradients,
                                        weights,
                                        method=method,
-                                       nboot=nboot)
+                                       nboot=nboot,
+                                       metric=metric)
 
     def forward(self, inputs):
         """
         Map full variables to active and inactive variables.
 
-        Points in the original input space are mapped to the active and
-        inactive subspace.
+        Points in the original input space are mapped to the active and inactive
+        subspace.
 
-        :param numpy.ndarray inputs: array n_samples-by-n_params containing
-            the points in the original parameter space.
-        :return: array n_samples-by-active_dim containing the mapped active
-            variables; array n_samples-by-inactive_dim containing the mapped
-            inactive variables.
+        :param numpy.ndarray inputs: array n_samples-by-n_params containing the
+            points in the original parameter space.
+        :return: array n_samples-by-active_dim containing the mapped active variables;
+            array n_samples-by-inactive_dim containing the mapped inactive
+            variables.
         :rtype: numpy.ndarray, numpy.ndarray
         """
         active = np.dot(inputs, self.W1)
@@ -122,22 +98,19 @@ class ActiveSubspaces(Subspaces):
         Map the points in the active variable space to the original parameter
         space.
 
-        :param numpy.ndarray reduced_inputs: n_samples-by-n_params matrix that
+        :param numpy.ndarray reduced_inputs: n_samples-by-dim matrix that
             contains points in the space of active variables.
-        :param int n_points: the number of points in the original parameter
-            space that are returned that map to the given active variables.
-            Defaults to 1.
-        :return: (n_samples * n_points)-by-n_params matrix that contains points
-            in the original parameter space,
-            (n_samples * n_points)-by-n_params matrix that contains integer
-            indices. These indices identify which rows of the previous matrix
-            (the full parameters) map to which rows of the active variables
-            matrix.
+        :param int n_points: the number of points in the original parameter space that
+            are returned that map to the given active variables. Defaults to 1.
+        :return: (n_samples * n_points)-by-n_params matrix that contains
+            points in the original parameter space, (n_samples *
+            n_points)-by-n_params matrix that contains integer indices. These
+            indices identify which rows of the previous matrix (the full
+            parameters) map to which rows of the active variables matrix.
         :rtype: numpy.ndarray, numpy.ndarray
 
-        .. note::
-            The inverse map depends critically on the `self._sample_inactive`
-            method.
+        .. note:: The inverse map depends critically on the
+            `self._sample_inactive` method.
         """
         inactive_swap = np.array([
             self._sample_inactive(red_inp, n_points)
@@ -151,31 +124,29 @@ class ActiveSubspaces(Subspaces):
     def _sample_inactive(self, reduced_input, n_points):
         """
         Sample inactive variables.
-        
+
         Sample values of the inactive variables for a fixed value of the active
         variables when the original variables are bounded by a hypercube.
-        
+
         :param numpy.ndarray reduced_input: the value of the active variables.
         :param int n_points: the number of inactive variable samples,
         :return: n_points-by-(inactive_dim) matrix that contains values of the
             inactive variable that correspond to the given `reduced_input`.
         :rtype: numpy.ndarray
-        
-        .. note::
-            The trick here is to sample the inactive variables z so that
-            -1 <= W1*y + W2*z <= 1,
-            where y is the given value of the active variables. In other words,
-            we need to sample z such that it respects the linear inequalities
-            W2*z <= 1 - W1*y, -W2*z <= 1 + W1*y.
-            These inequalities define a polytope in R^(inactive_dim). We want to
-            sample N points uniformly from the polytope.
-            This function first tries a simple rejection sampling scheme, which
-            finds a bounding hyperbox for the polytope, draws points uniformly
-            from the bounding hyperbox, and rejects points outside the
-            polytope. If that method does not return enough samples, the method
-            tries a "hit and run" method for sampling from the polytope.
-            If that does not work, it returns an array with `N` copies of a
-            feasible point computed as the Chebyshev center of the polytope.
+
+        .. note:: The trick here is to sample the inactive variables z so that
+            -1 <= W1*y + W2*z <= 1, where y is the given value of the active
+            variables. In other words, we need to sample z such that it respects
+            the linear inequalities W2*z <= 1 - W1*y, -W2*z <= 1 + W1*y. These
+            inequalities define a polytope in R^(inactive_dim). We want to
+            sample N points uniformly from the polytope. This function first
+            tries a simple rejection sampling scheme, which finds a bounding
+            hyperbox for the polytope, draws points uniformly from the bounding
+            hyperbox, and rejects points outside the polytope. If that method
+            does not return enough samples, the method tries a "hit and run"
+            method for sampling from the polytope. If that does not work, it
+            returns an array with `N` copies of a feasible point computed as the
+            Chebyshev center of the polytope.
         """
         Z = self._rejection_sampling_inactive(reduced_input, n_points)
         if Z is None:
@@ -184,15 +155,14 @@ class ActiveSubspaces(Subspaces):
 
     def _compute_A_b(self, reduced_input):
         """
-        Compute the matrix A and the vector b to build a box around the
-        inactive subspace for uniform sampling.
-        
+        Compute the matrix A and the vector b to build a box around the inactive
+        subspace for uniform sampling.
+
         :param numpy.ndarray reduced_input: the value of the active variables.
-        :return: matrix A, and vector b.
-        :rtype: numpy.ndarray, numpy.ndarray
+        :return: matrix A, and vector b. :rtype: numpy.ndarray, numpy.ndarray
         """
         s = np.dot(self.W1, reduced_input).reshape((-1, 1))
-        A = np.vstack((self.W2, -self.W2))
+        A = np.vstack((self.W2, -1 * self.W2))
         b = np.vstack((-1 - s, -1 + s)).reshape((-1, 1))
         return A, b
 
@@ -202,8 +172,8 @@ class ActiveSubspaces(Subspaces):
 
         :param numpy.ndarray reduced_input: the value of the active variables.
         :param int n_points: the number of inactive variable samples,
-        :return: n_points-by-(inactive_dim) matrix that contains values of the
-            inactive variable that correspond to the given `reduced_input`.
+        :return: n_points-by-(inactive_dim) matrix that contains values of the inactive
+            variable that correspond to the given `reduced_input`.
         :rtype: numpy.ndarray
         """
         m, n = self.W1.shape
@@ -252,7 +222,7 @@ class ActiveSubspaces(Subspaces):
         c = np.zeros((inactive_dim + 1, 1))
         c[-1] = -1.0
 
-        zc = linear_program_ineq(c, -A, -b)
+        zc = linear_program_ineq(c, -1 * A, -b)
         z0 = zc[:-1].reshape((inactive_dim, 1))
 
         # define the polytope A >= b
@@ -305,12 +275,11 @@ class ActiveSubspaces(Subspaces):
 
         :param numpy.ndarray reduced_input: the value of the active variables.
         :param int n_points: the number of inactive variable samples,
-        :return: (n_samples * n_points)-by-n_params matrix that contains points
-            in the original parameter space,
-            (n_samples * n_points)-by-n_params matrix that contains integer
-            indices. These indices identify which rows of the previous matrix
-            (the full parameters) map to which rows of the active variables
-            matrix.
+        :return: (n_samples * n_points)-by-n_params matrix that contains points in the
+            original parameter space, (n_samples * n_points)-by-n_params matrix that
+            contains integer indices. These indices identify which rows of the
+            previous matrix (the full parameters) map to which rows of the active
+            variables matrix.
         :rtype: numpy.ndarray, numpy.ndarray
         """
         NY, n = reduced_inputs.shape

@@ -3,14 +3,14 @@ Base module for Active Subspaces and Kernel-based Active Subspaces.
 
 References:
 - Paul Constantine. Active subspaces: Emerging ideas for dimension reduction in
-parameter studies, vol. 2 of SIAM Spotlights, SIAM, 2015.
-- Francesco Romor, Marco Tezzele, Andrea Lario, Gianluigi Rozza.
-Kernel-based Active Subspaces with application to CFD problems using
-Discontinuous Galerkin Method. 2020.
-arxiv:
+  parameter studies, vol. 2 of SIAM Spotlights, SIAM, 2015.
+- Francesco Romor, Marco Tezzele, Andrea Lario, Gianluigi Rozza. Kernel-based
+  Active Subspaces with application to CFD problems using Discontinuous Galerkin
+  Method. 2020. arxiv:
 """
 import numpy as np
 import matplotlib.pyplot as plt
+from .utils import sort_eigpairs
 plt.rcParams.update({'font.size': 16})
 
 
@@ -29,25 +29,73 @@ class Subspaces(object):
         self.dim = None
         self.cov_matrix = None
 
-    def _compute_bootstrap_ranges(self, gradients, weights, method, nboot=100):
-        """Compute bootstrap ranges for eigenvalues and subspaces.
-    
-        An implementation of the nonparametric bootstrap that we use in 
-        conjunction with the subspace estimation methods to estimate the errors in 
-        the eigenvalues and subspaces.
-        
-        :param numpy.ndarray gradients: n_samples-by-n_params matrix containing
-            the gradient samples oriented as rows.
+    @staticmethod
+    def _build_decompose_cov_matrix(gradients=None,
+                                    weights=None,
+                                    method=None,
+                                    metric=None):
+        """
+        Build and decompose the covariance matrix of the gradients.
+
+        :param numpy.ndarray inputs: input parameters oriented as rows.
+        :param numpy.ndarray outputs: corresponding outputs oriented as rows.
+        :param numpy.ndarray gradients: n_samples-by-n_params matrix containing the
+            gradient samples oriented as rows.
         :param numpy.ndarray weights: n_samples-by-1 weight vector, corresponds
-            to numerical quadrature rule used to estimate matrix whose
-            eigenspaces define the active subspace.
-        :param int nboot: number of bootstrap samples. Default is 100.
-        :return: array e_br is a m-by-2 matrix, first column contains bootstrap
-            lower bound on eigenvalues, second column contains bootstrap upper
-            bound on eigenvalues; array sub_br is a (m-1)-by-3 matrix, first
-            column contains bootstrap lower bound on estimated subspace error,
-            second column contains estimated mean of subspace error (a
-            reasonable subspace error estimate), third column contains
+            to numerical quadrature rule used to estimate matrix whose eigenspaces
+            define the active subspace.
+        :param str method: method to compute the AS. Possible choices are
+            'exact' when the gradients are provided, or 'local' to use local linear
+            models. This approach is related to the sufficient dimension reduction
+            method known sometimes as the outer product of gradient method. See the
+            2001 paper 'Structure adaptive approach for dimension reduction' from
+            Hristache, et al.
+        :return: the covariance matrix, the sorted eigenvalues, and the
+            corresponding eigenvectors.
+        :rtype: numpy.ndarray, numpy.ndarray, numpy.ndarray
+        """
+        if method == 'exact' or method == 'local':
+            if metric is not None:
+                cov_matrix = np.array(
+                    np.sum([
+                        weights[i, 0] *
+                        np.dot(gradients[i, :, :].T,
+                               np.dot(metric, gradients[i, :, :]))
+                        for i in range(gradients.shape[0])
+                    ],
+                           axis=0))
+                evals, evects = sort_eigpairs(cov_matrix)
+                return np.squeeze(evals), evects
+            X = np.squeeze(gradients * np.sqrt(weights).reshape(-1, 1))
+            _, singular, evects = np.linalg.svd(X, full_matrices=False)
+            evals = singular**2
+            return evals, evects.T
+
+    def _compute_bootstrap_ranges(self,
+                                  gradients,
+                                  weights,
+                                  method,
+                                  metric=None,
+                                  nboot=100):
+        """Compute bootstrap ranges for eigenvalues and subspaces.
+
+        An implementation of the nonparametric bootstrap that we use in
+        conjunction with the subspace estimation methods to estimate the errors
+        in the eigenvalues and subspaces.
+
+        :param numpy.ndarray gradients: n_samples-by-n_params matrix containing
+        the gradient samples oriented as rows.
+        :param numpy.ndarray weights: n_samples-by-1 weight vector, corresponds to numerical quadrature
+            rule used to estimate matrix whose eigenspaces define the active
+            subspace.
+        :param int nboot: number of bootstrap samples. Default is
+            100.
+        :return: array e_br is a m-by-2 matrix, first column contains
+            bootstrap lower bound on eigenvalues, second column contains
+            bootstrap upper bound on eigenvalues; array sub_br is a (m-1)-by-3
+            matrix, first column contains bootstrap lower bound on estimated
+            subspace error, second column contains estimated mean of subspace
+            error (a reasonable subspace error estimate), third column contains
             estimated upper bound on subspace error.
         :rtype: numpy.ndarray, numpy.ndarray
         """
@@ -59,7 +107,8 @@ class Subspaces(object):
             gradients0, weights0 = self._bootstrap_replicate(gradients, weights)
             e0, W0 = self._build_decompose_cov_matrix(gradients=gradients0,
                                                       weights=weights0,
-                                                      method=method)
+                                                      method=method,
+                                                      metric=metric)
             e_boot[:, i] = e0.reshape((n_pars, ))
             for j in range(n_pars - 1):
                 sub_dist[j, i] = np.linalg.norm(np.dot(self.evects[:, :j + 1].T,
@@ -79,12 +128,12 @@ class Subspaces(object):
     def _bootstrap_replicate(matrix, weights):
         """
         Return a bootstrap replicate.
-    
+
         A bootstrap replicate is a sampling-with-replacement strategy from a
         given data set.
 
-        :param numpy.ndarray matrix: matrix from which will be sampled N rows.
-            N corresponds to the number of rows of weights.
+        :param numpy.ndarray matrix: matrix from which will be sampled N rows. N
+            corresponds to the number of rows of weights.
         :param numpy.ndarray weights: n_samples-by-1 weight vector, corresponds
             to numerical quadrature rule used to estimate matrix whose
             eigenspaces define the active subspace.
@@ -99,19 +148,10 @@ class Subspaces(object):
             return matrix[ind, :, :].copy(), weights[ind, :].copy()
         return None, None
 
-    @classmethod
-    def _build_decompose_cov_matrix(cls, *args, **kwargs):
-        """
-        Not implemented, it has to be implemented in subclasses.
-        """
-        raise NotImplementedError(
-            'Subclass must implement abstract method {}._build_decompose_cov_matrix'
-            .format(cls.__name__))
-
     def compute(self, *args, **kwargs):
         """
-        Abstract method to compute the active subspaces.
-        Not implemented, it has to be implemented in subclasses.
+        Abstract method to compute the active subspaces. Not implemented, it has
+        to be implemented in subclasses.
         """
         raise NotImplementedError(
             'Subclass must implement abstract method {}.compute'.format(
@@ -120,27 +160,26 @@ class Subspaces(object):
     def forward(self, inputs):
         """
         Abstract method to map full variables to active and inactive variables.
-        
-        Points in the original input space are mapped to the active and
-        inactive subspace.
-        
-        :param numpy.ndarray inputs: array n_samples-by-n_params containing
-            the points in the original parameter space.
-        :return: array n_samples-by-active_dim containing the mapped active
-            variables; array n_samples-by-inactive_dim containing the mapped
-            inactive variables.
+
+        Points in the original input space are mapped to the active and inactive
+        subspace.
+
+        :param numpy.ndarray inputs: array n_samples-by-n_params containing the
+            points in the original parameter space.
+        :return: array n_samples-by-active_dim containing the mapped active variables;
+            array n_samples-by-inactive_dim containing the mapped inactive
+            variables.
         :rtype: numpy.ndarray, numpy.ndarray
         """
-        raise NotImplementedError(
-            'Subclass must implement abstract method ' \
-            '{}.compute'.format(self.__class__.__name__))
+        raise NotImplementedError('Subclass must implement abstract method '
+                                  '{}.compute'.format(self.__class__.__name__))
 
     def backward(self, reduced_inputs, n_points):
         """
         Abstract method to find points in full space that map to reduced
-        variable points.
-        Not implemented, it has to be implemented in subclasses.
-        
+        variable points. Not implemented, it has to be implemented in
+        subclasses.
+
         :param numpy.ndarray reduced_inputs: n_samples-by-n_params matrix that
             contains points in the space of active variables.
         :param int n_points: the number of points in the original parameter
@@ -153,7 +192,7 @@ class Subspaces(object):
     def partition(self, dim):
         """
         Partition the eigenvectors to define the active and inactive subspaces.
-        
+
         :param int dim: dimension of the active subspace.
         :raises: TypeError, ValueError
         """
@@ -162,7 +201,7 @@ class Subspaces(object):
 
         if dim < 1 or dim > self.evects.shape[0]:
             raise ValueError(
-                'dim must be positive and less than the dimension of the ' \
+                'dim must be positive and less than the dimension of the '
                 ' eigenvectors: dim = {}.'.format(dim))
         self.dim = dim
         self.W1 = self.evects[:, :dim]
@@ -175,17 +214,16 @@ class Subspaces(object):
                          title=''):
         """
         Plot the eigenvalues.
-        
-        :param int n_evals: number of eigenvalues to plot. If not provided
-            all the eigenvalues will be plotted.
+
+        :param int n_evals: number of eigenvalues to plot. If not provided all
+            the eigenvalues will be plotted.
         :param str filename: if specified, the plot is saved at `filename`.
-        :param tuple(int,int) figsize: tuple in inches defining the figure
-            size. Default is (8, 8).
+        :param tuple(int,int) figsize: tuple in inches defining the figure size.
+            Default is (8, 8).
         :param str title: title of the plot.
         :raises: ValueError
 
-        .. warning::
-            `self.compute` has to be called in advance.
+        .. warning:: `self.compute` has to be called in advance.
         """
         if self.evals is None:
             raise ValueError('The eigenvalues have not been computed.'
@@ -197,11 +235,18 @@ class Subspaces(object):
 
         plt.figure(figsize=figsize)
         plt.title(title)
-        plt.semilogy(range(1, n_evals + 1),
-                     self.evals[:n_evals],
-                     'ko-',
-                     markersize=8,
-                     linewidth=2)
+        if np.amin(self.evals[:n_evals]) == 0:
+            plt.semilogy(range(1, n_evals + 1),
+                         self.evals[:n_evals] + np.finfo(float).eps,
+                         'ko-',
+                         markersize=8,
+                         linewidth=2)
+        else:
+            plt.semilogy(range(1, n_evals + 1),
+                         self.evals[:n_evals],
+                         'ko-',
+                         markersize=8,
+                         linewidth=2)
         plt.xticks(range(1, n_evals + 1))
         plt.xlabel('Index')
         plt.ylabel('Eigenvalues')
@@ -212,11 +257,19 @@ class Subspaces(object):
                 10 * np.amax(self.evals[:n_evals])
             ])
         else:
-            plt.fill_between(range(1, n_evals + 1),
-                             self.evals_br[:n_evals, 0],
-                             self.evals_br[:n_evals, 1],
-                             facecolor='0.7',
-                             interpolate=True)
+            if np.amin(self.evals[:n_evals]) == 0:
+                plt.fill_between(
+                    range(1, n_evals + 1),
+                    self.evals_br[:n_evals, 0] * (1 + np.finfo(float).eps),
+                    self.evals_br[:n_evals, 1] * (1 + np.finfo(float).eps),
+                    facecolor='0.7',
+                    interpolate=True)
+            else:
+                plt.fill_between(range(1, n_evals + 1),
+                                 self.evals_br[:n_evals, 0],
+                                 self.evals_br[:n_evals, 1],
+                                 facecolor='0.7',
+                                 interpolate=True)
             plt.axis([
                 0, n_evals + 1, 0.1 * np.amin(self.evals_br[:n_evals, 0]),
                 10 * np.amax(self.evals_br[:n_evals, 1])
@@ -235,18 +288,16 @@ class Subspaces(object):
                           title=''):
         """
         Plot the eigenvectors.
-        
-        :param int n_evects: number of eigenvectors to plot.
-             Default is self.dim.
+
+        :param int n_evects: number of eigenvectors to plot. Default is self.dim.
         :param str filename: if specified, the plot is saved at `filename`.
-        :param tuple(int,int) figsize: tuple in inches defining the figure
-            size. Default is (8, 2 * n_evects).
+        :param tuple(int,int) figsize: tuple in inches defining the figure size.
+            Default is (8, 2 * n_evects).
         :param str labels: labels for the components of the eigenvectors.
         :param str title: title of the plot.
         :raises: ValueError
 
-        .. warning::
-            `self.compute` has to be called in advance.
+        .. warning:: `self.compute` has to be called in advance.
         """
         if self.evects is None:
             raise ValueError('The eigenvectors have not been computed.'
@@ -279,7 +330,7 @@ class Subspaces(object):
 
             ax.set_ylabel('Active eigenvector {}'.format(i + 1))
             ax.grid(linestyle='dotted')
-            ax.axis([0, n_pars + 1, -1, 1])
+            ax.axis([0, n_pars + 1, -1 - 0.1, 1 + 0.1])
 
         axes.flat[-1].set_xlabel('Eigenvector components')
         fig.tight_layout()
@@ -299,9 +350,9 @@ class Subspaces(object):
                                 title=''):
         """
         Plot the sufficient summary.
-        
-        :param numpy.ndarray inputs: array n_samples-by-n_params containing
-            the points in the full input space.
+
+        :param numpy.ndarray inputs: array n_samples-by-n_params containing the
+            points in the full input space.
         :param numpy.ndarray outputs: array n_samples-by-1 containing the
             corresponding function evaluations.
         :param str filename: if specified, the plot is saved at `filename`.
@@ -310,8 +361,7 @@ class Subspaces(object):
         :param str title: title of the plot.
         :raises: ValueError
 
-        .. warning::
-            `self.partition` has to be called in advance.
+        .. warning:: `self.partition` has to be called in advance.
 
             Plot only available for partitions up to dimension 2.
         """
@@ -350,9 +400,8 @@ class Subspaces(object):
             plt.colorbar()
         else:
             raise ValueError(
-                'Sufficient summary plots cannot be made in more than 2 ' \
-                'dimensions.'
-            )
+                'Sufficient summary plots cannot be made in more than 2 '
+                'dimensions.')
 
         plt.grid(linestyle='dotted')
 
