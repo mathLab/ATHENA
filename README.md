@@ -109,16 +109,24 @@ In the following some illustrative examples of what you can do with this package
 To implement the numerical methods present in this package we followed these works:
 
 * Constantine. *Active subspaces: Emerging ideas for dimension reduction in parameter studies*. Volume 2 SIAM Spotlights, 2015. [[DOI](https://doi.org/10.1137/1.9781611973860)].
+
 * Constantine et al. Python Active-subspaces Utility Library, Journal of Open Source Software, 1(5), 79, 2016. [[DOI](https://doi.org/10.21105/joss.00079)].
+
+* Romor, Tezzele, Lario, Rozza. *Kernel-based Active Subspaces with application to CFD parametric problems using Discontinuous Galerkin method*. 2020. [[arXiv](https://arxiv.org/abs/2008.12083)]
+
 * Zhang, Zhang, Hinkle. *Learning nonlinear level sets for dimensionality reduction in function approximation*. Advances in Neural Information Processing Systems 32: Annual Conference on Neural Information Processing Systems 2019, NeurIPS 2019, 8-14 December 2019, Vancouver, BC, Canada. [[arXiv](https://arxiv.org/abs/1902.10652)].
 
 
 ### Recent works with ATHENA
 Here there is a list of the scientific works involving **ATHENA** you can consult and/or cite. If you want to add one, please open a PR.
 
+* Romor, Tezzele, Rozza. *Multi-fidelity data fusion for the approximation of scalar functions with low intrinsic dimensionality through active subspaces*. 2020.
+
+* Romor, Tezzele, Lario, Rozza. *Kernel-based Active Subspaces with application to CFD parametric problems using Discontinuous Galerkin method*. 2020. [[arXiv](https://arxiv.org/abs/2008.12083)].
+
 * Demo, Tezzele, Rozza. *A supervised learning approach involving active subspaces for an efficient genetic algorithm in high-dimensional optimization problems*. 2020. [[arXiv](https://arxiv.org/abs/2006.07282)].
 
-* Tezzele, Demo, Stabile, Mola, Rozza. *Enhancing CFD predictions in shape design problems by model and parameter space reduction*. 2020. [[arXiv](https://arxiv.org/abs/2001.05237)].
+* Tezzele, Demo, Stabile, Mola, Rozza. *Enhancing CFD predictions in shape design problems by model and parameter space reduction*. 2020. [[DOI](https://doi.org/10.1186/s40323-020-00177-y), [arXiv](https://arxiv.org/abs/2001.05237)].
 
 
 ## Authors and contributors
