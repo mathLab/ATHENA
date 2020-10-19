@@ -1,12 +1,16 @@
 """
 Base module for Active Subspaces and Kernel-based Active Subspaces.
 
-References:
-- Paul Constantine. Active subspaces: Emerging ideas for dimension reduction in
-  parameter studies, vol. 2 of SIAM Spotlights, SIAM, 2015.
-- Francesco Romor, Marco Tezzele, Andrea Lario, Gianluigi Rozza. Kernel-based
-  Active Subspaces with application to CFD problems using Discontinuous Galerkin
-  Method. 2020. arxiv:
+:References:
+
+    - Paul Constantine. Active subspaces: Emerging ideas for dimension
+      reduction in parameter studies, vol. 2 of SIAM Spotlights, SIAM, 2015.
+
+    - Francesco Romor, Marco Tezzele, Andrea Lario, Gianluigi Rozza.
+      Kernel-based Active Subspaces with application to CFD problems using
+      Discontinuous Galerkin Method. 2020. 
+      arxiv: https://arxiv.org/abs/2008.12083
+
 """
 import numpy as np
 import matplotlib.pyplot as plt
@@ -67,7 +71,7 @@ class Subspaces(object):
                 evals, evects = sort_eigpairs(cov_matrix)
                 return np.squeeze(evals), evects
             X = np.squeeze(gradients * np.sqrt(weights).reshape(-1, 1))
-            _, singular, evects = np.linalg.svd(X, full_matrices=False)
+            singular, evects = np.linalg.svd(X, full_matrices=False)[1:]
             evals = singular**2
             return evals, evects.T
 
@@ -84,12 +88,11 @@ class Subspaces(object):
         in the eigenvalues and subspaces.
 
         :param numpy.ndarray gradients: n_samples-by-n_params matrix containing
-        the gradient samples oriented as rows.
-        :param numpy.ndarray weights: n_samples-by-1 weight vector, corresponds to numerical quadrature
-            rule used to estimate matrix whose eigenspaces define the active
-            subspace.
-        :param int nboot: number of bootstrap samples. Default is
-            100.
+            the gradient samples oriented as rows.
+        :param numpy.ndarray weights: n_samples-by-1 weight vector, corresponds
+            to numerical quadrature rule used to estimate matrix whose
+            eigenspaces define the active subspace.
+        :param int nboot: number of bootstrap samples. Default is 100.
         :return: array e_br is a m-by-2 matrix, first column contains
             bootstrap lower bound on eigenvalues, second column contains
             bootstrap upper bound on eigenvalues; array sub_br is a (m-1)-by-3

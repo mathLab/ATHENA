@@ -1,10 +1,13 @@
 """
 Module for Nonlinear Level-set Learning (NLL).
 
-Reference:
-- Guannan Zhang, Jiaxin Zhang, Jacob Hinkle.
-Learning nonlinear level sets for dimensionality reduction in function
-approximation. NeurIPS 2019, 13199-13208. https://arxiv.org/abs/1902.10652
+:References:
+
+    - Guannan Zhang, Jiaxin Zhang, Jacob Hinkle.
+      Learning nonlinear level sets for dimensionality reduction in function
+      approximation. NeurIPS 2019, 13199-13208.
+      arxiv: https://arxiv.org/abs/1902.10652
+
 """
 import torch
 import torch.nn as nn
@@ -41,11 +44,18 @@ class NonlinearLevelSet(object):
               interactive=False,
               target_loss=0.0001):
         """
-        all the input parameters have to be torch
+        Train the whole ResNet.
 
+        :param torch.DoubleTensor inputs: array n_samples-by-n_params
+            containing the points in the full input space.
+        :param torch.DoubleTensor gradients: array n_samples-by-n_params
+            containing the gradient samples wrt the input parameters.
+        :param numpy.ndarray outputs: array n_samples-by-1 containing the
+            corresponding function evaluations. Needed only for the interactive
+            mode. Default is None.
         :param bool interactive: if True a plot with the loss function decay,
             and the sufficient summary plot will be showed and updated every
-            10 epochs. Default is False.
+            10 epochs, and at the last epoch. Default is False.
         :param float target_loss: Default is 0.0001.
         :raises: ValueError
         """
@@ -213,6 +223,7 @@ class NonlinearLevelSet(object):
         Load the forward map for inference.
 
         :param str infile: filename of the saved net to load. See notes below.
+        :param int n_params: number of input parameters.
 
         .. note::
             A common PyTorch convention is to save models using either a .pt or
@@ -241,6 +252,7 @@ class NonlinearLevelSet(object):
         Load the backward map for inference.
 
         :param str infile: filename of the saved net to load. See notes below.
+        :param int n_params: number of input parameters.
 
         .. note::
             A common PyTorch convention is to save models using either a .pt or
@@ -253,6 +265,9 @@ class NonlinearLevelSet(object):
 
 class ForwardNet(nn.Module):
     """
+    Forward net class. It is part of the ResNet.
+
+    :cvar int n_params: number of input parameters.
     :cvar slice omega: a slice object indicating the active dimension to keep.
         For example to keep the first two dimension `omega = slice(2).
     """
@@ -301,9 +316,17 @@ class ForwardNet(nn.Module):
 
         return torch.cat((vars()[var_y1], vars()[var_z1]), 1)
 
-    def customized_loss(self, x, output, gradients):
+    def customized_loss(self, inputs, mapped_inputs, gradients):
         """
-        TO DOC
+        Custom loss function.
+
+        :param torch.DoubleTensor inputs: array n_samples-by-n_params
+            containing the points in the full input space.
+        :param torch.DoubleTensor mapped_inputs: array
+            n_samples-by-n_params containing the mapped points in the
+            full input space. They are the result of the forward application.
+        :param torch.DoubleTensor gradients: array n_samples-by-n_params
+            containing the gradient samples wrt the input parameters.
         """
         # Define the weights and bias of the inverse network
         for i in range(self.n_layers):
@@ -320,10 +343,10 @@ class ForwardNet(nn.Module):
             vars()[inv_name_y_bias] = getattr(self, name_y).bias
             vars()[inv_name_z_bias] = getattr(self, name_z).bias
 
-        Jacob = torch.empty(x.size()[0], 2 * self.n_params, 2 * self.n_params)
+        Jacob = torch.empty(inputs.size()[0], 2 * self.n_params, 2 * self.n_params)
 
         for j in range(2 * self.n_params):
-            output_dy = torch.clone(output)
+            output_dy = torch.clone(mapped_inputs)
             output_dy[:, j] += 0.001
 
             bb = torch.split(output_dy, self.n_params, dim=1)
@@ -373,7 +396,7 @@ class ForwardNet(nn.Module):
             #         torch.abs(torch.add(-1 * output_dy, self.forward(dx)))))
 
             for k in range(2 * self.n_params):
-                Jacob[:, j, k] = torch.add(dx[:, k], -1 * x[:, k])
+                Jacob[:, j, k] = torch.add(dx[:, k], -1 * inputs[:, k])
 
         JJ2 = torch.unsqueeze(torch.sqrt(torch.sum(torch.mul(Jacob, Jacob), 2)),
                               2)
@@ -385,8 +408,8 @@ class ForwardNet(nn.Module):
         loss_anisotropy = torch.sqrt(
             torch.mean(torch.sum(torch.mul(loss_weights, loss_weights), 1)))
 
-        J_det = torch.empty(x.shape[0])
-        for k in range(x.shape[0]):
+        J_det = torch.empty(inputs.shape[0])
+        for k in range(inputs.shape[0]):
             eee = torch.svd(JJJ[k, :, :])[1]
             J_det[k] = torch.prod(eee)
         loss_det = torch.abs(torch.prod(J_det - 1.0))
@@ -394,9 +417,8 @@ class ForwardNet(nn.Module):
 
 
 class BackwardNet(nn.Module):
-    """Backward Net class
+    """Backward Net class. It is part of the ResNet.
     
-    [description]
     """
     def __init__(self, n_params, n_layers, dh):
         super().__init__()

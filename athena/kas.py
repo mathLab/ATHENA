@@ -1,11 +1,13 @@
 """
 Module for Kernel-based Active Subspaces.
 
-Reference:
-- Francesco Romor, Marco Tezzele, Andrea Lario, Gianluigi Rozza.
-Kernel-based Active Subspaces with application to CFD problems using
-Discontinuous Galerkin Method. 2020.
-arxiv:
+:References:
+
+    - Francesco Romor, Marco Tezzele, Andrea Lario, Gianluigi Rozza.
+      Kernel-based Active Subspaces with application to CFD problems using
+      Discontinuous Galerkin Method. 2020. 
+      arxiv: https://arxiv.org/abs/2008.12083
+
 """
 import numpy as np
 from .subspaces import Subspaces
@@ -22,27 +24,6 @@ class KernelActiveSubspaces(Subspaces):
         self.feature_map = None
         self.features = None
         self.pseudo_gradients = None
-
-    def forward(self, inputs):
-        """
-        Map full variables to active and inactive variables.
-        Points in the original input space are mapped to the active and
-        inactive non-linear subspace.
-
-        :param numpy.ndarray inputs: array n_samples-by-n_params containing
-            the points in the original parameter space.
-        :return: array n_samples-by-active_dim containing the mapped active
-            variables; array n_samples-by-inactive_dim containing the mapped
-            inactive variables.
-        :rtype: numpy.ndarray, numpy.ndarray
-        """
-        features = self.feature_map.compute_fmap(inputs)
-        active = np.dot(features, self.W1)
-        inactive = np.dot(features, self.W2)
-        return active, inactive
-
-    def backward(self, reduced_inputs, n_points):
-        pass
 
     def _reparametrize(self, inputs, gradients):
         """
@@ -73,6 +54,27 @@ class KernelActiveSubspaces(Subspaces):
         features = self.feature_map.compute_fmap(inputs)
 
         return pseudo_gradients, features
+
+    def forward(self, inputs):
+        """
+        Map full variables to active and inactive variables.
+        Points in the original input space are mapped to the active and
+        inactive non-linear subspace.
+
+        :param numpy.ndarray inputs: array n_samples-by-n_params containing
+            the points in the original parameter space.
+        :return: array n_samples-by-active_dim containing the mapped active
+            variables; array n_samples-by-inactive_dim containing the mapped
+            inactive variables.
+        :rtype: numpy.ndarray, numpy.ndarray
+        """
+        features = self.feature_map.compute_fmap(inputs)
+        active = np.dot(features, self.W1)
+        inactive = np.dot(features, self.W2)
+        return active, inactive
+
+    def backward(self, reduced_inputs, n_points):
+        pass
 
     def compute(self,
                 inputs=None,

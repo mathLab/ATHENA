@@ -1,10 +1,14 @@
 """
 Active Subspaces module.
 
-Reference:
+:References:
 
-* Paul Constantine. Active subspaces: Emerging ideas for dimension reduction in
-  parameter studies, vol. 2 of SIAM Spotlights, SIAM, 2015.
+    - Paul Constantine. Active subspaces: Emerging ideas for dimension
+      reduction in parameter studies, vol. 2 of SIAM Spotlights, SIAM, 2015.
+
+    - Constantine et al. Python Active-subspaces Utility Library,
+      Journal of Open Source Software, 1(5), 79, 2016.
+
 """
 import numpy as np
 from .subspaces import Subspaces
