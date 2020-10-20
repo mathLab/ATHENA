@@ -46,9 +46,9 @@ class NonlinearLevelSet(object):
         """
         Train the whole ResNet.
 
-        :param torch.DoubleTensor inputs: array n_samples-by-n_params
+        :param torch.Tensor inputs: DoubleTensor n_samples-by-n_params
             containing the points in the full input space.
-        :param torch.DoubleTensor gradients: array n_samples-by-n_params
+        :param torch.Tensor gradients: DoubleTensor n_samples-by-n_params
             containing the gradient samples wrt the input parameters.
         :param numpy.ndarray outputs: array n_samples-by-1 containing the
             corresponding function evaluations. Needed only for the interactive
@@ -150,7 +150,7 @@ class NonlinearLevelSet(object):
         """
         Plot the sufficient summary.
         
-        :param torch.DoubleTensor inputs: array n_samples-by-n_params
+        :param torch.Tensor inputs: DoubleTensor n_samples-by-n_params
             containing the points in the full input space.
         :param numpy.ndarray outputs: array n_samples-by-1 containing the
             corresponding function evaluations.
@@ -320,12 +320,12 @@ class ForwardNet(nn.Module):
         """
         Custom loss function.
 
-        :param torch.DoubleTensor inputs: array n_samples-by-n_params
+        :param torch.Tensor inputs: DoubleTensor n_samples-by-n_params
             containing the points in the full input space.
-        :param torch.DoubleTensor mapped_inputs: array
+        :param torch.Tensor mapped_inputs: DoubleTensor
             n_samples-by-n_params containing the mapped points in the
             full input space. They are the result of the forward application.
-        :param torch.DoubleTensor gradients: array n_samples-by-n_params
+        :param torch.Tensor gradients: DoubleTensor n_samples-by-n_params
             containing the gradient samples wrt the input parameters.
         """
         # Define the weights and bias of the inverse network
