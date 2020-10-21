@@ -1,6 +1,6 @@
 # Tutorials
 
-In this folder you can find a collection of useful Notebooks containing several tutorials, in order to understand the principles and the potential of **ATHENA**.
+In this folder you can find a collection of useful Notebooks containing several tutorials to understand the principles and the potential of **ATHENA**.
 
 #### [Tutorial 1](01_intro.ipynb)
 Here we show a basic application of active subspaces on a simple model in order to reconstruct and analyze it.
@@ -10,7 +10,7 @@ Here we focus on a crucial step of the procedure: the evaluation of the gradient
 
 #### [Tutorial 3](03_response_surfaces.ipynb)
 Here we exploit the presence of an active subspace to build one-dimensional response surfaces with Gaussian
-processes. We compare the choice of the original model as profile of the ridge approximation with the choice of the optimal profile. It requires [GPy](https://github.com/SheffieldML/GPy) and [pyhmc](https://github.com/rmcgibbo/pyhmc) for Hamiltonian Monte Carlo.
+processes. We compare the choice of the original model as a profile of the ridge approximation with the choice of the optimal profile. It requires [GPy](https://github.com/SheffieldML/GPy) and [pyhmc](https://github.com/rmcgibbo/pyhmc) for Hamiltonian Monte Carlo.
 
 #### [Tutorial 4](04_inverse_problems.ipynb)
 Here we show an application of the active subspaces property to speed up the sampling from the posterior of an inverse problem with Gaussian prior and likelihood. We use the library [Pyro](https://pyro.ai/) for probabilistic programming and Hamiltonian Monte Carlo and [GPy](https://github.com/SheffieldML/GPy) for Gaussian process regression.

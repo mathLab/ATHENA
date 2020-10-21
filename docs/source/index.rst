@@ -46,6 +46,7 @@ Developer's Guide
    :maxdepth: 1
 
    code
+   tutorials
    contact
    contributing
    LICENSE
