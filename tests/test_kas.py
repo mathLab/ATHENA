@@ -1,15 +1,15 @@
 from unittest import TestCase
-import numpy as np
-from athena.kas import KernelActiveSubspaces
 from contextlib import contextmanager
+import numpy as np
 import matplotlib.pyplot as plt
+from athena.kas import KernelActiveSubspaces
+from athena import FeatureMap
 
 
 @contextmanager
 def assert_plot_figures_added():
     """
-    Assert that the number of figures is higher than
-    when you started the test
+    Assert that the number of figures is higher than when you started the test
     """
     num_figures_before = plt.gcf().number
     yield
@@ -66,6 +66,41 @@ class TestUtils(TestCase):
         ss = KernelActiveSubspaces()
         self.assertIsNone(ss.pseudo_gradients)
 
+    def test_reparametrize_01(self):
+        np.random.seed(42)
+        gradients = np.random.uniform(-1, 1, 6).reshape(3, 1, 2)
+        inputs = np.random.uniform(-1, 1, 6).reshape(3, 2)
+        fm = FeatureMap(distr='multivariate_normal',
+                        bias=np.ones((1, 2)),
+                        input_dim=inputs.shape[1],
+                        n_features=2,
+                        params=np.ones(inputs.shape[1]),
+                        sigma_f=1)
+        ss = KernelActiveSubspaces(fm)
+        pseudo_gradients = ss._reparametrize(inputs, gradients)[0]
+        true_pseudo_gradients = np.array([[[-1.17123517, 0.69671587]],
+                                          [[0.29308353, 1.12067323]],
+                                          [[-0.0036059, -1.75277398]]])
+        np.testing.assert_array_almost_equal(pseudo_gradients,
+                                             true_pseudo_gradients)
+
+    def test_reparametrize_02(self):
+        np.random.seed(42)
+        gradients = np.random.uniform(-1, 1, 6).reshape(3, 1, 2)
+        inputs = np.random.uniform(-1, 1, 6).reshape(3, 2)
+        fm = FeatureMap(distr='multivariate_normal',
+                        bias=np.ones((1, 2)),
+                        input_dim=inputs.shape[1],
+                        n_features=2,
+                        params=np.ones(inputs.shape[1]),
+                        sigma_f=1)
+        ss = KernelActiveSubspaces(fm)
+        features = ss._reparametrize(inputs, gradients)[1]
+        true_features = np.array([[-0.2391454, 0.48143467],
+                                  [0.42589822, 0.75674833],
+                                  [-0.37950285, 0.53470539]])
+        np.testing.assert_array_almost_equal(features, true_features)
+
     def test_compute_01(self):
         ss = KernelActiveSubspaces()
         with self.assertRaises(ValueError):
@@ -107,41 +142,137 @@ class TestUtils(TestCase):
              [-0.25241469, 0.1389674, 0.07479708, 0.95466239]])
         np.testing.assert_array_almost_equal(true_evects, ss.evects)
 
-    # def test_compute_05(self):
-    #     np.random.seed(42)
-    #     inputs = np.random.uniform(-1, 1, 30).reshape(15, 2)
-    #     outputs = np.random.uniform(0, 5, 15).reshape(15, 1)
-    #     weights = np.ones((15, 1)) / 15
-    #     ss = KernelActiveSubspaces()
-    #     ss.compute(inputs=inputs,
-    #                outputs=outputs,
-    #                weights=weights,
-    #                method='local',
-    #                nboot=49,
-    #                n_features=4,
-    #                feature_map=None)
-    #     true_evals = np.array([[13.794711], [11.102377], [3.467318],
-    #                            [1.116324]])
-    #     np.testing.assert_array_almost_equal(true_evals, ss.evals)
+    def test_compute_05(self):
+        np.random.seed(42)
+        inputs = np.random.uniform(-1, 1, 30).reshape(15, 2)
+        outputs = np.random.uniform(0, 5, 15).reshape(15, 1)
+        weights = np.ones((15, 1)) / 15
+        ss = KernelActiveSubspaces()
+        ss.compute(inputs=inputs,
+                   outputs=outputs,
+                   weights=weights,
+                   method='local',
+                   nboot=49,
+                   n_features=4,
+                   feature_map=None)
+        true_evals = np.array(
+            [173.56222204, 96.19314922, 29.05560411, 0.85385631])
+        np.testing.assert_array_almost_equal(true_evals, ss.evals)
 
-    # def test_compute_06(self):
-    #     np.random.seed(42)
-    #     inputs = np.random.uniform(-1, 1, 30).reshape(15, 2)
-    #     outputs = np.random.uniform(0, 5, 15).reshape(15, 1)
-    #     weights = np.ones((15, 1)) / 15
-    #     ss = KernelActiveSubspaces()
-    #     ss.compute(inputs=inputs,
-    #                outputs=outputs,
-    #                weights=weights,
-    #                method='local',
-    #                nboot=49,
-    #                n_features=4,
-    #                feature_map=None)
-    #     true_evects = np.array([[0.164383, 0.717021, 0.237246, 0.634486],
-    #                             [0.885808, 0.177628, -0.004112, -0.428691],
-    #                             [-0.255722, 0.558199, -0.734083, -0.290071],
-    #                             [-0.350612, 0.377813, 0.636254, -0.574029]])
-    #     np.testing.assert_array_almost_equal(true_evects, ss.evects)
+    def test_compute_06(self):
+        np.random.seed(42)
+        inputs = np.random.uniform(-1, 1, 30).reshape(15, 2)
+        outputs = np.random.uniform(0, 5, 15).reshape(15, 1)
+        weights = np.ones((15, 1)) / 15
+        ss = KernelActiveSubspaces()
+        ss.compute(inputs=inputs,
+                   outputs=outputs,
+                   weights=weights,
+                   method='local',
+                   nboot=49,
+                   n_features=4,
+                   feature_map=None)
+        true_evects = np.array(
+            [[0.27316542, 0.65012729, 0.24857554, 0.66402211],
+             [-0.34261047, 0.46028689, 0.61561027, -0.54016483],
+             [-0.68249783, -0.37635433, 0.35472274, 0.51645514],
+             [0.58497472, -0.47310455, 0.65833576, -0.02388905]])
+        np.testing.assert_array_almost_equal(true_evects, ss.evects)
+
+    def test_compute_07(self):
+        np.random.seed(42)
+        inputs = np.random.uniform(-1, 1, 60).reshape(15, 4)
+        gradients = np.random.uniform(-1, 1, 180).reshape(15, 3, 4)
+        weights = np.ones((15, 1)) / 15
+        ss = KernelActiveSubspaces()
+        ss.compute(inputs=inputs,
+                   gradients=gradients,
+                   weights=weights,
+                   method='exact',
+                   nboot=49,
+                   n_features=4,
+                   feature_map=None)
+        true_evals = np.array(
+            [874.84255146, 62.83226559, 3.60417077, 2.84686573])
+        np.testing.assert_array_almost_equal(true_evals, ss.evals)
+
+    def test_compute_08(self):
+        np.random.seed(42)
+        inputs = np.random.uniform(-1, 1, 60).reshape(15, 4)
+        gradients = np.random.uniform(-1, 1, 180).reshape(15, 3, 4)
+        weights = np.ones((15, 1)) / 15
+        ss = KernelActiveSubspaces()
+        ss.compute(inputs=inputs,
+                   gradients=gradients,
+                   weights=weights,
+                   method='exact',
+                   nboot=49,
+                   n_features=4,
+                   feature_map=None)
+        true_evects = np.array(
+            [[0.00126244, 0.99791389, 0.02926469, 0.05753138],
+             [0.04385229, -0.05833941, 0.78953331, 0.60935265],
+             [-0.99902507, -0.001436, 0.03167332, 0.03071887],
+             [0.00492877, -0.02761026, -0.61219077, 0.79021253]])
+        np.testing.assert_array_almost_equal(true_evects, ss.evects)
+
+    def test_compute_09(self):
+        np.random.seed(42)
+        inputs = np.random.uniform(-1, 1, 60).reshape(15, 4)
+        gradients = np.random.uniform(-1, 1, 180).reshape(15, 3, 4)
+        weights = np.ones((15, 1)) / 15
+        metric = np.diag(2 * np.ones(3))
+        ss = KernelActiveSubspaces()
+        ss.compute(inputs=inputs,
+                   gradients=gradients,
+                   weights=weights,
+                   method='exact',
+                   nboot=49,
+                   n_features=4,
+                   feature_map=None,
+                   metric=metric)
+        true_evects = np.array(
+            [[0.00126244, 0.99791389, 0.02926469, 0.05753138],
+             [0.04385229, -0.05833941, 0.78953331, 0.60935265],
+             [-0.99902507, -0.001436, 0.03167332, 0.03071887],
+             [0.00492877, -0.02761026, -0.61219077, 0.79021253]])
+        np.testing.assert_array_almost_equal(true_evects, ss.evects)
+
+    def test_compute_10(self):
+        np.random.seed(42)
+        inputs = np.random.uniform(-1, 1, 60).reshape(15, 4)
+        outputs = np.random.uniform(0, 5, 45).reshape(15, 3)
+        weights = np.ones((15, 1)) / 15
+        ss = KernelActiveSubspaces()
+        ss.compute(inputs=inputs,
+                   outputs=outputs,
+                   weights=weights,
+                   method='local',
+                   nboot=49,
+                   n_features=4,
+                   feature_map=None)
+        true_evals = np.array(
+            [7.93870724e+04, 1.18699831e+02, 4.36634158e+01, 1.49812189e+01])
+        np.testing.assert_allclose(true_evals, ss.evals)
+
+    def test_compute_11(self):
+        np.random.seed(42)
+        inputs = np.random.uniform(-1, 1, 60).reshape(15, 4)
+        outputs = np.random.uniform(0, 5, 45).reshape(15, 3)
+        weights = np.ones((15, 1)) / 15
+        metric = np.diag(2 * np.ones(3))
+        ss = KernelActiveSubspaces()
+        ss.compute(inputs=inputs,
+                   outputs=outputs,
+                   weights=weights,
+                   method='local',
+                   nboot=49,
+                   n_features=4,
+                   feature_map=None,
+                   metric=metric)
+        true_evals = np.array(
+            [1.58774145e+05, 2.37399662e+02, 8.73268317e+01, 2.99624379e+01])
+        np.testing.assert_allclose(true_evals, ss.evals)
 
     def test_forward_01(self):
         np.random.seed(42)
@@ -158,8 +289,8 @@ class TestUtils(TestCase):
                    feature_map=None)
         ss.partition(2)
         active = ss.forward(np.random.uniform(-1, 1, 4).reshape(2, 2))[0]
-        true_active = np.array([[1.34199032, 0.02509303],
-                                [1.55021982, -0.29461026]])
+        true_active = np.array([[0.94893046, 0.01774345],
+                                [1.09617095, -0.20832091]])
         np.testing.assert_array_almost_equal(true_active, active)
 
     def test_forward_02(self):
@@ -177,9 +308,36 @@ class TestUtils(TestCase):
                    feature_map=None)
         ss.partition(2)
         inactive = ss.forward(np.random.uniform(-1, 1, 4).reshape(2, 2))[1]
-        print(inactive)
-        true_inactive = np.array([[-0.47449407, 0.51271165],
-                                  [-0.27475082, 0.36433068]])
+        true_inactive = np.array([[-0.33551797, 0.36254188],
+                                  [-0.19427817, 0.2576207]])
+        np.testing.assert_array_almost_equal(true_inactive, inactive)
+
+    def test_forward_03(self):
+        np.random.seed(42)
+        inputs = np.random.uniform(-1, 1, 60).reshape(15, 4)
+        outputs = np.random.uniform(0, 5, 45).reshape(15, 3)
+        ss = KernelActiveSubspaces()
+        ss.compute(inputs=inputs,
+                   outputs=outputs,
+                   method='local',
+                   nboot=50,
+                   metric=np.diag(np.ones(3)))
+        ss.partition(2)
+        active = ss.forward(np.random.uniform(-1, 1, 8).reshape(2, 4))[0]
+        true_active = np.array([[-0.18946138, 0.31916713],
+                                [-0.25310859, -0.30280365]])
+        np.testing.assert_array_almost_equal(true_active, active)
+
+    def test_forward_04(self):
+        np.random.seed(42)
+        inputs = np.random.uniform(-1, 1, 60).reshape(15, 4)
+        outputs = np.random.uniform(0, 5, 15)
+        ss = KernelActiveSubspaces()
+        ss.compute(inputs=inputs, outputs=outputs, method='local', nboot=49)
+        ss.partition(2)
+        inactive = ss.forward(np.random.uniform(-1, 1, 8).reshape(2, 4))[1]
+        true_inactive = np.array([[0.27110018, -0.29359021],
+                                  [0.76399199, -0.02233936]])
         np.testing.assert_array_almost_equal(true_inactive, inactive)
 
     def test_partition_01(self):
@@ -262,6 +420,43 @@ class TestUtils(TestCase):
         np.testing.assert_array_almost_equal(true_bounds_evals, ss.evals_br)
 
     def test_compute_bootstrap_ranges_02(self):
+        np.random.seed(42)
+        gradients = np.random.uniform(-1, 1, 60).reshape(30, 1, 2)
+        inputs = np.random.uniform(-1, 1, 60).reshape(30, 2)
+        weights = np.ones((30, 1)) / 30
+        ss = KernelActiveSubspaces()
+        ss.compute(inputs=inputs,
+                   gradients=gradients,
+                   weights=weights,
+                   method='exact',
+                   nboot=49,
+                   n_features=4,
+                   feature_map=None)
+        true_bounds_subspace = np.array([[0.01734317, 0.09791063, 0.19840464],
+                                         [0.05112582, 0.43105485, 0.92323839],
+                                         [0.05890817, 0.27517302, 0.89262039]])
+        np.testing.assert_array_almost_equal(true_bounds_subspace, ss.subs_br)
+
+    def test_compute_bootstrap_ranges_03(self):
+        np.random.seed(42)
+        gradients = np.random.uniform(-1, 1, 60).reshape(30, 1, 2)
+        inputs = np.random.uniform(-1, 1, 60).reshape(30, 2)
+        weights = np.ones((30, 1)) / 30
+        ss = KernelActiveSubspaces()
+        ss.compute(inputs=inputs,
+                   gradients=gradients,
+                   weights=weights,
+                   method='exact',
+                   nboot=49,
+                   n_features=4,
+                   feature_map=None)
+        true_bounds_evals = np.array([[2.59177494, 7.11443789],
+                                      [0.5456548, 1.94294036],
+                                      [0.05855044, 0.84178668],
+                                      [0.01530059, 0.187785]])
+        np.testing.assert_array_almost_equal(true_bounds_evals, ss.evals_br)
+
+    def test_compute_bootstrap_ranges_04(self):
         np.random.seed(42)
         gradients = np.random.uniform(-1, 1, 60).reshape(30, 1, 2)
         inputs = np.random.uniform(-1, 1, 60).reshape(30, 2)

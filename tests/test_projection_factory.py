@@ -32,9 +32,10 @@ class TestProjectionFactory(TestCase):
     def test_laplace(self):
         np.random.seed(42)
         projection = ProjectionFactory('laplace')
-        value = projection(input_dim=2, n_features=3, params=[4.1, 0.3])
-        true_value = np.array([[4.013327, 4.795092], [4.28708, 4.165939],
-                               [3.75061, 3.750564]])
+        value = projection(input_dim=2, n_features=3, params=[4.1])
+        true_value = np.array([[-1.18452762, 9.49959443],
+                               [2.5567539, 0.90116103],
+                               [-4.77499369, -4.77562759]])
         np.testing.assert_array_almost_equal(true_value, value)
 
     def test_multivariate_normal(self):

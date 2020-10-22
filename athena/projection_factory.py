@@ -54,7 +54,7 @@ class ProjectionFactory(object):
         """
         TO DOC
         """
-        return np.random.laplace(params[0], params[1], (n_features, input_dim))
+        return np.random.laplace(0, params[0], (n_features, input_dim))
 
     def multivariate_normal(input_dim, n_features, params):
         """

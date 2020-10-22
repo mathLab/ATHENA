@@ -5,7 +5,7 @@ Module for Kernel-based Active Subspaces.
 
     - Francesco Romor, Marco Tezzele, Andrea Lario, Gianluigi Rozza.
       Kernel-based Active Subspaces with application to CFD problems using
-      Discontinuous Galerkin Method. 2020. 
+      Discontinuous Galerkin Method. 2020.
       arxiv: https://arxiv.org/abs/2008.12083
 
 """
@@ -18,10 +18,10 @@ from .feature_map import FeatureMap
 class KernelActiveSubspaces(Subspaces):
     """Kernel Active Subspaces class
     """
-    def __init__(self):
+    def __init__(self, feature_map=None):
         super().__init__()
         self.n_features = None
-        self.feature_map = None
+        self.feature_map = feature_map
         self.features = None
         self.pseudo_gradients = None
 
@@ -112,17 +112,17 @@ class KernelActiveSubspaces(Subspaces):
             if gradients is None or inputs is None:
                 raise ValueError('gradients or inputs argument is None.')
 
-        if len(gradients.shape) == 2:
-            gradients = gradients.reshape(gradients.shape[0], 1,
-                                          gradients.shape[1])
-
         # estimate active subspace with local linear models.
         elif method == 'local':
             if inputs is None or outputs is None:
                 raise ValueError('inputs or outputs argument is None.')
-            gradients = local_linear_gradients(inputs=inputs,
-                                               outputs=outputs,
-                                               weights=weights)
+            gradients, inputs = local_linear_gradients(inputs=inputs,
+                                                       outputs=outputs,
+                                                       weights=weights)
+
+        if len(gradients.shape) == 2:
+            gradients = gradients.reshape(gradients.shape[0], 1,
+                                          gradients.shape[1])
 
         if weights is None or method == 'local':
             # use the new gradients to compute the weights, otherwise dimension
@@ -134,18 +134,20 @@ class KernelActiveSubspaces(Subspaces):
         else:
             self.n_features = n_features
 
-        if feature_map is None:
-            # default spectral measure is Gaussian
-            self.feature_map = FeatureMap(distr='multivariate_normal',
-                                          bias=np.ones((1, n_features)),
-                                          input_dim=inputs.shape[1],
-                                          n_features=n_features,
-                                          params=np.ones(inputs.shape[1]),
-                                          sigma_f=1)
-        else:
-            self.feature_map = feature_map
+        if self.feature_map is None:
+            if feature_map:
+                self.feature_map = feature_map
+            else:
+                # default spectral measure is Gaussian
+                self.feature_map = FeatureMap(distr='multivariate_normal',
+                                              bias=np.ones(
+                                                  (1, self.n_features)),
+                                              input_dim=inputs.shape[1],
+                                              n_features=self.n_features,
+                                              params=np.ones(inputs.shape[1]),
+                                              sigma_f=1)
 
-        if metric is None:
+        if len(gradients.shape) == 3 and metric is None:
             metric = np.diag(np.ones(gradients.shape[1]))
 
         self.pseudo_gradients, self.features = self._reparametrize(

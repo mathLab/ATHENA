@@ -2,6 +2,7 @@
 """
 import numpy as np
 from scipy.optimize import linprog
+from ezyrb import GPR
 
 
 class Normalizer(object):
@@ -177,3 +178,116 @@ def sort_eigpairs(matrix):
     s[s == 0] = 1
     evects *= s
     return evals.reshape(-1, 1), evects
+
+
+class CrossValidation():
+    """doc"""
+    def __init__(self,
+                 inputs=None,
+                 outputs=None,
+                 gradients=None,
+                 folds=5,
+                 subspace=None,
+                 gp_dimension=1,
+                 **kwargs):
+
+        self.inputs = inputs
+        self.outputs = outputs
+        self.gradients = gradients
+        self.folds = folds
+        self.ss = subspace
+        self.gp_dimension = gp_dimension
+        self.gp = None
+        self.kwargs = kwargs
+
+    def cross_validation(self):
+        """doc"""
+        mask = np.arange(self.inputs.shape[0])
+
+        np.random.shuffle(mask)
+        scores = np.zeros((self.folds))
+        s_mask = np.array_split(mask, self.folds)
+
+        for i in range(self.folds):
+            v_mask = s_mask[i]
+            validation = (self.inputs[v_mask, :], self.outputs[v_mask, :])
+
+            t_mask = ~v_mask
+            self.fit(self.inputs[t_mask, :], self.gradients[t_mask, :, :],
+                     self.outputs[t_mask, :])
+
+            scores[i] = self.scorer(validation[0], validation[1])
+
+        return scores.mean(), scores.std()
+
+    def training(self):
+        """doc"""
+        self.fit(self.inputs, self.gradients, self.outputs)
+        score = self.scorer(self.inputs, self.outputs)
+        return score
+
+    def fit(self, inputs, gradients, outputs):
+        """Uses Gaussian process regression to build the response surface."""
+
+        self.ss.compute(inputs=inputs,
+                        gradients=gradients,
+                        outputs=outputs,
+                        **self.kwargs)
+        self.ss.partition(self.gp_dimension)
+        y = self.ss.forward(inputs)[0]
+        self.gp = GPR()
+        self.gp.fit(y, outputs, optimization_restart=5)
+
+    def predict(self, inputs):
+        """Predict method of cross-validation."""
+
+        x_test = self.ss.forward(inputs)[0]
+        y = self.gp.predict(x_test)
+        return y
+
+    def scorer(self, inputs, targets):
+        """Score function of cross-validation."""
+
+        y = self.predict(inputs)
+        return rrmse(y, targets)
+
+
+def rrmse(predictions, targets):
+    t = np.atleast_2d(targets)
+    p = np.atleast_2d(predictions)
+    return np.linalg.norm(p -
+                          t) / np.linalg.norm(t -
+                                              np.mean(t, axis=0).reshape(1, -1))
+
+
+def average_rrmse(hyperparams, csv, best, resample=5):
+    """inputs, outputs, gradients, n_features,
+       feature_map, weights, method, kernel, gp_dimension, folds"""
+
+    if len(hyperparams.shape) > 1:
+        hyperparams = np.squeeze(hyperparams)
+    if len(hyperparams.shape) == 0:
+        hyperparams = np.array([hyperparams])
+
+    hyperparams = 10**hyperparams
+    tmp = []
+    print("#" * 80)
+    for it in range(resample):
+        #compute the projection matrix
+        csv.ss.feature_map.params = hyperparams
+        csv.ss.feature_map._compute_pr_matrix()
+
+        #compute the score with cross validation for the sampled projection matrix
+        mean, std = csv.cross_validation()
+
+        #save the best parameters
+        print("params {2} mean {0}, std {1}".format(mean, std, hyperparams))
+        tmp.append(mean)
+        if mean > 0.8:
+            break
+        if best[0] > mean:
+            best[0] = mean
+            best[1] = csv.ss.feature_map._pr_matrix
+
+    csv.ss.feature_map._pr_matrix = None
+    return min(tmp)
