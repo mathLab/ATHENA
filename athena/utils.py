@@ -2,8 +2,7 @@
 """
 import numpy as np
 from scipy.optimize import linprog
-from ezyrb import GPR
-
+import GPy
 
 class Normalizer(object):
     """A class for normalizing and unnormalizing bounded inputs.
@@ -200,7 +199,7 @@ class CrossValidation():
         self.gp = None
         self.kwargs = kwargs
 
-    def cross_validation(self):
+    def run(self):
         """doc"""
         mask = np.arange(self.inputs.shape[0])
 
@@ -235,14 +234,17 @@ class CrossValidation():
                         **self.kwargs)
         self.ss.partition(self.gp_dimension)
         y = self.ss.forward(inputs)[0]
-        self.gp = GPR()
-        self.gp.fit(y, outputs, optimization_restart=5)
+
+        # build response surface
+        kern = GPy.kern.RBF(input_dim=y.shape[1], ARD=True)
+        self.gp = GPy.models.GPRegression(y, np.atleast_2d(outputs), kern)
+        self.gp.optimize_restarts(5, verbose=False)
 
     def predict(self, inputs):
         """Predict method of cross-validation."""
 
         x_test = self.ss.forward(inputs)[0]
-        y = self.gp.predict(x_test)
+        y = self.gp.predict(np.atleast_2d(x_test))[0]
         return y
 
     def scorer(self, inputs, targets):
@@ -270,24 +272,28 @@ def average_rrmse(hyperparams, csv, best, resample=5):
         hyperparams = np.array([hyperparams])
 
     hyperparams = 10**hyperparams
-    tmp = []
+
+    # list of scores for the same hyperparameters but different samples
+    # of the projection matrix
+    score_records = []
+
     print("#" * 80)
     for it in range(resample):
         #compute the projection matrix
         csv.ss.feature_map.params = hyperparams
         csv.ss.feature_map._compute_pr_matrix()
 
-        #compute the score with cross validation for the sampled projection matrix
-        mean, std = csv.cross_validation()
+        # compute the score with cross validation for the sampled projection matrix
+        mean, std = csv.run()
 
-        #save the best parameters
+        # save the best parameters
         print("params {2} mean {0}, std {1}".format(mean, std, hyperparams))
-        tmp.append(mean)
+        score_records.append(mean)
         if mean > 0.8:
             break
-        if best[0] > mean:
+        if mean < best[0]:
             best[0] = mean
             best[1] = csv.ss.feature_map._pr_matrix
 
     csv.ss.feature_map._pr_matrix = None
-    return min(tmp)
+    return min(score_records)

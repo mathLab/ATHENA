@@ -52,10 +52,10 @@ install:
     - pip install numpy scipy matplotlib pip nose sphinx
     - pip install setuptools
     - pip install coveralls coverage
-    - pip install torch
+    - pip install torch GPy
     - python setup.py install
 
-script: 
+script:
     - coverage run test.py
 
 after_success:

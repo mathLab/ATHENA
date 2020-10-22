@@ -22,8 +22,7 @@ active subspace can be searched for in the case of a model with vectorial output
 #### [Tutorial 5](06_kernel-basaed_AS.ipynb)
 Here we show how a kernel-based active subspace can be detected and employed
 when a standard active subspace is missing. We also describe the tuning
-procedure involved. This tutorial requires [GPy](https://github.com/SheffieldML/GPy) and
-[GPyOpt](https://github.com/SheffieldML/GPyOpt).
+procedure involved. This tutorial requires [GPy](https://github.com/SheffieldML/GPy).
 
 #### More to come...
 We plan to add more tutorials but the time is often against us. If you want to contribute with a notebook on a feature not covered yet we will be very happy and give you support on editing!
