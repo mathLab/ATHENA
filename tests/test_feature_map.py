@@ -1,6 +1,8 @@
 from unittest import TestCase
 import numpy as np
 from athena import FeatureMap, rff_map, rff_jac
+from athena.kas import KernelActiveSubspaces
+from athena.utils import average_rrmse, CrossValidation
 
 
 class TestProjectionFactory(TestCase):
@@ -142,73 +144,78 @@ class TestProjectionFactory(TestCase):
                                 [-0.03243032, -0.03215301]]])
         np.testing.assert_array_almost_equal(true_value, fmap_jac)
 
-    # def test_tune_pr_matrix_none_01(self):
-    #     np.random.seed(42)
-    #     fm = FeatureMap(distr='multivariate_normal',
-    #                     bias=None,
-    #                     input_dim=2,
-    #                     n_features=5,
-    #                     params=[0.1, 0.3],
-    #                     sigma_f=0.1)
-    #     func = lambda x: np.sin(x[0] + x[1])
-    #     bounds = (slice(-np.pi, 0, 0.25), slice(1, 2, 0.25))
-    #     fm.tune_pr_matrix(func, bounds, args=(), method=None)
-    #     true_value = np.array([[-0.88040291, -0.16933849],
-    #                            [-1.14799804, 1.86532301],
-    #                            [0.41502605, -0.28675804],
-    #                            [-2.79908184, 0.93991175],
-    #                            [0.83212168, 0.66449763]])
-    #     np.testing.assert_array_almost_equal(true_value, fm.pr_matrix)
+    def test_brute(self):
+        np.random.seed(42)
+        inputs = np.random.uniform(-1, 1, 10).reshape(5, 2)
+        outputs = np.random.uniform(0, 5, 10).reshape(5, 2)
+        gradients = np.random.uniform(-1, 1, 20).reshape(5, 2, 2)
+        fm = FeatureMap(distr='laplace',
+                        bias=np.random.uniform(-1, 1, 3),
+                        input_dim=2,
+                        n_features=3,
+                        params=np.array([5.34265038]),
+                        sigma_f=outputs.var())
+        ss = KernelActiveSubspaces(feature_map=fm)
+        csv = CrossValidation(inputs=inputs, outputs=outputs, gradients=gradients, folds=2, subspace=ss)
+        best = fm.tune_pr_matrix(func=average_rrmse,
+                    bounds=[slice(-1, 1.2, 0.2) for i in range(1)],
+                    args=(csv, ),
+                    maxiter=10,
+                    save_file=False)[1]
+        true = np.array([[0.03857183, -0.45825228], [-1.06057884, 0.9981594],
+                         [1.01812996, 0.19529565]])
+        np.testing.assert_array_almost_equal(true, best)
 
-    # def test_tune_pr_matrix_none_02(self):
-    #     np.random.seed(42)
-    #     fm = FeatureMap(distr='multivariate_normal',
-    #                     bias=None,
-    #                     input_dim=3,
-    #                     n_features=5,
-    #                     params=[0.1, 0.3, 0.1],
-    #                     sigma_f=0.1)
-    #     func = lambda x: np.sin(x[0] + x[1] + x[2])
-    #     bounds = (slice(-np.pi, 0, 0.25), slice(1, 2, 0.25), slice(3, 4, 0.25))
-    #     fm.tune_pr_matrix(func, bounds, args=(), method=None)
-    #     true_value = np.array([[-0.61157462, -0.18290648, 0.96188282],
-    #                            [0.22108191, -0.3097558, 2.94933463],
-    #                            [0.44329736, 1.01522072, 3.05813247],
-    #                            [0.43976152, -0.61304398, 1.05066301],
-    #                            [1.62873959, -2.53103186, 0.46855792]])
-    #     np.testing.assert_array_almost_equal(true_value, fm.pr_matrix)
+    def test_dual_annealing(self):
+        np.random.seed(42)
+        inputs = np.random.uniform(-1, 1, 10).reshape(5, 2)
+        outputs = np.random.uniform(0, 5, 10).reshape(5, 2)
+        gradients = np.random.uniform(-1, 1, 20).reshape(5, 2, 2)
+        fm = FeatureMap(distr='laplace',
+                        bias=np.random.uniform(-1, 1, 3),
+                        input_dim=2,
+                        n_features=3,
+                        params=np.zeros(1),
+                        sigma_f=outputs.var())
+        ss = KernelActiveSubspaces(feature_map=fm)
+        csv = CrossValidation(inputs=inputs,
+                              outputs=outputs,
+                              gradients=gradients,
+                              folds=2,
+                              subspace=ss)
+        best = fm.tune_pr_matrix(func=average_rrmse,
+                                 bounds=[slice(-2, 1, 0.2) for i in range(1)],
+                                 args=(csv, ),
+                                 method='dual_annealing',
+                                 maxiter=5,
+                                 save_file=False)[1]
+        true = np.array([[0.21895786, 0.52423581], [-5.3186504, 14.9646475],
+                         [4.2713126, 11.28870881]])
+        np.testing.assert_array_almost_equal(true, best)
 
-    # def test_tune_pr_matrix_brute(self):
-    #     np.random.seed(42)
-    #     fm = FeatureMap(distr='uniform',
-    #                     bias=None,
-    #                     input_dim=2,
-    #                     n_features=5,
-    #                     params=[0.1, 0.3],
-    #                     sigma_f=0.1)
-    #     func = lambda x: np.sin(x[0] + x[1])
-    #     bounds = (slice(-np.pi, 0, 0.25), slice(1, 2, 0.25))
-    #     fm.tune_pr_matrix(func, bounds, args=(), method='brute')
-    #     true_value = np.array([[-1.40312999, 1.27123589],
-    #                            [0.25602505, -0.36286383],
-    #                            [-2.41741768, -2.41752963],
-    #                            [-2.87199219, 0.87884418],
-    #                            [-0.35146163, 0.14499182]])
-    #     np.testing.assert_array_almost_equal(true_value, fm.pr_matrix)
-
-    # def test_tune_pr_matrix_dual_annealing(self):
-    #     np.random.seed(42)
-    #     fm = FeatureMap(distr='beta',
-    #                     bias=None,
-    #                     input_dim=2,
-    #                     n_features=5,
-    #                     params=[0.1, 0.3],
-    #                     sigma_f=0.1)
-    #     func = lambda x: np.sin(x[0] + x[1])
-    #     bounds = (slice(3, 4, 0.25), slice(1, 2, 0.25))
-    #     fm.tune_pr_matrix(func, bounds, args=(), method='dual_annealing')
-    #     true_value = np.array([[0.96136567,
-    #                             0.68442507], [0.27881283, 0.69151686],
-    #                            [0.57626534, 0.6273798], [0.3170462, 0.8636379],
-    #                            [0.97294359, 0.99518304]])
-    #     np.testing.assert_array_almost_equal(true_value, fm.pr_matrix)
+    def test_bso(self):
+        np.random.seed(42)
+        inputs = np.random.uniform(-1, 1, 10).reshape(5, 2)
+        outputs = np.random.uniform(0, 5, 10).reshape(5, 2)
+        gradients = np.random.uniform(-1, 1, 20).reshape(5, 2, 2)
+        fm = FeatureMap(distr='laplace',
+                        bias=np.random.uniform(-1, 1, 3),
+                        input_dim=2,
+                        n_features=3,
+                        params=np.zeros(1),
+                        sigma_f=outputs.var())
+        ss = KernelActiveSubspaces(feature_map=fm)
+        csv = CrossValidation(inputs=inputs,
+                              outputs=outputs,
+                              gradients=gradients,
+                              folds=2,
+                              subspace=ss)
+        best = fm.tune_pr_matrix(func=average_rrmse,
+                                 bounds=[slice(-2, 1, 0.2) for i in range(1)],
+                                 args=(csv, ),
+                                 method='bso',
+                                 maxiter=10,
+                                 save_file=False)[1]
+        true = np.array([[2.13951417, -9.18658594], [1.16340082, 0.5677881],
+                         [8.7675616, -1.1558472]])
+        np.testing.assert_array_almost_equal(true, best)

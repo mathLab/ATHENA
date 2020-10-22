@@ -1,7 +1,11 @@
 from unittest import TestCase
 import numpy as np
 from athena.utils import (Normalizer, initialize_weights, linear_program_ineq,
-                          local_linear_gradients, sort_eigpairs)
+                          local_linear_gradients, sort_eigpairs,
+                          CrossValidation, rrmse, average_rrmse)
+from athena.active import ActiveSubspaces
+from athena.kas import KernelActiveSubspaces
+from athena.feature_map import FeatureMap
 
 
 class TestUtils(TestCase):
@@ -83,3 +87,153 @@ class TestUtils(TestCase):
                                 [-0.653819, -0.286001, 0.700517],
                                 [0.557657, -0.807881, 0.190647]])
         np.testing.assert_array_almost_equal(true_evects, evects)
+
+    def test_cross_validation_01(self):
+        cv = CrossValidation()
+        self.assertIsNone(cv.inputs)
+
+    def test_cross_validation_02(self):
+        cv = CrossValidation()
+        self.assertIsNone(cv.outputs)
+
+    def test_cross_validation_03(self):
+        cv = CrossValidation()
+        self.assertIsNone(cv.gradients)
+
+    def test_cross_validation_04(self):
+        cv = CrossValidation()
+        self.assertIsNone(cv.ss)
+
+    def test_cross_validation_05(self):
+        cv = CrossValidation()
+        self.assertIsNone(cv.gp)
+
+    def test_cross_validation_06(self):
+        cv = CrossValidation()
+        self.assertEqual(cv.gp_dimension, 1)
+
+    def test_cross_validation_07(self):
+        cv = CrossValidation()
+        self.assertEqual(cv.folds, 5)
+
+    def test_cross_validation_fit_01(self):
+        np.random.seed(42)
+        inputs = np.random.uniform(-1, 1, 15).reshape(5, -1)
+        outputs = np.random.uniform(0, 5, 10).reshape(5, -1)
+        gradients = np.random.uniform(-1, 1, 30).reshape(5, 2, 3)
+        ss = ActiveSubspaces()
+        csv = CrossValidation(inputs=inputs,
+                              outputs=outputs,
+                              gradients=gradients,
+                              folds=3,
+                              subspace=ss,
+                              gp_dimension=2)
+        csv.fit(inputs, gradients, outputs)
+        self.assertEqual(csv.gp.X.shape[1], 2)
+
+    def test_cross_validation_fit_02(self):
+        np.random.seed(42)
+        inputs = np.random.uniform(-1, 1, 15).reshape(5, -1)
+        outputs = np.random.uniform(0, 5, 10).reshape(5, -1)
+        gradients = np.random.uniform(-1, 1, 30).reshape(5, 2, 3)
+        ss = ActiveSubspaces()
+        csv = CrossValidation(inputs=inputs,
+                              outputs=outputs,
+                              gradients=gradients,
+                              folds=3,
+                              subspace=ss)
+        csv.fit(inputs, gradients, outputs)
+        self.assertIsNotNone(csv.gp)
+
+    def test_cross_validation_run_01(self):
+        np.random.seed(42)
+        inputs = np.random.uniform(-1, 1, 15).reshape(5, -1)
+        outputs = np.random.uniform(0, 5, 10).reshape(5, -1)
+        gradients = np.random.uniform(-1, 1, 30).reshape(5, 2, 3)
+        ss = ActiveSubspaces()
+        csv = CrossValidation(inputs=inputs,
+                              outputs=outputs,
+                              gradients=gradients,
+                              folds=2,
+                              subspace=ss)
+        true_value = (8.186941403385733, 6.081926389368339)
+        np.testing.assert_array_almost_equal(csv.run(), true_value)
+
+    def test_cross_validation_run_02(self):
+        np.random.seed(42)
+        inputs = np.random.uniform(-1, 1, 10).reshape(5, 2)
+        outputs = np.random.uniform(0, 5, 10).reshape(5, 2)
+        gradients = np.random.uniform(-1, 1, 20).reshape(5, 2, 2)
+        fm = FeatureMap(distr='laplace',
+                        bias=np.random.uniform(-1, 1, 3),
+                        input_dim=2,
+                        n_features=3,
+                        params=np.zeros(1),
+                        sigma_f=outputs.var())
+        ss = KernelActiveSubspaces(feature_map=fm)
+        csv = CrossValidation(inputs=inputs,
+                              outputs=outputs,
+                              gradients=gradients,
+                              folds=2,
+                              subspace=ss)
+        true_value = (2.26333743325053, 0.43902733603381605)
+        np.testing.assert_array_almost_equal(csv.run(), true_value)
+
+    def test_rrmse_01(self):
+        np.random.seed(42)
+        predictions = np.random.uniform(-1, 1, 5).reshape(5)
+        targets = np.random.uniform(-1, 1, 5).reshape(5)
+        true = 1.5298111757191089
+        np.testing.assert_array_equal(rrmse(predictions, targets), true)
+
+    def test_rrmse_02(self):
+        np.random.seed(42)
+        predictions = np.random.uniform(-1, 1, 10).reshape(5, 2)
+        targets = np.random.uniform(-1, 1, 10).reshape(5, 2)
+        true = 0.9089760363050161
+        np.testing.assert_array_equal(rrmse(predictions, targets), true)
+
+    def test_average_rrmse_01(self):
+        np.random.seed(42)
+        inputs = np.random.uniform(-1, 1, 10).reshape(5, 2)
+        outputs = np.random.uniform(0, 5, 10).reshape(5, 2)
+        gradients = np.random.uniform(-1, 1, 20).reshape(5, 2, 2)
+        fm = FeatureMap(distr='laplace',
+                        bias=np.random.uniform(-1, 1, 3),
+                        input_dim=2,
+                        n_features=3,
+                        params=np.zeros(1),
+                        sigma_f=outputs.var())
+        ss = KernelActiveSubspaces(feature_map=fm)
+        csv = CrossValidation(inputs=inputs,
+                              outputs=outputs,
+                              gradients=gradients,
+                              folds=2,
+                              subspace=ss)
+        best = [0.1, np.zeros((3, 2))]
+        hyperparams = np.array([-1.])
+        score = average_rrmse(hyperparams, csv, best, resample=1)
+        np.testing.assert_equal(best[0], 0.1)
+
+    def test_average_rrmse_02(self):
+        np.random.seed(42)
+        inputs = np.random.uniform(-1, 1, 10).reshape(5, 2)
+        outputs = np.random.uniform(0, 5, 10).reshape(5, 2)
+        gradients = np.random.uniform(-1, 1, 20).reshape(5, 2, 2)
+        fm = FeatureMap(distr='laplace',
+                        bias=np.random.uniform(-1, 1, 3),
+                        input_dim=2,
+                        n_features=3,
+                        params=np.zeros(1),
+                        sigma_f=outputs.var())
+        ss = KernelActiveSubspaces(feature_map=fm)
+        csv = CrossValidation(inputs=inputs,
+                              outputs=outputs,
+                              gradients=gradients,
+                              folds=2,
+                              subspace=ss)
+        best = [0.1, np.zeros((3, 2))]
+        hyperparams = np.array([-1.])
+        score = average_rrmse(hyperparams, csv, best, resample=1)
+        true = 2.135718555831271
+        np.testing.assert_equal(score, true)

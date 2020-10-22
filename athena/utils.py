@@ -4,6 +4,7 @@ import numpy as np
 from scipy.optimize import linprog
 import GPy
 
+
 class Normalizer(object):
     """A class for normalizing and unnormalizing bounded inputs.
 
@@ -255,16 +256,19 @@ class CrossValidation():
 
 
 def rrmse(predictions, targets):
-    t = np.atleast_2d(targets)
-    p = np.atleast_2d(predictions)
+    n_samples = predictions.shape[0]
+    assert n_samples == targets.shape[
+        0], "Predictions and targets differ in number of samples"
+
+    t = np.atleast_2d(targets).reshape(n_samples, -1)
+    p = np.atleast_2d(predictions).reshape(n_samples, -1)
     return np.linalg.norm(p -
                           t) / np.linalg.norm(t -
                                               np.mean(t, axis=0).reshape(1, -1))
 
 
 def average_rrmse(hyperparams, csv, best, resample=5):
-    """inputs, outputs, gradients, n_features,
-       feature_map, weights, method, kernel, gp_dimension, folds"""
+    """Objective function to be optimized"""
 
     if len(hyperparams.shape) > 1:
         hyperparams = np.squeeze(hyperparams)

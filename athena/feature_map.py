@@ -127,18 +127,19 @@ class FeatureMap(object):
             } for i, bound in enumerate(bounds)]
             func_obj = partial(func, csv=args[0], best=best)
             bopt = GPyOpt.methods.BayesianOptimization(func_obj,
-                                                         domain=bounds,
-                                                         model_type='GP',
-                                                         acquisition_type='EI',
-                                                         exact_feval=True)
+                                                       domain=bounds,
+                                                       model_type='GP',
+                                                       acquisition_type='EI',
+                                                       exact_feval=True)
             bopt.run_optimization(max_iter=maxiter,
-                                    max_time=3600,
-                                    eps=1e-16,
-                                    verbosity=False)
+                                  max_time=3600,
+                                  eps=1e-16,
+                                  verbosity=False)
             self.params = 10**bopt.x_opt
         else:
             raise ValueError(
-                "Method argument can only be 'brute' or 'dual_annealing' or 'bso'.")
+                "Method argument can only be 'brute' or 'dual_annealing' or 'bso'."
+            )
 
         self._pr_matrix = best[1]
         self.params = best[0]
