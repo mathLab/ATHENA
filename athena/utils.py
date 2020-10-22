@@ -281,7 +281,6 @@ def average_rrmse(hyperparams, csv, best, resample=5):
     for it in range(resample):
         #compute the projection matrix
         csv.ss.feature_map.params = hyperparams
-        csv.ss.feature_map._compute_pr_matrix()
 
         # compute the score with cross validation for the sampled projection matrix
         mean, std = csv.run()
