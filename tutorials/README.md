@@ -19,6 +19,11 @@ Here we show an application of the active subspaces property to speed up the sam
 You need to run [Tutorial 5, solver](05_SPDE_on_fenics_solver.ipynb) first. Here we show how an
 active subspace can be searched for in the case of a model with vectorial outputs. We use [fenics](https://fenicsproject.org/) to solve a Poisson problem with red noise in the diffusion coefficient (approximated with truncated Karhunen-Loève decomposition). If you want to look at the active eigenvectors and K-L modes after having ran the tutorial, open [Tutorial 5, visualization tool](05_SPDE_on_fenics_modes.ipynb).
 
+#### [Tutorial 6](06_kernel-based_AS.ipynb)
+Here we show how a kernel-based active subspace can be detected and employed
+when a standard active subspace is missing. We also describe the tuning
+procedure involved.
+
 #### More to come...
 We plan to add more tutorials but the time is often against us. If you want to contribute with a notebook on a feature not covered yet we will be very happy and give you support on editing!
 

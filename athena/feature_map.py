@@ -1,8 +1,10 @@
 """
 Module for the feature map class.
 """
+from functools import partial
 import numpy as np
 from scipy.optimize import brute, dual_annealing
+import GPyOpt
 from .projection_factory import ProjectionFactory
 
 
@@ -46,18 +48,26 @@ class FeatureMap(object):
         return self.distr(self.input_dim, self.n_features, self.params)
 
     def compute_fmap(self, inputs):
+        """doc"""
         if self._pr_matrix is None:
             self._pr_matrix = self._compute_pr_matrix()
         return self.fmap(inputs, self._pr_matrix, self.bias, self.n_features,
                          self.sigma_f)
 
     def compute_fmap_jac(self, inputs):
+        """doc"""
         if self._pr_matrix is None:
             self._pr_matrix = self._compute_pr_matrix()
         return self.fmap_jac(inputs, self._pr_matrix, self.bias,
                              self.n_features, self.sigma_f)
 
-    def tune_pr_matrix(self, func, bounds, args=(), method=None, maxiter=50):
+    def tune_pr_matrix(self,
+                       func,
+                       bounds,
+                       args=(),
+                       method=None,
+                       maxiter=50,
+                       save_file=False):
         """
         TO DOC
         ADD EXAMPLE for bounds
@@ -83,6 +93,8 @@ class FeatureMap(object):
             Default value is 50.
         :raises: ValueError
         """
+        best = [0.8, np.zeros((self.n_features, self.input_dim))]
+
         if method is None:
             if len(self.params) < 4:
                 method = 'brute'
@@ -92,19 +104,50 @@ class FeatureMap(object):
         if method == 'brute':
             self.params = brute(func=func,
                                 ranges=bounds,
-                                args=args,
+                                args=(
+                                    *args,
+                                    best,
+                                ),
                                 finish=None)
         elif method == 'dual_annealing':
             bounds_list = [[bound.start, bound.stop] for bound in bounds]
-            self.params = dual_annealing(func=func,
-                                         bounds=bounds_list,
-                                         args=args,
-                                         maxiter=maxiter,
-                                         no_local_search=True).x
+            self.params = 10**dual_annealing(func=func,
+                                             bounds=bounds_list,
+                                             args=(
+                                                 *args,
+                                                 best,
+                                             ),
+                                             maxiter=maxiter,
+                                             no_local_search=False).x
+        elif method == 'bso':
+            bounds = [{
+                'name': 'var_' + str(i),
+                'type': 'continuous',
+                'domain': [bound.start, bound.stop]
+            } for i, bound in enumerate(bounds)]
+            func_obj = partial(func, csv=args[0], best=best)
+            bopt = GPyOpt.methods.BayesianOptimization(func_obj,
+                                                       domain=bounds,
+                                                       model_type='GP',
+                                                       acquisition_type='EI',
+                                                       exact_feval=True)
+            bopt.run_optimization(max_iter=maxiter,
+                                  max_time=3600,
+                                  eps=1e-16,
+                                  verbosity=False)
+            self.params = 10**bopt.x_opt
         else:
             raise ValueError(
-                "Method argument can only be 'brute' or 'dual_annealing'.")
-        self._pr_matrix = self._compute_pr_matrix()
+                "Method argument can only be 'brute' or 'dual_annealing' or 'bso'."
+            )
+
+        self._pr_matrix = best[1]
+        self.params = best[0]
+
+        if save_file:
+            np.save("opt_pr_matrix", best[1])
+
+        return best
 
 
 def rff_map(inputs, pr_matrix, bias, n_features, sigma_f):
@@ -112,8 +155,8 @@ def rff_map(inputs, pr_matrix, bias, n_features, sigma_f):
     Random Fourier Features
     TO DOC
     """
-    return np.sqrt(
-        4 / n_features) * sigma_f * np.cos(np.dot(inputs, pr_matrix.T) + bias)
+    return np.sqrt(2 / n_features) * sigma_f * np.cos(
+        np.dot(inputs, pr_matrix.T) + bias.reshape(1, -1))
 
 
 def rff_jac(inputs, pr_matrix, bias, n_features, sigma_f):

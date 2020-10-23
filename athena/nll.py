@@ -343,7 +343,8 @@ class ForwardNet(nn.Module):
             vars()[inv_name_y_bias] = getattr(self, name_y).bias
             vars()[inv_name_z_bias] = getattr(self, name_z).bias
 
-        Jacob = torch.empty(inputs.size()[0], 2 * self.n_params, 2 * self.n_params)
+        Jacob = torch.empty(inputs.size()[0], 2 * self.n_params,
+                            2 * self.n_params)
 
         for j in range(2 * self.n_params):
             output_dy = torch.clone(mapped_inputs)

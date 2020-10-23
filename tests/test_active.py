@@ -139,7 +139,7 @@ class TestUtils(TestCase):
              [0.47593663, -0.54764923, 0.16970489, -0.66690696]])
         np.testing.assert_array_almost_equal(true_evects, ss.evects)
 
-    def test_compute_9(self):
+    def test_compute_09(self):
         np.random.seed(42)
         gradients = np.random.uniform(-1, 1, 180).reshape(15, 3, 4)
         weights = np.ones((15, 1)) / 15
