@@ -236,4 +236,4 @@ class TestUtils(TestCase):
         hyperparams = np.array([-1.])
         score = average_rrmse(hyperparams, csv, best, resample=1)
         true = 2.135718555831271
-        np.testing.assert_equal(score, true)
+        self.assertEqual(score, true)
