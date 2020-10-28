@@ -180,7 +180,6 @@ class TestNonlinearLevelSet(TestCase):
         nll.train(inputs=inputs_torch, gradients=grad_torch, interactive=False)
         outfilename = 'tests/data/saved_backward.pth'
         nll.save_backward(outfilename)
-        nll.save_backward('tests/data/backward_test.pth')
         self.assertTrue(os.path.exists(outfilename))
         self.addCleanup(os.remove, outfilename)
 
