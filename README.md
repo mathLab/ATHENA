@@ -35,11 +35,13 @@
 * [License](#license)
 
 ## Description
-**ATHENA** is a Python package for reduction in parameter spaces. 
+**ATHENA** is a Python package for reduction of high dimensional parameter spaces in the context of numerical analysis. It allows the use of several dimensionality reduction techniques such as Active Subspaces (AS), Kernel-based Active Subspaces (KAS), and Nonlinear Level-set Learning (NLL). It is particularly suited for the study of parametric PDEs, for sensitivity analysis, and for the approximation of engineering quantities of interest. It can handle both scalar and vectorial high dimensional functions, making it a useful tool also to reduce the burden of computational intensive optimization tasks. 
+
+See the [**Examples and Tutorials**](#examples) section below and the [**tutorials folder**](tutorials/README.md) to have an idea of the potential of this package.
 
 
 ## Dependencies and installation
-**ATHENA** requires requires `numpy`, `matplotlib`, `scipy`, `torch`, `sphinx` (for the documentation) and `nose` (for local test). The code is compatible with Python 3.6 and above. It can be installed directly from the source code.
+**ATHENA** requires `numpy`, `matplotlib`, `scipy`, `torch`, `GPy`, `GPyOpt`, `sphinx` (for the documentation) and `nose` (for local test). The code is compatible with Python 3.6 and above. It can be installed directly from the source code.
 
 
 ### Installing from source
