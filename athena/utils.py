@@ -79,7 +79,8 @@ def linear_program_ineq(c, A, b):
     if res.success:
         return res.x.reshape(-1, 1)
     else:
-        raise RuntimeError('Scipy did not solve the LP. {}'.format(res.message))
+        raise RuntimeError('Scipy did not solve the LP. {}'.format(
+            res.message))
 
 
 def local_linear_gradients(inputs, outputs, weights=None, n_neighbors=None):
@@ -183,13 +184,18 @@ def sort_eigpairs(matrix):
 class CrossValidation():
     """doc"""
     def __init__(self,
-                 inputs=None,
-                 outputs=None,
-                 gradients=None,
+                 inputs,
+                 outputs,
+                 gradients,
+                 subspace,
                  folds=5,
-                 subspace=None,
                  gp_dimension=1,
                  **kwargs):
+
+        if all(v is None for v in [inputs, outputs, gradients, subspace]):
+            raise ValueError(
+                'Any among inputs, outputs, gradients, subspace argument is None.'
+            )
 
         self.inputs = inputs
         self.outputs = outputs
@@ -262,9 +268,8 @@ def rrmse(predictions, targets):
 
     t = np.atleast_2d(targets).reshape(n_samples, -1)
     p = np.atleast_2d(predictions).reshape(n_samples, -1)
-    return np.linalg.norm(p -
-                          t) / np.linalg.norm(t -
-                                              np.mean(t, axis=0).reshape(1, -1))
+    std_deviation = np.linalg.norm(t - np.mean(t, axis=0).reshape(1, -1))
+    return np.linalg.norm(p - t)/std_deviation
 
 
 def average_rrmse(hyperparams, csv, best, resample=5):
@@ -292,11 +297,17 @@ def average_rrmse(hyperparams, csv, best, resample=5):
         # save the best parameters
         print("params {2} mean {0}, std {1}".format(mean, std, hyperparams))
         score_records.append(mean)
+
+        # skip resampling from the same hyperparam if the error is not below the
+        # treshold 0.8
         if mean > 0.8:
             break
-        if mean < best[0]:
+        if mean <= best[0]:
             best[0] = mean
             best[1] = csv.ss.feature_map._pr_matrix
 
+    # set _pr_matrix to None so that csv.ss.feature_map.compute_fmap
+    # and csv.ss.feature_map.compute_fmap_jac resample the projection matrix
+    # for the same hyperparams
     csv.ss.feature_map._pr_matrix = None
     return min(score_records)

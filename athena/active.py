@@ -32,21 +32,21 @@ class ActiveSubspaces(Subspaces):
         wrt the input parameters, or given the input/outputs couples. Only two
         methods are available: 'exact' and 'local'.
 
-        :param numpy.ndarray inputs: input parameters oriented as rows.
-        :param numpy.ndarray outputs: corresponding outputs oriented as rows.
-        :param numpy.ndarray gradients: n_samples-by-n_params matrix containing the
+        :cvar numpy.ndarray inputs: input parameters oriented as rows.
+        :cvar numpy.ndarray outputs: corresponding outputs oriented as rows.
+        :cvar numpy.ndarray gradients: n_samples-by-n_params matrix containing the
             gradient samples oriented as rows.
-        :param numpy.ndarray weights: n_samples-by-1 weight vector, corresponds
+        :cvar numpy.ndarray weights: n_samples-by-1 weight vector, corresponds
             to numerical quadrature rule used to estimate matrix whose eigenspaces
             define the active subspace.
-        :param str method: method to compute the AS. Possible choices are
+        :cvar str method: method to compute the AS. Possible choices are
             'exact' when the gradients are provided, or 'local' to use local linear
             models. This approach is related to the sufficient dimension reduction
             method known sometimes as the outer product of gradient method. See the
             2001 paper 'Structure adaptive approach for dimension reduction' from
             Hristache, et al.
-        :param int nboot: number of bootstrap samples. Default is 100.
-        :param numpy.ndarray metric: metric matrix for vectorial active
+        :cvar int nboot: number of bootstrap samples. Default is 100.
+        :cvar numpy.ndarray metric: metric matrix for vectorial active
             subspaces.
         :raises: ValueError
         """

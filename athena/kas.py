@@ -16,8 +16,39 @@ from .feature_map import FeatureMap
 
 
 class KernelActiveSubspaces(Subspaces):
-    """Kernel Active Subspaces class
     """
+    Compute the kernel-based active subspaces given the inputs and the
+    gradients of the model function wrt the input parameters, or given the
+    input/outputs couples. Only two methods are available: 'exact' and 'local'.
+
+    :param FeatureMap feature_map: athena.feature_map.FeatureMap object, see
+        documentation. If the feature_map needs to be tuned pass it as argument
+        to __init__ before calling feature_map.tune_pr_matrix() method. If
+        feature map is already tuned you can directly pass it as argument to
+        KernelActiveSubspaces.compute().
+    :cvar numpy.ndarray inputs: input parameters oriented as rows.
+    :cvar numpy.ndarray outputs: corresponding outputs oriented as rows.
+    :cvar numpy.ndarray gradients: n_samples-by-n_params matrix containing the
+        gradient samples oriented as rows.
+    :cvar numpy.ndarray weights: n_samples-by-1 weight vector, corresponds
+        to numerical quadrature rule used to estimate matrix whose eigenspaces
+        define the active subspace.
+    :cvar int n_features: dimension of the feature space.
+    :cvar numpy.ndarray features: n_samples-by-n_features matrix containing
+        the projections of the inputs to the n_features-dimensional feature space.
+    :cvar numpy.ndarray pseudo_gradients:
+    :cvar str method: method to compute the AS. Possible choices are
+        'exact' when the gradients are provided, or 'local' to use local linear
+        models. This approach is related to the sufficient dimension reduction
+        method known sometimes as the outer product of gradient method. See the
+        2001 paper 'Structure adaptive approach for dimension reduction' from
+        Hristache, et al.
+    :cvar int nboot: number of bootstrap samples. Default is 100.
+    :cvar numpy.ndarray metric: metric matrix for vectorial active
+        subspaces.
+    :raises: ValueError
+    """
+
     def __init__(self, feature_map=None):
         super().__init__()
         self.n_features = None
@@ -97,9 +128,8 @@ class KernelActiveSubspaces(Subspaces):
             the values of the model function.
         :param numpy.ndarray gradients: array n_samples-by-n_params containing
             the gradient samples oriented as rows.
-        :param numpy.ndarray weights: n_samples-by-1 weight vector, corresponds to numerical
-            quadrature rule used to estimate matrix whose eigenspaces define the active
-            subspace.
+        :param numpy.ndarray weights: n_samples-by-1 weight vector,
+            corresponds to  numerical quadrature rule used to estimate matrix whose eigenspaces define the active subspace.
         :param str method: the method used to compute the gradients.
         :param int nboot: number of bootstrap samples.
         :param int n_features: dimension of the feature space.
