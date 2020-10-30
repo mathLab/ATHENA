@@ -89,31 +89,31 @@ class TestUtils(TestCase):
         np.testing.assert_array_almost_equal(true_evects, evects)
 
     def test_cross_validation_01(self):
-        cv = CrossValidation()
-        self.assertIsNone(cv.inputs)
+        with self.assertRaises(TypeError):
+            CrossValidation()
 
     def test_cross_validation_02(self):
-        cv = CrossValidation()
-        self.assertIsNone(cv.outputs)
-
-    def test_cross_validation_03(self):
-        cv = CrossValidation()
-        self.assertIsNone(cv.gradients)
-
-    def test_cross_validation_04(self):
-        cv = CrossValidation()
-        self.assertIsNone(cv.ss)
-
-    def test_cross_validation_05(self):
-        cv = CrossValidation()
+        inputs = np.random.uniform(-1, 1, 15).reshape(5, -1)
+        outputs = np.random.uniform(0, 5, 10).reshape(5, -1)
+        gradients = np.random.uniform(-1, 1, 30).reshape(5, 2, 3)
+        ss = ActiveSubspaces()
+        cv = CrossValidation(inputs, outputs, gradients, ss)
         self.assertIsNone(cv.gp)
 
-    def test_cross_validation_06(self):
-        cv = CrossValidation()
+    def test_cross_validation_03(self):
+        inputs = np.random.uniform(-1, 1, 15).reshape(5, -1)
+        outputs = np.random.uniform(0, 5, 10).reshape(5, -1)
+        gradients = np.random.uniform(-1, 1, 30).reshape(5, 2, 3)
+        ss = ActiveSubspaces()
+        cv = CrossValidation(inputs, outputs, gradients, ss)
         self.assertEqual(cv.gp_dimension, 1)
 
-    def test_cross_validation_07(self):
-        cv = CrossValidation()
+    def test_cross_validation_04(self):
+        inputs = np.random.uniform(-1, 1, 15).reshape(5, -1)
+        outputs = np.random.uniform(0, 5, 10).reshape(5, -1)
+        gradients = np.random.uniform(-1, 1, 30).reshape(5, 2, 3)
+        ss = ActiveSubspaces()
+        cv = CrossValidation(inputs, outputs, gradients, ss)
         self.assertEqual(cv.folds, 5)
 
     def test_cross_validation_fit_01(self):
