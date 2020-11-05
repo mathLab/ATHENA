@@ -126,8 +126,7 @@ class TestUtils(TestCase):
                                    n_boot=49)
         ss.fit(inputs=inputs,
                gradients=gradients,
-               weights=weights,
-               feature_map=None)
+               weights=weights)
         true_evects = np.array(
             [[0.74714817, 0.6155644, 0.23414206, 0.08959675],
              [0.35380297, -0.10917583, -0.91115623, 0.18082704],
@@ -141,13 +140,11 @@ class TestUtils(TestCase):
         outputs = np.random.uniform(0, 5, 15).reshape(15, 1)
         weights = np.ones((15, 1)) / 15
         ss = KernelActiveSubspaces(dim=2,
+                                   feature_map=None,
                                    n_features=4,
                                    method='local',
                                    n_boot=49)
-        ss.fit(inputs=inputs,
-               outputs=outputs,
-               weights=weights,
-               feature_map=None)
+        ss.fit(inputs=inputs, outputs=outputs, weights=weights)
         true_evals = np.array(
             [173.56222204, 96.19314922, 29.05560411, 0.85385631])
         np.testing.assert_array_almost_equal(true_evals, ss.evals)
@@ -186,10 +183,7 @@ class TestUtils(TestCase):
         gradients = np.random.uniform(-1, 1, 180).reshape(15, 3, 4)
         weights = np.ones((15, 1)) / 15
         ss = KernelActiveSubspaces(dim=2, n_features=4, n_boot=49)
-        ss.fit(inputs=inputs,
-               gradients=gradients,
-               weights=weights,
-               feature_map=None)
+        ss.fit(inputs=inputs, gradients=gradients, weights=weights)
         true_evects = np.array(
             [[0.00126244, 0.99791389, 0.02926469, 0.05753138],
              [0.04385229, -0.05833941, 0.78953331, 0.60935265],
@@ -210,7 +204,6 @@ class TestUtils(TestCase):
         ss.fit(inputs=inputs,
                gradients=gradients,
                weights=weights,
-               feature_map=None,
                metric=metric)
         true_evects = np.array(
             [[0.00126244, 0.99791389, 0.02926469, 0.05753138],
@@ -246,7 +239,6 @@ class TestUtils(TestCase):
         ss.fit(inputs=inputs,
                outputs=outputs,
                weights=weights,
-               feature_map=None,
                metric=metric)
         true_evals = np.array(
             [1.58774145e+05, 2.37399662e+02, 8.73268317e+01, 2.99624379e+01])
@@ -369,10 +361,7 @@ class TestUtils(TestCase):
                                    n_features=4,
                                    method='exact',
                                    n_boot=49)
-        ss.fit(inputs=inputs,
-               gradients=gradients,
-               weights=weights,
-               feature_map=None)
+        ss.fit(inputs=inputs, gradients=gradients, weights=weights)
         true_bounds_evals = np.array([[2.59177494, 7.11443789],
                                       [0.5456548, 1.94294036],
                                       [0.05855044, 0.84178668],
@@ -386,10 +375,7 @@ class TestUtils(TestCase):
         inputs = np.random.uniform(-1, 1, 60).reshape(30, 2)
         weights = np.ones((30, 1)) / 30
         ss = KernelActiveSubspaces(dim=2, n_features=4, n_boot=49)
-        ss.fit(inputs=inputs,
-               gradients=gradients,
-               weights=weights,
-               feature_map=None)
+        ss.fit(inputs=inputs, gradients=gradients, weights=weights)
         true_bounds_subspace = np.array([[0.01734317, 0.09791063, 0.19840464],
                                          [0.05112582, 0.43105485, 0.92323839],
                                          [0.05890817, 0.27517302, 0.89262039]])
@@ -417,10 +403,7 @@ class TestUtils(TestCase):
         inputs = np.random.uniform(-1, 1, 60).reshape(30, 2)
         weights = np.ones((30, 1)) / 30
         ss = KernelActiveSubspaces(dim=2, n_features=4, n_boot=49)
-        ss.fit(inputs=inputs,
-               gradients=gradients,
-               weights=weights,
-               feature_map=None)
+        ss.fit(inputs=inputs, gradients=gradients, weights=weights)
         true_bounds_subspace = np.array([[0.01734317, 0.09791063, 0.19840464],
                                          [0.05112582, 0.43105485, 0.92323839],
                                          [0.05890817, 0.27517302, 0.89262039]])
@@ -440,10 +423,7 @@ class TestUtils(TestCase):
                                    n_features=8,
                                    method='exact',
                                    n_boot=5)
-        ss.fit(inputs=inputs,
-               gradients=gradients,
-               weights=weights,
-               feature_map=None)
+        ss.fit(inputs=inputs, gradients=gradients, weights=weights)
         with assert_plot_figures_added():
             ss.plot_eigenvalues(figsize=(7, 7), title='Eigenvalues')
 
@@ -453,10 +433,7 @@ class TestUtils(TestCase):
         inputs = np.random.uniform(-1, 1, 200).reshape(50, 4)
         weights = np.ones((50, 1)) / 50
         ss = KernelActiveSubspaces(dim=2, n_features=8, n_boot=5)
-        ss.fit(inputs=inputs,
-               gradients=gradients,
-               weights=weights,
-               feature_map=None)
+        ss.fit(inputs=inputs, gradients=gradients, weights=weights)
         with assert_plot_figures_added():
             ss.plot_eigenvalues(n_evals=3, figsize=(7, 7), title='Eigenvalues')
 
@@ -474,10 +451,7 @@ class TestUtils(TestCase):
                                    n_features=8,
                                    method='exact',
                                    n_boot=5)
-        ss.fit(inputs=inputs,
-               gradients=gradients,
-               weights=weights,
-               feature_map=None)
+        ss.fit(inputs=inputs, gradients=gradients, weights=weights)
         with assert_plot_figures_added():
             ss.plot_eigenvectors(n_evects=2,
                                  figsize=(7, 7),
@@ -492,10 +466,7 @@ class TestUtils(TestCase):
                                    n_features=5,
                                    method='exact',
                                    n_boot=5)
-        ss.fit(inputs=inputs,
-               gradients=gradients,
-               weights=weights,
-               feature_map=None)
+        ss.fit(inputs=inputs, gradients=gradients, weights=weights)
         with assert_plot_figures_added():
             ss.plot_eigenvectors(n_evects=2,
                                  figsize=(5, 8),
@@ -512,10 +483,7 @@ class TestUtils(TestCase):
         inputs = np.random.uniform(-1, 1, 200).reshape(50, 4)
         weights = np.ones((50, 1)) / 50
         ss = KernelActiveSubspaces(dim=3, n_features=8, n_boot=5)
-        ss.fit(inputs=inputs,
-               gradients=gradients,
-               weights=weights,
-               feature_map=None)
+        ss.fit(inputs=inputs, gradients=gradients, weights=weights)
         with self.assertRaises(ValueError):
             ss.plot_sufficient_summary(10, 10)
 
@@ -528,10 +496,7 @@ class TestUtils(TestCase):
                                    n_features=8,
                                    method='exact',
                                    n_boot=5)
-        ss.fit(inputs=inputs,
-               gradients=gradients,
-               weights=weights,
-               feature_map=None)
+        ss.fit(inputs=inputs, gradients=gradients, weights=weights)
         with assert_plot_figures_added():
             ss.plot_sufficient_summary(
                 np.random.uniform(-1, 1, 100).reshape(25, 4),

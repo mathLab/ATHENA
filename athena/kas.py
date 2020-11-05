@@ -74,7 +74,6 @@ class KernelActiveSubspaces(Subspaces):
             outputs=None,
             gradients=None,
             weights=None,
-            feature_map=None,
             metric=None):
         """
         Compute the kernel based active subspaces given the inputs and the
@@ -120,17 +119,14 @@ class KernelActiveSubspaces(Subspaces):
             self.n_features = inputs.shape[1]
 
         if self.feature_map is None:
-            if feature_map:
-                self.feature_map = feature_map
-            else:
-                # default spectral measure is Gaussian
-                self.feature_map = FeatureMap(distr='multivariate_normal',
-                                              bias=np.ones(
-                                                  (1, self.n_features)),
-                                              input_dim=inputs.shape[1],
-                                              n_features=self.n_features,
-                                              params=np.ones(inputs.shape[1]),
-                                              sigma_f=1)
+            # default spectral measure is Gaussian
+            self.feature_map = FeatureMap(distr='multivariate_normal',
+                                          bias=np.ones(
+                                              (1, self.n_features)),
+                                          input_dim=inputs.shape[1],
+                                          n_features=self.n_features,
+                                          params=np.ones(inputs.shape[1]),
+                                          sigma_f=1)
 
         if len(gradients.shape) == 3 and metric is None:
             metric = np.diag(np.ones(gradients.shape[1]))
