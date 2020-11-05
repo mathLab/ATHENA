@@ -79,8 +79,7 @@ def linear_program_ineq(c, A, b):
     if res.success:
         return res.x.reshape(-1, 1)
     else:
-        raise RuntimeError('Scipy did not solve the LP. {}'.format(
-            res.message))
+        raise RuntimeError('Scipy did not solve the LP. {}'.format(res.message))
 
 
 def local_linear_gradients(inputs, outputs, weights=None, n_neighbors=None):
@@ -113,6 +112,7 @@ def local_linear_gradients(inputs, outputs, weights=None, n_neighbors=None):
 
     if n_samples <= n_pars:
         raise ValueError('Not enough samples for local linear models.')
+
     if n_neighbors is None:
         n_neighbors = int(min(np.floor(1.7 * n_pars), n_samples))
     elif not isinstance(n_neighbors, int):
@@ -183,26 +183,17 @@ def sort_eigpairs(matrix):
 
 class CrossValidation():
     """doc"""
-    def __init__(self,
-                 inputs,
-                 outputs,
-                 gradients,
-                 subspace,
-                 folds=5,
-                 gp_dimension=1,
-                 **kwargs):
+    def __init__(self, inputs, outputs, gradients, subspace, folds=5, **kwargs):
 
-        if all(v is None for v in [inputs, outputs, gradients, subspace]):
+        if any([v is None for v in [inputs, outputs, gradients, subspace]]):
             raise ValueError(
                 'Any among inputs, outputs, gradients, subspace argument is None.'
             )
-
         self.inputs = inputs
         self.outputs = outputs
         self.gradients = gradients
-        self.folds = folds
         self.ss = subspace
-        self.gp_dimension = gp_dimension
+        self.folds = folds
         self.gp = None
         self.kwargs = kwargs
 
@@ -234,13 +225,11 @@ class CrossValidation():
 
     def fit(self, inputs, gradients, outputs):
         """Uses Gaussian process regression to build the response surface."""
-
-        self.ss.compute(inputs=inputs,
-                        gradients=gradients,
-                        outputs=outputs,
-                        **self.kwargs)
-        self.ss.partition(self.gp_dimension)
-        y = self.ss.forward(inputs)[0]
+        self.ss.fit(inputs=inputs,
+                    gradients=gradients,
+                    outputs=outputs,
+                    **self.kwargs)
+        y = self.ss.transform(inputs)[0]
 
         # build response surface
         kern = GPy.kern.RBF(input_dim=y.shape[1], ARD=True)
@@ -249,30 +238,28 @@ class CrossValidation():
 
     def predict(self, inputs):
         """Predict method of cross-validation."""
-
-        x_test = self.ss.forward(inputs)[0]
+        x_test = self.ss.transform(inputs)[0]
         y = self.gp.predict(np.atleast_2d(x_test))[0]
         return y
 
     def scorer(self, inputs, targets):
         """Score function of cross-validation."""
-
         y = self.predict(inputs)
         return rrmse(y, targets)
 
 
 def rrmse(predictions, targets):
     n_samples = predictions.shape[0]
-    assert n_samples == targets.shape[
-        0], "Predictions and targets differ in number of samples"
+    if n_samples != targets.shape[0]:
+        raise ValueError('Predictions and targets differ in number of samples.')
 
     t = np.atleast_2d(targets).reshape(n_samples, -1)
     p = np.atleast_2d(predictions).reshape(n_samples, -1)
     std_deviation = np.linalg.norm(t - np.mean(t, axis=0).reshape(1, -1))
-    return np.linalg.norm(p - t)/std_deviation
+    return np.linalg.norm(p - t) / std_deviation
 
 
-def average_rrmse(hyperparams, csv, best, resample=5):
+def average_rrmse(hyperparams, csv, best, resample=5, verbose=False):
     """Objective function to be optimized"""
 
     if len(hyperparams.shape) > 1:
@@ -286,7 +273,8 @@ def average_rrmse(hyperparams, csv, best, resample=5):
     # of the projection matrix
     score_records = []
 
-    print("#" * 80)
+    if verbose is True:
+        print("#" * 80)
     for it in range(resample):
         #compute the projection matrix
         csv.ss.feature_map.params = hyperparams
@@ -295,7 +283,8 @@ def average_rrmse(hyperparams, csv, best, resample=5):
         mean, std = csv.run()
 
         # save the best parameters
-        print("params {2} mean {0}, std {1}".format(mean, std, hyperparams))
+        if verbose is True:
+            print("params {2} mean {0}, std {1}".format(mean, std, hyperparams))
         score_records.append(mean)
 
         # skip resampling from the same hyperparam if the error is not below the

@@ -21,44 +21,44 @@ plt.rcParams.update({'font.size': 16})
 class Subspaces(object):
     """Active Subspaces base class
 
-    [description]
+    :param str method: method to compute the AS. Possible choices are
+        'exact' when the gradients are provided, or 'local' to use local linear
+        models. This approach is related to the sufficient dimension reduction
+        method known sometimes as the outer product of gradient method. See the
+        2001 paper 'Structure adaptive approach for dimension reduction' from
+        Hristache, et al.
+    :param int n_boot: number of bootstrap samples. Default is 100.
     """
-    def __init__(self):
+    def __init__(self, dim, method='exact', n_boot=100):
+        self.dim = dim
+        self.method = method
+        self.n_boot = n_boot
         self.W1 = None
         self.W2 = None
         self.evals = None
         self.evects = None
         self.evals_br = None
         self.subs_br = None
-        self.dim = None
-        self.cov_matrix = None
 
-    @staticmethod
-    def _build_decompose_cov_matrix(gradients=None,
+    def _build_decompose_cov_matrix(self,
+                                    gradients=None,
                                     weights=None,
-                                    method=None,
                                     metric=None):
         """
         Build and decompose the covariance matrix of the gradients.
 
-        :param numpy.ndarray inputs: input parameters oriented as rows.
-        :param numpy.ndarray outputs: corresponding outputs oriented as rows.
         :param numpy.ndarray gradients: n_samples-by-n_params matrix containing the
             gradient samples oriented as rows.
         :param numpy.ndarray weights: n_samples-by-1 weight vector, corresponds
             to numerical quadrature rule used to estimate matrix whose eigenspaces
             define the active subspace.
-        :param str method: method to compute the AS. Possible choices are
-            'exact' when the gradients are provided, or 'local' to use local linear
-            models. This approach is related to the sufficient dimension reduction
-            method known sometimes as the outer product of gradient method. See the
-            2001 paper 'Structure adaptive approach for dimension reduction' from
-            Hristache, et al.
-        :return: the covariance matrix, the sorted eigenvalues, and the
-            corresponding eigenvectors.
-        :rtype: numpy.ndarray, numpy.ndarray, numpy.ndarray
+        :param numpy.ndarray metric: metric matrix output_dim-by-output-dim for
+            vectorial active subspaces.
+
+        :return: the sorted eigenvalues, and the corresponding eigenvectors.
+        :rtype: numpy.ndarray, numpy.ndarray
         """
-        if method == 'exact' or method == 'local':
+        if self.method == 'exact' or self.method == 'local':
             if metric is not None:
                 cov_matrix = np.array(
                     np.sum([
@@ -75,12 +75,7 @@ class Subspaces(object):
             evals = singular**2
             return evals, evects.T
 
-    def _compute_bootstrap_ranges(self,
-                                  gradients,
-                                  weights,
-                                  method,
-                                  metric=None,
-                                  nboot=100):
+    def _compute_bootstrap_ranges(self, gradients, weights, metric=None):
         """Compute bootstrap ranges for eigenvalues and subspaces.
 
         An implementation of the nonparametric bootstrap that we use in
@@ -92,7 +87,8 @@ class Subspaces(object):
         :param numpy.ndarray weights: n_samples-by-1 weight vector, corresponds
             to numerical quadrature rule used to estimate matrix whose
             eigenspaces define the active subspace.
-        :param int nboot: number of bootstrap samples. Default is 100.
+        :param numpy.ndarray metric: metric matrix output_dim-by-output-dim for
+            vectorial active subspaces.
         :return: array e_br is a m-by-2 matrix, first column contains
             bootstrap lower bound on eigenvalues, second column contains
             bootstrap upper bound on eigenvalues; array sub_br is a (m-1)-by-3
@@ -103,14 +99,13 @@ class Subspaces(object):
         :rtype: numpy.ndarray, numpy.ndarray
         """
         n_pars = gradients.shape[-1]
-        e_boot = np.zeros((n_pars, nboot))
-        sub_dist = np.zeros((n_pars - 1, nboot))
+        e_boot = np.zeros((n_pars, self.n_boot))
+        sub_dist = np.zeros((n_pars - 1, self.n_boot))
 
-        for i in range(nboot):
+        for i in range(self.n_boot):
             gradients0, weights0 = self._bootstrap_replicate(gradients, weights)
             e0, W0 = self._build_decompose_cov_matrix(gradients=gradients0,
                                                       weights=weights0,
-                                                      method=method,
                                                       metric=metric)
             e_boot[:, i] = e0.reshape((n_pars, ))
             for j in range(n_pars - 1):
@@ -151,16 +146,16 @@ class Subspaces(object):
             return matrix[ind, :, :].copy(), weights[ind, :].copy()
         return None, None
 
-    def compute(self, *args, **kwargs):
+    def fit(self, *args, **kwargs):
         """
         Abstract method to compute the active subspaces. Not implemented, it has
         to be implemented in subclasses.
         """
         raise NotImplementedError(
-            'Subclass must implement abstract method {}.compute'.format(
+            'Subclass must implement abstract method {}.fit'.format(
                 self.__class__.__name__))
 
-    def forward(self, inputs):
+    def transform(self, inputs):
         """
         Abstract method to map full variables to active and inactive variables.
 
@@ -175,9 +170,10 @@ class Subspaces(object):
         :rtype: numpy.ndarray, numpy.ndarray
         """
         raise NotImplementedError('Subclass must implement abstract method '
-                                  '{}.compute'.format(self.__class__.__name__))
+                                  '{}.transform'.format(
+                                      self.__class__.__name__))
 
-    def backward(self, reduced_inputs, n_points):
+    def inverse_transform(self, reduced_inputs, n_points):
         """
         Abstract method to find points in full space that map to reduced
         variable points. Not implemented, it has to be implemented in
@@ -189,26 +185,25 @@ class Subspaces(object):
             space that are returned that map to the given active variables.
         """
         raise NotImplementedError(
-            'Subclass must implement abstract method {}.backward'.format(
-                self.__class__.__name__))
+            'Subclass must implement abstract method {}.inverse_transform'.
+            format(self.__class__.__name__))
 
-    def partition(self, dim):
+    def _partition(self):
         """
         Partition the eigenvectors to define the active and inactive subspaces.
 
-        :param int dim: dimension of the active subspace.
         :raises: TypeError, ValueError
         """
-        if not isinstance(dim, int):
+        if not isinstance(self.dim, int):
             raise TypeError('dim should be an integer.')
 
-        if dim < 1 or dim > self.evects.shape[0]:
+        if self.dim < 1 or self.dim > self.evects.shape[0]:
             raise ValueError(
                 'dim must be positive and less than the dimension of the '
-                ' eigenvectors: dim = {}.'.format(dim))
-        self.dim = dim
-        self.W1 = self.evects[:, :dim]
-        self.W2 = self.evects[:, dim:]
+                ' eigenvectors: dim = {}.'.format(self.dim))
+
+        self.W1 = self.evects[:, :self.dim]
+        self.W2 = self.evects[:, self.dim:]
 
     def plot_eigenvalues(self,
                          n_evals=None,
@@ -226,11 +221,11 @@ class Subspaces(object):
         :param str title: title of the plot.
         :raises: ValueError
 
-        .. warning:: `self.compute` has to be called in advance.
+        .. warning:: `self.fit` has to be called in advance.
         """
         if self.evals is None:
             raise ValueError('The eigenvalues have not been computed.'
-                             'You have to perform the compute method.')
+                             'You have to perform the fit method.')
         if n_evals is None:
             n_evals = self.evals.shape[0]
         if n_evals > self.evals.shape[0]:
@@ -300,11 +295,11 @@ class Subspaces(object):
         :param str title: title of the plot.
         :raises: ValueError
 
-        .. warning:: `self.compute` has to be called in advance.
+        .. warning:: `self.fit` has to be called in advance.
         """
         if self.evects is None:
             raise ValueError('The eigenvectors have not been computed.'
-                             'You have to perform the compute method.')
+                             'You have to perform the fit method.')
         if n_evects is None:
             n_evects = self.dim
         if n_evects > self.evects.shape[0]:
@@ -364,18 +359,19 @@ class Subspaces(object):
         :param str title: title of the plot.
         :raises: ValueError
 
-        .. warning:: `self.partition` has to be called in advance.
+        .. warning:: `self.fit` has to be called in advance.
 
             Plot only available for partitions up to dimension 2.
         """
-        if self.dim is None:
-            raise ValueError('You first have to partition your subspaces.')
+        if self.evects is None:
+            raise ValueError('The eigenvectors have not been computed.'
+                             'You have to perform the fit method.')
 
         plt.figure(figsize=figsize)
         plt.title(title)
 
         if self.dim == 1:
-            plt.scatter(self.forward(inputs)[0],
+            plt.scatter(self.transform(inputs)[0],
                         outputs,
                         c='blue',
                         s=40,
@@ -385,7 +381,7 @@ class Subspaces(object):
                        fontsize=18)
             plt.ylabel(r'$f \, (\mathbf{\mu})$', fontsize=18)
         elif self.dim == 2:
-            x = self.forward(inputs)[0]
+            x = self.transform(inputs)[0]
             plt.scatter(x[:, 0],
                         x[:, 1],
                         c=outputs.reshape(-1),
