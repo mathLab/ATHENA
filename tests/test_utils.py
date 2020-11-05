@@ -72,6 +72,27 @@ class TestUtils(TestCase):
                                                      (M, 1)),
                                              decimal=9)
 
+    def test_local_linear_gradients_03(self):
+        np.random.seed(42)
+        inputs = np.random.uniform(-1.0, 1.0, size=(5, 6))
+        outputs = 2 - 5 * inputs[:, 0] + 4 * inputs[:, 1]
+        with self.assertRaises(ValueError):
+            local_linear_gradients(inputs, outputs)
+
+    def test_local_linear_gradients_04(self):
+        np.random.seed(42)
+        inputs = np.random.uniform(-1.0, 1.0, size=(10, 2))
+        outputs = 2 - 5 * inputs[:, 0] + 4 * inputs[:, 1]
+        with self.assertRaises(TypeError):
+            local_linear_gradients(inputs, outputs, n_neighbors=8.0)
+
+    def test_local_linear_gradients_05(self):
+        np.random.seed(42)
+        inputs = np.random.uniform(-1.0, 1.0, size=(10, 2))
+        outputs = 2 - 5 * inputs[:, 0] + 4 * inputs[:, 1]
+        with self.assertRaises(ValueError):
+            local_linear_gradients(inputs, outputs, n_neighbors=15)
+
     def test_sort_eigpairs_evals(self):
         np.random.seed(42)
         matrix = np.random.uniform(-1, 1, 9).reshape(3, 3)
@@ -89,45 +110,78 @@ class TestUtils(TestCase):
         np.testing.assert_array_almost_equal(true_evects, evects)
 
     def test_cross_validation_01(self):
-        with self.assertRaises(TypeError):
-            CrossValidation()
-
-    def test_cross_validation_02(self):
+        np.random.seed(42)
         inputs = np.random.uniform(-1, 1, 15).reshape(5, -1)
         outputs = np.random.uniform(0, 5, 10).reshape(5, -1)
         gradients = np.random.uniform(-1, 1, 30).reshape(5, 2, 3)
-        ss = ActiveSubspaces()
+        ss = ActiveSubspaces(dim=1)
+        cv = CrossValidation(inputs, outputs, gradients, ss)
+        np.testing.assert_array_almost_equal(cv.inputs, inputs)
+
+    def test_cross_validation_02(self):
+        np.random.seed(42)
+        inputs = np.random.uniform(-1, 1, 15).reshape(5, -1)
+        outputs = np.random.uniform(0, 5, 10).reshape(5, -1)
+        gradients = np.random.uniform(-1, 1, 30).reshape(5, 2, 3)
+        ss = ActiveSubspaces(dim=1, method='exact')
+        cv = CrossValidation(inputs, outputs, gradients, ss)
+        np.testing.assert_array_almost_equal(cv.outputs, outputs)
+
+    def test_cross_validation_03(self):
+        np.random.seed(42)
+        inputs = np.random.uniform(-1, 1, 15).reshape(5, -1)
+        outputs = np.random.uniform(0, 5, 10).reshape(5, -1)
+        gradients = np.random.uniform(-1, 1, 30).reshape(5, 2, 3)
+        ss = ActiveSubspaces(dim=1)
+        cv = CrossValidation(inputs, outputs, gradients, ss)
+        np.testing.assert_array_almost_equal(cv.gradients, gradients)
+
+    def test_cross_validation_04(self):
+        np.random.seed(42)
+        inputs = np.random.uniform(-1, 1, 15).reshape(5, -1)
+        outputs = np.random.uniform(0, 5, 10).reshape(5, -1)
+        gradients = np.random.uniform(-1, 1, 30).reshape(5, 2, 3)
+        ss = ActiveSubspaces(dim=1, method='exact')
+        cv = CrossValidation(inputs, outputs, gradients, ss)
+        self.assertEqual(cv.ss, ss)
+
+    def test_cross_validation_05(self):
+        np.random.seed(42)
+        inputs = np.random.uniform(-1, 1, 15).reshape(5, -1)
+        outputs = np.random.uniform(0, 5, 10).reshape(5, -1)
+        gradients = np.random.uniform(-1, 1, 30).reshape(5, 2, 3)
+        ss = ActiveSubspaces(dim=1)
+        cv = CrossValidation(inputs, outputs, gradients, ss)
+        self.assertEqual(cv.folds, 5)
+
+    def test_cross_validation_06(self):
+        np.random.seed(42)
+        inputs = np.random.uniform(-1, 1, 15).reshape(5, -1)
+        outputs = np.random.uniform(0, 5, 10).reshape(5, -1)
+        gradients = np.random.uniform(-1, 1, 30).reshape(5, 2, 3)
+        ss = ActiveSubspaces(dim=1)
         cv = CrossValidation(inputs, outputs, gradients, ss)
         self.assertIsNone(cv.gp)
 
-    def test_cross_validation_03(self):
+    def test_cross_validation_07(self):
+        np.random.seed(42)
         inputs = np.random.uniform(-1, 1, 15).reshape(5, -1)
         outputs = np.random.uniform(0, 5, 10).reshape(5, -1)
         gradients = np.random.uniform(-1, 1, 30).reshape(5, 2, 3)
-        ss = ActiveSubspaces()
-        cv = CrossValidation(inputs, outputs, gradients, ss)
-        self.assertEqual(cv.gp_dimension, 1)
-
-    def test_cross_validation_04(self):
-        inputs = np.random.uniform(-1, 1, 15).reshape(5, -1)
-        outputs = np.random.uniform(0, 5, 10).reshape(5, -1)
-        gradients = np.random.uniform(-1, 1, 30).reshape(5, 2, 3)
-        ss = ActiveSubspaces()
-        cv = CrossValidation(inputs, outputs, gradients, ss)
-        self.assertEqual(cv.folds, 5)
+        with self.assertRaises(ValueError):
+            CrossValidation(inputs, outputs, None, None)
 
     def test_cross_validation_fit_01(self):
         np.random.seed(42)
         inputs = np.random.uniform(-1, 1, 15).reshape(5, -1)
         outputs = np.random.uniform(0, 5, 10).reshape(5, -1)
         gradients = np.random.uniform(-1, 1, 30).reshape(5, 2, 3)
-        ss = ActiveSubspaces()
+        ss = ActiveSubspaces(dim=2, method='exact')
         csv = CrossValidation(inputs=inputs,
                               outputs=outputs,
                               gradients=gradients,
                               folds=3,
-                              subspace=ss,
-                              gp_dimension=2)
+                              subspace=ss)
         csv.fit(inputs, gradients, outputs)
         self.assertEqual(csv.gp.X.shape[1], 2)
 
@@ -136,7 +190,7 @@ class TestUtils(TestCase):
         inputs = np.random.uniform(-1, 1, 15).reshape(5, -1)
         outputs = np.random.uniform(0, 5, 10).reshape(5, -1)
         gradients = np.random.uniform(-1, 1, 30).reshape(5, 2, 3)
-        ss = ActiveSubspaces()
+        ss = ActiveSubspaces(dim=1)
         csv = CrossValidation(inputs=inputs,
                               outputs=outputs,
                               gradients=gradients,
@@ -150,7 +204,7 @@ class TestUtils(TestCase):
         inputs = np.random.uniform(-1, 1, 15).reshape(5, -1)
         outputs = np.random.uniform(0, 5, 10).reshape(5, -1)
         gradients = np.random.uniform(-1, 1, 30).reshape(5, 2, 3)
-        ss = ActiveSubspaces()
+        ss = ActiveSubspaces(dim=1, method='exact')
         csv = CrossValidation(inputs=inputs,
                               outputs=outputs,
                               gradients=gradients,
@@ -170,7 +224,7 @@ class TestUtils(TestCase):
                         n_features=3,
                         params=np.zeros(1),
                         sigma_f=outputs.var())
-        ss = KernelActiveSubspaces(feature_map=fm)
+        ss = KernelActiveSubspaces(dim=1, feature_map=fm)
         csv = CrossValidation(inputs=inputs,
                               outputs=outputs,
                               gradients=gradients,
@@ -193,6 +247,13 @@ class TestUtils(TestCase):
         true = 0.9089760363050161
         np.testing.assert_array_equal(rrmse(predictions, targets), true)
 
+    def test_rrmse_03(self):
+        np.random.seed(42)
+        predictions = np.random.uniform(-1, 1, 10).reshape(5, 2)
+        targets = np.random.uniform(-1, 1, 10).reshape(2, 5)
+        with self.assertRaises(ValueError):
+            rrmse(predictions, targets)
+
     def test_average_rrmse_01(self):
         np.random.seed(42)
         inputs = np.random.uniform(-1, 1, 10).reshape(5, 2)
@@ -204,7 +265,7 @@ class TestUtils(TestCase):
                         n_features=3,
                         params=np.zeros(1),
                         sigma_f=outputs.var())
-        ss = KernelActiveSubspaces(feature_map=fm)
+        ss = KernelActiveSubspaces(dim=1, feature_map=fm)
         csv = CrossValidation(inputs=inputs,
                               outputs=outputs,
                               gradients=gradients,
@@ -226,7 +287,7 @@ class TestUtils(TestCase):
                         n_features=3,
                         params=np.zeros(1),
                         sigma_f=outputs.var())
-        ss = KernelActiveSubspaces(feature_map=fm)
+        ss = KernelActiveSubspaces(dim=1, feature_map=fm, method='exact')
         csv = CrossValidation(inputs=inputs,
                               outputs=outputs,
                               gradients=gradients,
@@ -234,6 +295,6 @@ class TestUtils(TestCase):
                               subspace=ss)
         best = [0.1, np.zeros((3, 2))]
         hyperparams = np.array([-1.])
-        score = average_rrmse(hyperparams, csv, best, resample=1)
+        score = average_rrmse(hyperparams, csv, best, resample=1, verbose=True)
         true = 2.135718555831271
         np.testing.assert_array_almost_equal(score, true)

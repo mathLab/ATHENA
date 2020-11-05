@@ -18,51 +18,53 @@ from .utils import (Normalizer, initialize_weights, linear_program_ineq,
 
 class ActiveSubspaces(Subspaces):
     """Active Subspaces class
+
+    :param str method: method to compute the AS. Possible choices are
+        'exact' when the gradients are provided, or 'local' to use local linear
+        models. This approach is related to the sufficient dimension reduction
+        method known sometimes as the outer product of gradient method. See the
+        2001 paper 'Structure adaptive approach for dimension reduction' from
+        Hristache, et al.
+    :param int n_boot: number of bootstrap samples. Default is 100.
     """
-    def compute(self,
-                inputs=None,
-                outputs=None,
-                gradients=None,
-                weights=None,
-                method='exact',
-                nboot=100,
-                metric=None):
+    def __init__(self, dim, method='exact', n_boot=100):
+        super().__init__(dim, method, n_boot)
+
+    def fit(self,
+            inputs=None,
+            outputs=None,
+            gradients=None,
+            weights=None,
+            metric=None):
         """
         Compute the active subspaces given the gradients of the model function
         wrt the input parameters, or given the input/outputs couples. Only two
         methods are available: 'exact' and 'local'.
 
-        :cvar numpy.ndarray inputs: input parameters oriented as rows.
-        :cvar numpy.ndarray outputs: corresponding outputs oriented as rows.
-        :cvar numpy.ndarray gradients: n_samples-by-n_params matrix containing the
-            gradient samples oriented as rows.
-        :cvar numpy.ndarray weights: n_samples-by-1 weight vector, corresponds
-            to numerical quadrature rule used to estimate matrix whose eigenspaces
-            define the active subspace.
-        :cvar str method: method to compute the AS. Possible choices are
-            'exact' when the gradients are provided, or 'local' to use local linear
-            models. This approach is related to the sufficient dimension reduction
-            method known sometimes as the outer product of gradient method. See the
-            2001 paper 'Structure adaptive approach for dimension reduction' from
-            Hristache, et al.
-        :cvar int nboot: number of bootstrap samples. Default is 100.
-        :cvar numpy.ndarray metric: metric matrix for vectorial active
-            subspaces.
+        :param numpy.ndarray inputs: input parameters oriented as rows.
+        :param numpy.ndarray outputs: corresponding outputs oriented as rows.
+        :param numpy.ndarray gradients: n_samples-by-n_params matrix containing
+            the gradient samples oriented as rows.
+        :param numpy.ndarray weights: n_samples-by-1 weight vector, corresponds
+            to numerical quadrature rule used to estimate matrix whose
+            eigenspaces define the active subspace.
+        :param numpy.ndarray metric: metric matrix output_dim-by-output-dim for
+            vectorial active subspaces.
         :raises: ValueError
         """
-        if method == 'exact':
+        if self.method == 'exact':
             if gradients is None:
                 raise ValueError('gradients argument is None.')
 
         # estimate active subspace with local linear models.
-        if method == 'local':
+        if self.method == 'local':
             if inputs is None or outputs is None:
                 raise ValueError('inputs or outputs argument is None.')
             gradients = local_linear_gradients(inputs=inputs,
                                                outputs=outputs,
                                                weights=weights)[0]
 
-        if weights is None or method == 'local':
+        if weights is None or self.method == 'local':
             # use the new gradients to compute the weights, otherwise dimension
             # mismatch accours.
             weights = initialize_weights(gradients)
@@ -71,15 +73,12 @@ class ActiveSubspaces(Subspaces):
             metric = np.diag(np.ones(gradients.shape[1]))
 
         self.evals, self.evects = self._build_decompose_cov_matrix(
-            gradients=gradients, weights=weights, method=method, metric=metric)
+            gradients=gradients, weights=weights, metric=metric)
 
-        self._compute_bootstrap_ranges(gradients,
-                                       weights,
-                                       method=method,
-                                       nboot=nboot,
-                                       metric=metric)
+        self._compute_bootstrap_ranges(gradients, weights, metric=metric)
+        self._partition()
 
-    def forward(self, inputs):
+    def transform(self, inputs):
         """
         Map full variables to active and inactive variables.
 
@@ -97,7 +96,7 @@ class ActiveSubspaces(Subspaces):
         inactive = np.dot(inputs, self.W2)
         return active, inactive
 
-    def backward(self, reduced_inputs, n_points=1):
+    def inverse_transform(self, reduced_inputs, n_points=1):
         """
         Map the points in the active variable space to the original parameter
         space.

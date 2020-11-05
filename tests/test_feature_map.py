@@ -3,17 +3,37 @@ import numpy as np
 from athena import FeatureMap, rff_map, rff_jac
 from athena.kas import KernelActiveSubspaces
 from athena.utils import average_rrmse, CrossValidation
+from athena.projection_factory import ProjectionFactory
 
 
 class TestProjectionFactory(TestCase):
-    def test_init_distr(self):
+    def test_init_distr_01(self):
         fm = FeatureMap(distr='beta',
                         bias=None,
                         input_dim=3,
                         n_features=5,
                         params=[0.1, 0.3],
                         sigma_f=0.5)
-        self.assertEqual(3, fm.input_dim)
+        self.assertEqual(ProjectionFactory('beta'), fm.distr)
+
+    def test_init_distr_02(self):
+        proj = ProjectionFactory('beta')
+        fm = FeatureMap(distr=proj,
+                        bias=None,
+                        input_dim=3,
+                        n_features=5,
+                        params=[0.1, 0.3],
+                        sigma_f=0.5)
+        self.assertEqual(proj, fm.distr)
+
+    def test_init_distr_03(self):
+        with self.assertRaises(TypeError):
+            fm = FeatureMap(distr=34,
+                            bias=None,
+                            input_dim=3,
+                            n_features=5,
+                            params=[0.1, 0.3],
+                            sigma_f=0.5)
 
     def test_init_bias(self):
         fm = FeatureMap(distr='cauchy',
@@ -155,13 +175,17 @@ class TestProjectionFactory(TestCase):
                         n_features=3,
                         params=np.array([5.34265038]),
                         sigma_f=outputs.var())
-        ss = KernelActiveSubspaces(feature_map=fm)
-        csv = CrossValidation(inputs=inputs, outputs=outputs, gradients=gradients, folds=2, subspace=ss)
+        ss = KernelActiveSubspaces(dim=1, feature_map=fm)
+        csv = CrossValidation(inputs=inputs,
+                              outputs=outputs,
+                              gradients=gradients,
+                              folds=2,
+                              subspace=ss)
         best = fm.tune_pr_matrix(func=average_rrmse,
-                    bounds=[slice(-1, 1.2, 0.2) for i in range(1)],
-                    args=(csv, ),
-                    maxiter=10,
-                    save_file=False)[1]
+                                 bounds=[slice(-1, 1.2, 0.2) for i in range(1)],
+                                 args=(csv, ),
+                                 maxiter=10,
+                                 save_file=False)[1]
         true = np.array([[0.03857183, -0.45825228], [-1.06057884, 0.9981594],
                          [1.01812996, 0.19529565]])
         np.testing.assert_array_almost_equal(true, best)
@@ -177,7 +201,7 @@ class TestProjectionFactory(TestCase):
                         n_features=3,
                         params=np.zeros(1),
                         sigma_f=outputs.var())
-        ss = KernelActiveSubspaces(feature_map=fm)
+        ss = KernelActiveSubspaces(dim=1, feature_map=fm)
         csv = CrossValidation(inputs=inputs,
                               outputs=outputs,
                               gradients=gradients,
@@ -204,7 +228,7 @@ class TestProjectionFactory(TestCase):
                         n_features=3,
                         params=np.zeros(1),
                         sigma_f=outputs.var())
-        ss = KernelActiveSubspaces(feature_map=fm)
+        ss = KernelActiveSubspaces(dim=1, feature_map=fm)
         csv = CrossValidation(inputs=inputs,
                               outputs=outputs,
                               gradients=gradients,
