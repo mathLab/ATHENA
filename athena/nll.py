@@ -18,7 +18,7 @@ import matplotlib.pyplot as plt
 torch.set_default_tensor_type(torch.DoubleTensor)
 
 
-class NonlinearLevelSet(object):
+class NonlinearLevelSet():
     """Nonlinear Level Set class
     
     :param int n_layers:

@@ -5,7 +5,7 @@ from scipy.optimize import linprog
 import GPy
 
 
-class Normalizer(object):
+class Normalizer():
     """A class for normalizing and unnormalizing bounded inputs.
 
     :param numpy.ndarray lb: array n_params-by-1 that contains lower bounds

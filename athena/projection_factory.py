@@ -4,7 +4,7 @@ Module for the factory class for projection matrices
 import numpy as np
 
 
-class classproperty(object):
+class classproperty():
     """
     Custom decorator.
     """
@@ -17,7 +17,7 @@ class classproperty(object):
         return self.f(owner)
 
 
-class ProjectionFactory(object):
+class ProjectionFactory():
     """
     Factory class that spawns projection matrices.
 
