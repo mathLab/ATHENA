@@ -8,7 +8,7 @@ import GPyOpt
 from .projection_factory import ProjectionFactory
 
 
-class FeatureMap(object):
+class FeatureMap():
     """
     Feature map class.
     TO DOC

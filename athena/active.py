@@ -87,7 +87,8 @@ class ActiveSubspaces(Subspaces):
 
         :param numpy.ndarray inputs: array n_samples-by-n_params containing the
             points in the original parameter space.
-        :return: array n_samples-by-active_dim containing the mapped active variables;
+        :return: array n_samples-by-active_dim containing the mapped active
+            variables;
             array n_samples-by-inactive_dim containing the mapped inactive
             variables.
         :rtype: numpy.ndarray, numpy.ndarray
@@ -103,8 +104,9 @@ class ActiveSubspaces(Subspaces):
 
         :param numpy.ndarray reduced_inputs: n_samples-by-dim matrix that
             contains points in the space of active variables.
-        :param int n_points: the number of points in the original parameter space that
-            are returned that map to the given active variables. Defaults to 1.
+        :param int n_points: the number of points in the original parameter
+            space that are returned that map to the given active variables.
+            Defaults to 1.
         :return: (n_samples * n_points)-by-n_params matrix that contains
             points in the original parameter space, (n_samples *
             n_points)-by-n_params matrix that contains integer indices. These
@@ -175,8 +177,8 @@ class ActiveSubspaces(Subspaces):
 
         :param numpy.ndarray reduced_input: the value of the active variables.
         :param int n_points: the number of inactive variable samples,
-        :return: n_points-by-(inactive_dim) matrix that contains values of the inactive
-            variable that correspond to the given `reduced_input`.
+        :return: n_points-by-inactive_dim matrix that contains values of the
+            inactive variable that correspond to the given `reduced_input`.
         :rtype: numpy.ndarray
         """
         m, n = self.W1.shape
@@ -278,11 +280,11 @@ class ActiveSubspaces(Subspaces):
 
         :param numpy.ndarray reduced_input: the value of the active variables.
         :param int n_points: the number of inactive variable samples,
-        :return: (n_samples * n_points)-by-n_params matrix that contains points in the
-            original parameter space, (n_samples * n_points)-by-n_params matrix that
-            contains integer indices. These indices identify which rows of the
-            previous matrix (the full parameters) map to which rows of the active
-            variables matrix.
+        :return: (n_samples * n_points)-by-n_params matrix that contains points
+            in the original parameter space, (n_samples * n_points)-by-n_params
+            matrix that contains integer indices. These indices identify which
+            rows of the previous matrix (the full parameters) map to which rows
+            of the active variables matrix.
         :rtype: numpy.ndarray, numpy.ndarray
         """
         NY, n = reduced_inputs.shape

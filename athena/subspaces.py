@@ -18,7 +18,7 @@ from .utils import sort_eigpairs
 plt.rcParams.update({'font.size': 16})
 
 
-class Subspaces(object):
+class Subspaces():
     """Active Subspaces base class
 
     :param str method: method to compute the AS. Possible choices are
