@@ -9,12 +9,26 @@ Utilities
 	:toctree: _summaries
 	:nosignatures:
 
+	CrossValidation.fit
+	CrossValidation.predict
+	CrossValidation.run
+	CrossValidation.scorer
+	CrossValidation.training
 	Normalizer.fit_transform
 	Normalizer.inverse_transform
+	average_rrmse
 	initialize_weights
 	linear_program_ineq
 	local_linear_gradients
+	rrmse
 	sort_eigpairs
+
+.. autoclass:: CrossValidation
+	:members:
+	:private-members:
+	:undoc-members:
+	:show-inheritance:
+	:noindex:
 
 .. autoclass:: Normalizer
 	:members:
@@ -23,7 +37,9 @@ Utilities
 	:show-inheritance:
 	:noindex:
 
-.. automethod:: athena.utils.initialize_weights
-.. automethod:: athena.utils.linear_program_ineq
-.. automethod:: athena.utils.local_linear_gradients
-.. automethod:: athena.utils.sort_eigpairs
+.. autofunction:: athena.utils.average_rrmse
+.. autofunction:: athena.utils.initialize_weights
+.. autofunction:: athena.utils.linear_program_ineq
+.. autofunction:: athena.utils.local_linear_gradients
+.. autofunction:: athena.utils.rrmse
+.. autofunction:: athena.utils.sort_eigpairs

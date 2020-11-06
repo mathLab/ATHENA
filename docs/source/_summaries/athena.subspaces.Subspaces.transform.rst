@@ -1,6 +1,6 @@
-athena.subspaces.Subspaces.partition
+athena.subspaces.Subspaces.transform
 ====================================
 
 .. currentmodule:: athena.subspaces
 
-.. automethod:: Subspaces.partition
+.. automethod:: Subspaces.transform

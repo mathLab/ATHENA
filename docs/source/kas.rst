@@ -12,14 +12,14 @@ Kernel Active Subspaces
 	KernelActiveSubspaces._bootstrap_replicate
 	KernelActiveSubspaces._build_decompose_cov_matrix
 	KernelActiveSubspaces._compute_bootstrap_ranges
+	KernelActiveSubspaces._partition
 	KernelActiveSubspaces._reparametrize
-	KernelActiveSubspaces.backward
-	KernelActiveSubspaces.compute
-	KernelActiveSubspaces.forward
-	KernelActiveSubspaces.partition
+	KernelActiveSubspaces.fit
+	KernelActiveSubspaces.inverse_transform
 	KernelActiveSubspaces.plot_eigenvalues
 	KernelActiveSubspaces.plot_eigenvectors
 	KernelActiveSubspaces.plot_sufficient_summary
+	KernelActiveSubspaces.transform
 
 
 .. autoclass:: KernelActiveSubspaces
