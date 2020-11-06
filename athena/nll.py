@@ -195,7 +195,7 @@ class NonlinearLevelSet():
         """
         plt.figure(figsize=figsize)
         plt.title(title)
-        x_range = [i for i in range(1, self.epochs + 1, 10)] + [self.epochs]
+        x_range = list(range(1, self.epochs + 1, 10)) + [self.epochs]
         plt.plot(x_range, self.loss_vec, 'b-')
         plt.xlabel('Epoch')
         plt.ylabel('Loss')
@@ -389,7 +389,7 @@ class ForwardNet(nn.Module):
             dx = torch.cat((vars()[var_y1], vars()[var_z1]), 1)
 
             # # Test the invertibility
-            # # TODO it is computational intense
+            # # Warning: it is computational intense
             # if torch.mean(torch.abs(torch.add(-1 * output_dy,
             #                                   self.forward(dx)))) > 1e-5:
             #     print('Something is wrong in Jacobian computation')

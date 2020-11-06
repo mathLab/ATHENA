@@ -20,7 +20,7 @@ class KernelActiveSubspaces(Subspaces):
     Compute the kernel-based active subspaces given the inputs and the
     gradients of the model function wrt the input parameters, or given the
     input/outputs couples. Only two methods are available: 'exact' and 'local'.
-    
+
     :param FeatureMap feature_map: athena.feature_map.FeatureMap object, see
         documentation. If the feature_map needs to be tuned pass it as argument
         to __init__ before calling feature_map.tune_pr_matrix() method. If
@@ -44,7 +44,8 @@ class KernelActiveSubspaces(Subspaces):
         define the active subspace.
     :cvar int n_features: dimension of the feature space.
     :cvar numpy.ndarray features: n_samples-by-n_features matrix containing
-        the projections of the inputs to the n_features-dimensional feature space.
+        the projections of the inputs to the n_features-dimensional feature
+        space.
     :cvar numpy.ndarray pseudo_gradients:
     :cvar str method: method to compute the AS. Possible choices are
         'exact' when the gradients are provided, or 'local' to use local linear
@@ -158,8 +159,9 @@ class KernelActiveSubspaces(Subspaces):
         :param numpy.ndarray inputs: array n_samples-by-n_params containing
             the points in the original parameter space.
         :return: array n_samples-by-active_dim containing the mapped active
-            variables; array n_samples-by-inactive_dim containing the mapped
-            inactive variables.
+            variables;
+            array n_samples-by-inactive_dim containing the mapped inactive
+            variables.
         :rtype: numpy.ndarray, numpy.ndarray
         """
         features = self.feature_map.compute_fmap(inputs)
@@ -179,8 +181,9 @@ class KernelActiveSubspaces(Subspaces):
         :param numpy.ndarray gradients: array n_samples-by-n_params containing
             the gradient samples oriented as rows.
         :return: array n_samples-by-output_dim-by-n_params matrix containing
-            the pseudo gradients corresponding to each sample.; array
-            n_samples-by-n_features containing the image of the inputs in the feature space.
+            the pseudo gradients corresponding to each sample;
+            array n_samples-by-n_features containing the image of the inputs
+            in the feature space.
         :rtype: numpy.ndarray, numpy.ndarray
         """
         n_samples = inputs.shape[0]

@@ -78,8 +78,7 @@ def linear_program_ineq(c, A, b):
     res = linprog(c=c, A_ub=-A, b_ub=-b, bounds=bounds)
     if res.success:
         return res.x.reshape(-1, 1)
-    else:
-        raise RuntimeError('Scipy did not solve the LP. {}'.format(res.message))
+    raise RuntimeError('Scipy did not solve the LP. {}'.format(res.message))
 
 
 def local_linear_gradients(inputs, outputs, weights=None, n_neighbors=None):
@@ -88,7 +87,7 @@ def local_linear_gradients(inputs, outputs, weights=None, n_neighbors=None):
     Given a set of input/output pairs, choose subsets of neighboring points and
     build a local linear model for each subset. The gradients of these local
     linear models comprise estimates of sampled gradients.
-    
+
     :param numpy.ndarray inputs:
         M-by-m matrix that contains the m-dimensional inputs
     :param numpy.ndarray outputs:
@@ -184,7 +183,7 @@ class CrossValidation():
 
         if any([v is None for v in [inputs, outputs, gradients, subspace]]):
             raise ValueError(
-                'Any among inputs, outputs, gradients, subspace argument is None.'
+                'Any among inputs, outputs, gradients, subspace is None.'
             )
         self.inputs = inputs
         self.outputs = outputs
@@ -246,6 +245,9 @@ class CrossValidation():
 
 
 def rrmse(predictions, targets):
+    """
+    TO DOC
+    """
     n_samples = predictions.shape[0]
     if n_samples != targets.shape[0]:
         raise ValueError('Predictions and targets differ in number of samples.')
@@ -272,25 +274,26 @@ def average_rrmse(hyperparams, csv, best, resample=5, verbose=False):
 
     if verbose is True:
         print("#" * 80)
-    for it in range(resample):
+    for _ in range(resample):
         #compute the projection matrix
         csv.ss.feature_map.params = hyperparams
 
-        # compute the score with cross validation for the sampled projection matrix
+        # compute the score with cross validation for the sampled projection
+        # matrix
         mean, std = csv.run()
 
         # save the best parameters
         if verbose is True:
-            print("params {2} mean {0}, std {1}".format(mean, std, hyperparams))
+            print("params {} mean {}, std {}".format(hyperparams, mean, std))
         score_records.append(mean)
 
-        # skip resampling from the same hyperparam if the error is not below the
-        # treshold 0.8
+        # skip resampling from the same hyperparam if the error is not below
+        # the treshold 0.8
         if mean > 0.8:
             break
         if mean <= best[0]:
             best[0] = mean
-            best[1] = csv.ss.feature_map._pr_matrix
+            best[1] = csv.ss.feature_map.pr_matrix
 
     # set _pr_matrix to None so that csv.ss.feature_map.compute_fmap
     # and csv.ss.feature_map.compute_fmap_jac resample the projection matrix
