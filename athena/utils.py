@@ -88,23 +88,20 @@ def local_linear_gradients(inputs, outputs, weights=None, n_neighbors=None):
     Given a set of input/output pairs, choose subsets of neighboring points and
     build a local linear model for each subset. The gradients of these local
     linear models comprise estimates of sampled gradients.
-    Parameters
-    ----------
-    inputs : ndarray
+    
+    :param numpy.ndarray inputs:
         M-by-m matrix that contains the m-dimensional inputs
-    outputs : ndarray
+    :param numpy.ndarray outputs:
         M-by-1 matrix that contains scalar outputs
-    n_neighbors : int, optional
-        how many nearest neighbors to use when constructing the local linear
-        model. the default value is floor(1.7*m)
-    weights : ndarray, optional
+    :param numpy.ndarray weights:
         M-by-1 matrix that contains the weights for each observation (default
         None)
-    Returns
-    -------
-    gradients : ndarray
-        M-by-m matrix that contains estimated partial derivatives approximated
-        by the local linear models
+    :param int n_neighbors:
+        how many nearest neighbors to use when constructing the local linear
+        model. the default value is floor(1.7*m)
+    :return: M-by-m matrix that contains estimated partial derivatives approximated
+        by the local linear models; the corresponding new inputs
+    :rtype: numpy.ndarray, numpy.ndarray
 
     :raises: ValueError, TypeError
     """
