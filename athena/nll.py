@@ -19,13 +19,20 @@ torch.set_default_tensor_type(torch.DoubleTensor)
 
 
 class NonlinearLevelSet():
-    """Nonlinear Level Set class
+    """Nonlinear Level Set class. It is implemented as a Reversible neural
+    networks (RevNet).
     
-    :param int n_layers:
-    :param int active_dim:
-    :param float lr:
-    :param int epochs:
-    :param float dh:
+    :param int n_layers: number of layers of the RevNet.
+    :param int active_dim: number of active dimensions. 
+    :param float lr: learning rate.
+    :param int epochs: number of ephocs.
+    :param float dh: so-called time step of the RevNet. Default is 0.25.
+    
+    :cvar `BackwardNet` backward: backward net of the RevNet. See
+        :class:`BackwardNet` class in :py:mod:`nll` module.
+    :cvar `ForwardNet` forward: forward net of the RevNet. See
+        :class:`ForwardNet` class in :py:mod:`nll` module.
+    :cvar list loss_vec: list containg the loss at every epoch.
     """
     def __init__(self, n_layers, active_dim, lr, epochs, dh=0.25):
         self.n_layers = n_layers
@@ -33,8 +40,8 @@ class NonlinearLevelSet():
         self.lr = lr
         self.epochs = epochs
         self.dh = dh
-        self.forward = None
         self.backward = None
+        self.forward = None
         self.loss_vec = []
 
     def train(self,
@@ -44,7 +51,7 @@ class NonlinearLevelSet():
               interactive=False,
               target_loss=0.0001):
         """
-        Train the whole ResNet.
+        Train the whole RevNet.
 
         :param torch.Tensor inputs: DoubleTensor n_samples-by-n_params
             containing the points in the full input space.
@@ -56,8 +63,9 @@ class NonlinearLevelSet():
         :param bool interactive: if True a plot with the loss function decay,
             and the sufficient summary plot will be showed and updated every
             10 epochs, and at the last epoch. Default is False.
-        :param float target_loss: Default is 0.0001.
-        :raises: ValueError
+        :param float target_loss: loss threshold. Default is 0.0001.
+        :raises: ValueError: in interactive mode outputs must be provided for
+            the sufficient summary plot.
         """
         if interactive:
             if outputs is None:
@@ -265,11 +273,16 @@ class NonlinearLevelSet():
 
 class ForwardNet(nn.Module):
     """
-    Forward net class. It is part of the ResNet.
+    Forward net class. It is part of the RevNet.
 
-    :cvar int n_params: number of input parameters.
+    :param int n_params: number of input parameters.
+    :param int n_layers: number of layers of the RevNet.
+    :param float dh: so-called time step of the RevNet.
+    :param int active_dim: number of active dimensions. 
+
     :cvar slice omega: a slice object indicating the active dimension to keep.
-        For example to keep the first two dimension `omega = slice(2).
+        For example to keep the first two dimension `omega = slice(2)`. It is
+        automatically set with `active_dim`.
     """
     def __init__(self, n_params, n_layers, dh, active_dim):
         super().__init__()
@@ -284,11 +297,17 @@ class ForwardNet(nn.Module):
             setattr(self, 'fc{}_z'.format(i + 1),
                     nn.Linear(self.n_params, 2 * self.n_params))
 
-    def forward(self, x):
+    def forward(self, inputs):
         """
-        TO DOC
+        Maps original inputs to transformed inputs.
+
+        :param torch.Tensor inputs: DoubleTensor n_samples-by-n_params
+            containing the points in the original full input space.
+        :return mapped_inputs: DoubleTensor n_samples-by-n_params with
+            the nonlinear transformed inputs.
+        :rtype: torch.Tensor
         """
-        bb = torch.split(x, self.n_params, dim=1)
+        bb = torch.split(inputs, self.n_params, dim=1)
         vars()['var0_y'] = torch.clone(bb[0])
         vars()['var0_z'] = torch.clone(bb[1])
 
@@ -418,8 +437,11 @@ class ForwardNet(nn.Module):
 
 
 class BackwardNet(nn.Module):
-    """Backward Net class. It is part of the ResNet.
+    """Backward Net class. It is part of the RevNet.
     
+    :param int n_params: number of input parameters.
+    :param int n_layers: number of layers of the RevNet.
+    :param float dh: so-called time step of the RevNet.
     """
     def __init__(self, n_params, n_layers, dh):
         super().__init__()
@@ -433,11 +455,17 @@ class BackwardNet(nn.Module):
             setattr(self, 'fc{}_z'.format(i + 1),
                     nn.Linear(self.n_params, 2 * self.n_params))
 
-    def forward(self, x):
+    def forward(self, mapped_inputs):
         """
-        TO DOC
+        Maps transformed inputs to original inputs.
+
+        :param torch.Tensor mapped_inputs: DoubleTensor n_samples-by-n_params
+            containing the nonlinear transformed inputs.
+        :return inputs: DoubleTensor n_samples-by-n_params with
+            the points in the original full input space.
+        :rtype: torch.Tensor
         """
-        y, z = torch.split(x, self.n_params, dim=1)
+        y, z = torch.split(mapped_inputs, self.n_params, dim=1)
 
         for i in range(self.n_layers - 1, -1, -1):
             name_y = 'fc{}_y'.format(i + 1)
