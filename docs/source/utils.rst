@@ -13,7 +13,6 @@ Utilities
 	CrossValidation.predict
 	CrossValidation.run
 	CrossValidation.scorer
-	CrossValidation.training
 	Normalizer.fit_transform
 	Normalizer.inverse_transform
 	average_rrmse

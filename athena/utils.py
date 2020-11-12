@@ -4,7 +4,6 @@ import numpy as np
 from scipy.optimize import linprog
 import GPy
 
-
 class Normalizer():
     """A class for normalizing and unnormalizing bounded inputs.
 
@@ -47,7 +46,13 @@ class Normalizer():
 
 def initialize_weights(matrix):
     """
-    TO DOC
+    Inizialize uniform weights for simple Monte Carlo method or linear regression in
+    local linear gradients.
+
+    :param numpy.ndarray matrix: matrix which shape[0] value contains the
+        dimension of the weights to be computed.
+    :return: weights
+    :rtype: numpy.ndarray
     """
     return np.ones((matrix.shape[0], 1)) / matrix.shape[0]
 
@@ -178,13 +183,34 @@ def sort_eigpairs(matrix):
 
 
 class CrossValidation():
-    """doc"""
+    """
+    Class to perform k-fold cross validation when tuning hyperparameters for the
+    design of a response surface with ActiveSubspaces or KernelActiveSubspaces.
+    Used in particular during the tuning of the parameters of the spectral
+    distribution of the feature map, inside the object function average_rrmse.
+    default score is the relative root mean square error (rrmse).
+
+    :param numpy.ndarray inputs: n_samples-by-input_dim input matrix.
+    :param numpy.ndarray outputs: n_sample-by-output_dim output matrix.
+    :param numpy.ndarray gradients: n_samples-by-output_dim-by-input_dim
+        gradients matrix.
+    :param `Subspaces` subspace: ActiveSubspace or KernelActiveSubspace object,
+        from which evaluate the response surface. The dimension of the response
+        surface is specified in subspace.dim attribute.
+    :param int folds: number of folds of the cross-validation procedure.
+    :param dict kwargs: additional paramters organized in a dictionary to pass
+        to subspace.fit method. For example 'weights' or 'metric'.
+
+    :cvar `GPy.models.GPRegression` gp: Gaussian process of the response surface
+        built with GPy library.
+    """
     def __init__(self, inputs, outputs, gradients, subspace, folds=5, **kwargs):
 
         if any([v is None for v in [inputs, outputs, gradients, subspace]]):
             raise ValueError(
                 'Any among inputs, outputs, gradients, subspace is None.'
             )
+
         self.inputs = inputs
         self.outputs = outputs
         self.gradients = gradients
@@ -194,7 +220,13 @@ class CrossValidation():
         self.kwargs = kwargs
 
     def run(self):
-        """doc"""
+        """
+        Run the k-fold cross validation procedure. In each fold a fit and an
+        evaluation of the score are compute.
+
+        :return: mean and standard deviation of the scores.
+        :rtype: list of two numpy.ndarray.
+        """
         mask = np.arange(self.inputs.shape[0])
 
         np.random.shuffle(mask)
@@ -213,14 +245,17 @@ class CrossValidation():
 
         return scores.mean(), scores.std()
 
-    def training(self):
-        """doc"""
-        self.fit(self.inputs, self.gradients, self.outputs)
-        score = self.scorer(self.inputs, self.outputs)
-        return score
-
     def fit(self, inputs, gradients, outputs):
-        """Uses Gaussian process regression to build the response surface."""
+        """
+        Uses Gaussian process regression to build the response surface as a side
+        effect. The dimension of the response surface is specified in the
+        attribute self.ss.dim.
+
+        :param numpy.ndarray inputs: n_samples-by-input_dim input matrix.
+        :param numpy.ndarray outputs: n_sample-by-output_dim output matrix.
+        :param numpy.ndarray gradients: n_samples-by-output_dim-by-input_dim
+            gradients matrix.
+        """
         self.ss.fit(inputs=inputs,
                     gradients=gradients,
                     outputs=outputs,
@@ -230,23 +265,43 @@ class CrossValidation():
         # build response surface
         kern = GPy.kern.RBF(input_dim=y.shape[1], ARD=True)
         self.gp = GPy.models.GPRegression(y, np.atleast_2d(outputs), kern)
-        self.gp.optimize_restarts(5, verbose=False)
+        self.gp.optimize_restarts(15, verbose=False)
 
     def predict(self, inputs):
-        """Predict method of cross-validation."""
+        """
+        Predict method of cross-validation.
+
+        :param numpy.ndarray inputs: n_samples-by-input_dim input matrix.
+        :return: n_samples-by-dim prediction of the surrogate response surface
+            model at the inputs. The value dim corresponds to self.ss.dim.
+        :rtype: numpy.ndarray
+        """
         x_test = self.ss.transform(inputs)[0]
         y = self.gp.predict(np.atleast_2d(x_test))[0]
         return y
 
-    def scorer(self, inputs, targets):
-        """Score function of cross-validation."""
+    def scorer(self, inputs, outputs):
+        """
+        Score function of cross-validation.
+
+        :param numpy.ndarray inputs: n_samples-by-input_dim input matrix.
+        :param numpy.ndarray outputs: n_sample-by-output_dim output matrix.
+        :return: relative root mean square error between inputs and outputs.
+        :rtype: np.float64
+        """
         y = self.predict(inputs)
-        return rrmse(y, targets)
+        return rrmse(y, outputs)
 
 
 def rrmse(predictions, targets):
     """
-    TO DOC
+    Evaluates the relative root mean square error. It can be vectorized for
+    multidimensional predictions and targets.
+
+    :param numpy.ndarray predictions: predictions input.
+    :param numpy.ndarray targets: targets input.
+    :return: relative root mean squared error
+    :rtype: np.float64
     """
     n_samples = predictions.shape[0]
     if n_samples != targets.shape[0]:
@@ -259,25 +314,53 @@ def rrmse(predictions, targets):
 
 
 def average_rrmse(hyperparams, csv, best, resample=5, verbose=False):
-    """Objective function to be optimized"""
+    """
+    Objective function to be optimized during the tuning process of the method
+    :func:`~athena.FeatureMap.tune_pr_matrix`. The optimal hyperparameters of the
+    spectral distribution are searched for in a domain logarithmically scaled in
+    base 10. For each call of :func:`~athena.utils.average_rrmse` by the
+    optimizer, the same hyperparameter is tested in two nested procedures: in
+    the external procedure the projection matrix is resampled a number of times
+    specified by the resample parameter; in the internal procedure the relative
+    root mean squared error (:func:`~athena.utils.rrmse`) is evaluated as the
+    k-fold mean of a k-fold cross-validation procedure. The score of a single
+    fold of this cross-validation procedure is the rrmse on the validation set
+    of the predictions of the response surface built with a Subspace object on
+    the training set.
+
+    :param list hyperparameters: logarithm of the parameter of the spectral
+        distribution passed to average_rrmse by the optimizer.
+    :param 'CrossValidation' csv: CrossValidation object which contains the
+        same Subspace object and the inputs, outputs, gradients datasets. The
+    :param list best: list that records the best score and the best
+        projection matrix. The initial values are 0.8 and a
+        n_features-by-input_dim numpy.ndarray of zeros.
+    :param int resample: number of times the projection matrix is resampled
+        from the same spectral distribution with the same hyperparameter.
+    :param bool verbose: True to print the score for each resample.
+    :return: minumum of the scores evaluated for the same hyperparameter and
+        a specified number of resamples of the projection matrix.
+    :rtype: numpy.float64
+    """
 
     if len(hyperparams.shape) > 1:
         hyperparams = np.squeeze(hyperparams)
     if len(hyperparams.shape) == 0:
         hyperparams = np.array([hyperparams])
 
+    # compute the real hyperparameters
     hyperparams = 10**hyperparams
 
     # list of scores for the same hyperparameters but different samples
     # of the projection matrix
     score_records = []
 
+    #set the hyperparameters
+    csv.ss.feature_map.params = hyperparams
+
     if verbose is True:
         print("#" * 80)
     for _ in range(resample):
-        #compute the projection matrix
-        csv.ss.feature_map.params = hyperparams
-
         # compute the score with cross validation for the sampled projection
         # matrix
         mean, std = csv.run()
@@ -295,8 +378,8 @@ def average_rrmse(hyperparams, csv, best, resample=5, verbose=False):
             best[0] = mean
             best[1] = csv.ss.feature_map.pr_matrix
 
-    # set _pr_matrix to None so that csv.ss.feature_map.compute_fmap
-    # and csv.ss.feature_map.compute_fmap_jac resample the projection matrix
-    # for the same hyperparams
-    csv.ss.feature_map._pr_matrix = None
+        # set _pr_matrix to None so that csv.ss.feature_map.compute_fmap
+        # and csv.ss.feature_map.compute_fmap_jac resample the projection matrix
+        # for the same hyperparams
+        csv.ss.feature_map._pr_matrix = None
     return min(score_records)

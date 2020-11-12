@@ -210,7 +210,7 @@ class TestUtils(TestCase):
                               gradients=gradients,
                               folds=2,
                               subspace=ss)
-        true_value = (8.186941403385733, 6.081926389368339)
+        true_value = (8.91180601306311, 6.806790947903309)
         np.testing.assert_array_almost_equal(csv.run(), true_value)
 
     def test_cross_validation_run_02(self):
@@ -296,5 +296,5 @@ class TestUtils(TestCase):
         best = [0.1, np.zeros((3, 2))]
         hyperparams = np.array([-1.])
         score = average_rrmse(hyperparams, csv, best, resample=1, verbose=True)
-        true = 2.135718555831271
+        true = 2.1357048222078703
         np.testing.assert_array_almost_equal(score, true)

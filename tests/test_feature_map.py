@@ -182,12 +182,11 @@ class TestProjectionFactory(TestCase):
                               folds=2,
                               subspace=ss)
         best = fm.tune_pr_matrix(func=average_rrmse,
-                                 bounds=[slice(-1, 1.2, 0.2) for i in range(1)],
+                                 bounds=[slice(-2, 1, 0.2) for i in range(1)],
                                  args=(csv, ),
                                  maxiter=10,
                                  save_file=False)[1]
-        true = np.array([[0.03857183, -0.45825228], [-1.06057884, 0.9981594],
-                         [1.01812996, 0.19529565]])
+        true = np.array([[0., 0.], [0., 0.], [0., 0.]])
         np.testing.assert_array_almost_equal(true, best)
 
     def test_dual_annealing(self):
@@ -240,6 +239,6 @@ class TestProjectionFactory(TestCase):
                                  method='bso',
                                  maxiter=10,
                                  save_file=False)[1]
-        true = np.array([[2.13951417, -9.18658594], [1.16340082, 0.5677881],
-                         [8.7675616, -1.1558472]])
+        true = np.array([[14.9646475, 4.2713126], [11.28870881, 8.33313971],
+                         [1.16475035, 9.92216877]])
         np.testing.assert_array_almost_equal(true, best)
