@@ -19,6 +19,7 @@ from .utils import (Normalizer, initialize_weights, linear_program_ineq,
 class ActiveSubspaces(Subspaces):
     """Active Subspaces class
 
+    :param int dim: dimension of the active subspace.
     :param str method: method to compute the AS. Possible choices are
         'exact' when the gradients are provided, or 'local' to use local linear
         models. This approach is related to the sufficient dimension reduction

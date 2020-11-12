@@ -34,14 +34,27 @@ class ProjectionFactory():
     @staticmethod
     def beta(input_dim, n_features, params):
         """
-        TO DOC
+        Beta distribution
+
+        :param int input_dim: dimension of the inputs.
+        :param int n_features: dimension of the RKHS.
+        :param list params: the two parameters are the alpha and beta
+            shape parameters respectively.
+        :return: n_features-by-input_dim projection matrix.
+        :rtype: numpy.ndarray.
         """
         return np.random.beta(params[0], params[1], (n_features, input_dim))
 
     @staticmethod
     def cauchy(input_dim, n_features, params):
         """
-        TO DOC
+        Cauchy distribution
+
+        :param int input_dim: dimension of the inputs.
+        :param int n_features: dimension of the RKHS.
+        :param list params: the single parameter is a scale factor.
+        :return: n_features-by-input_dim projection matrix.
+        :rtype: numpy.ndarray.
         """
         return (1 / params[0]) * np.random.standard_cauchy(
             (n_features, input_dim))
@@ -49,21 +62,43 @@ class ProjectionFactory():
     @staticmethod
     def dirichlet(input_dim, n_features, params):
         """
-        TO DOC
+        Dirichlet distribution
+
+        :param int input_dim: dimension of the inputs.
+        :param int n_features: dimension of the RKHS.
+        :param list params: the single parameter is a scale to the input_dim
+            dimensional shape parameter.
+        :return: n_features-by-input_dim projection matrix.
+        :rtype: numpy.ndarray.
         """
         return np.random.dirichlet(params[0] * np.ones(input_dim), n_features)
 
     @staticmethod
     def laplace(input_dim, n_features, params):
         """
-        TO DOC
+        Laplace distribution
+
+        :param int input_dim: dimension of the inputs.
+        :param int n_features: dimension of the RKHS.
+        :param list params: the single parameter is the scale of the
+            distribution, the mean is set to 0.
+        :return: n_features-by-input_dim projection matrix.
+        :rtype: numpy.ndarray.
         """
         return np.random.laplace(0, params[0], (n_features, input_dim))
 
     @staticmethod
     def multivariate_normal(input_dim, n_features, params):
         """
-        TO DOC
+        Multivariate normal distribution
+
+        :param int input_dim: dimension of the inputs.
+        :param int n_features: dimension of the RKHS.
+        :param list params: the input_dim dimensioanl parameters are the
+        diagonal of the covariance matrix of the distribution. The mean is set
+        to the 0 vector.
+        :return: n_features-by-input_dim projection matrix.
+        :rtype: numpy.ndarray.
         """
         return np.random.multivariate_normal(np.zeros(input_dim),
                                              np.diag(params), n_features)
@@ -71,14 +106,27 @@ class ProjectionFactory():
     @staticmethod
     def normal(input_dim, n_features, params):
         """
-        TO DOC
+        Normal distribution
+
+        :param int input_dim: dimension of the inputs.
+        :param int n_features: dimension of the RKHS.
+        :param list params: the single parameter is the variance of the
+            distribution. The mean is set to 0.
+        :return: n_features-by-input_dim projection matrix.
+        :rtype: numpy.ndarray.
         """
         return np.random.normal(0, params[0], (n_features, input_dim))
 
     @staticmethod
     def uniform(input_dim, n_features, params):
         """
-        TO DOC
+        Uniform distribution
+
+        :param int input_dim: dimension of the inputs.
+        :param int n_features: dimension of the RKHS.
+        :param list params: the two parameters are the extremals of the domain.
+        :return: n_features-by-input_dim projection matrix.
+        :rtype: numpy.ndarray.
         """
         return np.random.uniform(params[0], params[1], (n_features, input_dim))
 
@@ -86,7 +134,7 @@ class ProjectionFactory():
     ##                                                                       ##
     ## PROJECTION FUNCTION dictionary                                        ##
     ##                                                                       ##
-    ## New implementation must be added here.                                ##
+    ## New implementations must be added here.                               ##
     ##                                                                       ##
     ###########################################################################
     __projections = {

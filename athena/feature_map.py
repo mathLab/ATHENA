@@ -1,5 +1,13 @@
 """
-Module for the feature map class.
+Module for the feature map class
+
+:References:
+
+    - Francesco Romor, Marco Tezzele, Andrea Lario, Gianluigi Rozza.
+      Kernel-based Active Subspaces with application to CFD problems using
+      Discontinuous Galerkin Method. 2020.
+      arxiv: https://arxiv.org/abs/2008.12083
+
 """
 from functools import partial
 import numpy as np
@@ -9,14 +17,28 @@ from .projection_factory import ProjectionFactory
 
 
 class FeatureMap():
-    """
-    Feature map class.
-    TO DOC
-    :param array_like params:
+    """Feature map class.
+
+    :param str distr: name of the spectral distribution to sample from the
+        matrix.
+    :param numpy.ndarray bias: n_features dimensional bias. It is sampled from a
+        Unifrom distribution on the interval [0, 2*PI].
+    :param int input_dim: dimension of the input space.
+    :param int n_features: dimension of the Reproducing Kernel Hilbert Space.
+    :param list params: number of hyperparameters of the spectral distribution.
+    :param int sigma_f: multiplicative constant of the feature
+        map. Usually it is set as the empirical variance of the outputs.
+
+    :cvar callable fmap: feature map used to project the input samples to the RKHS.
+        Default value is rff_map.
+    :cvar callable fjac: Jacobian matrix of fmap. Default value is rff_jac, the
+        analytical Jacobian of fmap.
+    :cvar numpy.ndarray _pr_matrix: n_features-by-input_dim projection
+        matrix, whose rows are sampled from the spectral distribution distr.
+
     :raises TypeError
     """
     def __init__(self, distr, bias, input_dim, n_features, params, sigma_f):
-
         if callable(distr):
             self.distr = distr
         elif isinstance(distr, str):
@@ -45,17 +67,37 @@ class FeatureMap():
         return self._pr_matrix
 
     def _compute_pr_matrix(self):
+        """
+        Sample the projection matrixx from the spectral distribution.
+
+        :return: the projection matrix.
+        :rtype: numpy.ndarray
+        """
         return self.distr(self.input_dim, self.n_features, self.params)
 
     def compute_fmap(self, inputs):
-        """doc"""
+        """
+        Evaluate the feature map at inputs.
+
+        :param numpy.ndarray inputs: the inputs to project on the RKHS.
+        :return: the n_features dimensional projection of the inputs.
+        :rtype: numpy.ndarray
+        """
         if self._pr_matrix is None:
             self._pr_matrix = self._compute_pr_matrix()
         return self.fmap(inputs, self._pr_matrix, self.bias, self.n_features,
                          self.sigma_f)
 
     def compute_fmap_jac(self, inputs):
-        """doc"""
+        """
+        Evaluate the Jacobian matrix of feature map at inputs.
+
+        :param numpy.ndarray inputs: the inputs at which compute the Jacobian
+            matrix of the feature map.
+        :return: the n_features-by-input_dim dimensional Jacobian of the
+            feature map at the inputs.
+        :rtype: numpy.ndarray
+        """
         if self._pr_matrix is None:
             self._pr_matrix = self._compute_pr_matrix()
         return self.fmap_jac(inputs, self._pr_matrix, self.bias,
@@ -69,8 +111,40 @@ class FeatureMap():
                        maxiter=50,
                        save_file=False):
         """
-        TO DOC
-        ADD EXAMPLE for bounds
+        Tune the parameters of the spectral distribution. Three methods are
+        available: log-grid-search (brute), annealing (dual_annealing) and
+        Bayesian stochastic optimization (bso) from GpyOpt. The default object
+        function to optimize is athena.utils.average_rrmse, which uses a
+        cross-validation procedure from athena.utils, see Example and tutorial 06_kernel-based_AS.
+
+        :Example:
+        >>> from athena.kas import KernelActiveSubspaces
+        >>> from athena.feature_map import FeatureMap
+        >>> from athena.projection_factory import ProjectionFactory
+        >>> from athena.utils import CrossValidation, average_rrmse
+        >>> input_dim, output_dim, n_samples = 2, 1, 30
+        >>> n_features, n_params = 10, 1
+        >>> xx = np.ones((n_samples, input_dim))
+        >>> f = np.ones((n_samples, output_dim))
+        >>> df = np.ones((n_samples, output_dim, input_dim))
+        >>> fm = FeatureMap(distr='laplace',
+                            bias=np.random.uniform(0, 2 * np.pi, n_features),
+                            input_dim=input_dim,
+                            n_features=n_features,
+                            params=np.zeros(n_params),
+                            sigma_f=f.var())
+        >>> kss = KernelActiveSubspaces(feature_map=fm, dim=1, n_features=n_features)
+        >>> csv = CrossValidation(inputs=xx,
+                                outputs=f.reshape(-1, 1),
+                                gradients=df.reshape(n_samples, output_dim, input_dim),
+                                folds=3,
+                                subspace=kss)
+        >>> best = fm.tune_pr_matrix(func=average_rrmse,
+                                    bounds=[slice(-2, 1, 0.2) for i in range(n_params)],
+                                    args=(csv, ),
+                                    method='bso',
+                                    maxiter=20,
+                                    save_file=False)
 
         :param callable func: the objective function to be minimized.
             Must be in the form f(x, *args), where x is the argument in the
@@ -78,8 +152,8 @@ class FeatureMap():
             parameters needed to completely specify the function.
         :param tuple bounds: each component of the bounds tuple must be a
             slice tuple of the form (low, high, step). It defines bounds for
-            the objective function parameter. Step will be ignored for
-            'dual_annealing' method.
+            the objective function parameter in a logarithmic scale. Step will
+            be ignored for 'dual_annealing' method.
         :param tuple args: any additional fixed parameters needed to
             completely specify the objective function.
         :param str method: method used to optimize the objective function.
@@ -91,7 +165,12 @@ class FeatureMap():
             strategy applied.
         :param int maxiter: the maximum number of global search iterations.
             Default value is 50.
+        :param bool save_file: True to save the optimal projection matrix
         :raises: ValueError
+        :return: list that records the best score and the best projection
+            matrix. The initial values are 0.8 and a n_features-by-input_dim
+            numpy.ndarray of zeros.
+        :rtype: list
         """
         best = [0.8, np.zeros((self.n_features, self.input_dim))]
 
@@ -152,8 +231,18 @@ class FeatureMap():
 
 def rff_map(inputs, pr_matrix, bias, n_features, sigma_f):
     """
-    Random Fourier Features
-    TO DOC
+    Random Fourier Features map. It can be vectorized for inputs of shape n_samples-by-input_dim.
+
+    :param numpy.ndarray inputs: input_dim dimensional inputs to project to the RKHS.
+    :param numpy.ndarray pr_matrix: n_features-by-input_dim projection matrix,
+        whose rows are sampled from the spectral distribution.
+    :param numpy.ndarray bias: n_features dimensional bias. It is sampled from a
+        Unifrom distribution on the interval [0, 2*PI].
+    :param int n_features: dimension of the RKHS
+    :param int sigma_f: multiplicative term representing the empirical variance
+        the outptus.
+    :return: n_features dimensional projection of the inputs to the RKHS
+    :rtype: numpy.ndarray
     """
     return np.sqrt(2 / n_features) * sigma_f * np.cos(
         np.dot(inputs, pr_matrix.T) + bias.reshape(1, -1))
@@ -161,8 +250,18 @@ def rff_map(inputs, pr_matrix, bias, n_features, sigma_f):
 
 def rff_jac(inputs, pr_matrix, bias, n_features, sigma_f):
     """
-    Random Fourier Features jacobian
-    TO DOC
+    Random Fourier Features map's Jacobian. It can be vectorized for inputs of shape n_samples-by-input_dim.
+
+    :param numpy.ndarray inputs: input_dim dimensional inputs to project to the RKHS.
+    :param numpy.ndarray pr_matrix: n_features-by-input_dim projection matrix,
+        whose rows are sampled from the spectral distribution.
+    :param numpy.ndarray bias: n_features dimensional bias. It is sampled from a
+        Unifrom distribution on the interval [0, 2*PI].
+    :param int n_features: dimension of the RKHS
+    :param int sigma_f: multiplicative term representing the empirical variance
+        the outptus.
+    :return: n_features-by-input_dim dimensional projection of the inputs to the RKHS
+    :rtype: numpy.ndarray
     """
     return (np.sqrt(2 / n_features) * sigma_f *
             (-1) * np.sin(np.dot(inputs, pr_matrix.T) + bias)).reshape(
