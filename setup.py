@@ -1,14 +1,17 @@
 from setuptools import setup
-import athena
+
+meta = {}
+with open("athena/meta.py") as fp:
+    exec(fp.read(), meta)
 
 # Package meta-data.
-NAME = athena.__title__
+NAME = meta['__title__']
 DESCRIPTION = 'Advanced Techniques for High dimensional parameter spaces to ' \
               'Enhance Numerical Analysis'
 URL = 'https://github.com/mathLab/ATHENA'
-MAIL = athena.__mail__
-AUTHOR = athena.__author__
-VERSION = athena.__version__
+MAIL = meta['__mail__']
+AUTHOR = meta['__author__']
+VERSION = meta['__version__']
 KEYWORDS = 'parameter-space-reduction active-subspaces ' \
            'kernel-active-subspaces model-reduction sensitivity-analysis ' \
            'nonlinear-level-set-learning'
