@@ -6,16 +6,6 @@ __all__ = [
     'utils'
 ]
 
-__project__ = 'ATHENA'
-__title__ = "athena"
-__author__ = "Marco Tezzele, Francesco Romor"
-__copyright__ = "Copyright 2019-2020, Athena contributors"
-__license__ = "MIT"
-__version__ = "0.0.2"
-__mail__ = 'marcotez@gmail.com, francesco.romor@gmail.com'
-__maintainer__ = __author__
-__status__ = "Beta"
-
 from .active import ActiveSubspaces
 from .feature_map import (FeatureMap, rff_map, rff_jac)
 from .kas import KernelActiveSubspaces
