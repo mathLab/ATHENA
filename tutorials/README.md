@@ -30,8 +30,12 @@ We present the nonlinear level-set learning (NLL) technique and we compare it wi
 #### More to come...
 We plan to add more tutorials but the time is often against us. If you want to contribute with a notebook on a feature not covered yet we will be very happy and give you support on editing!
 
+
+### References
 The main references for these tutorials are
 
-* [Constantine, Paul G. active subspaces: emerging ideas for dimension reduction in parameter studies](https://doi.org/10.1137/1.9781611973860),
+* [Paul G. Constantine. "Active Subspaces: emerging ideas for dimension reduction in parameter studies"](https://doi.org/10.1137/1.9781611973860).
 
-* [Zahm, Olivier, Paul G. Constantine, Clementine Prieur, and Youssef M. Marzouk. "Gradient-based dimension reduction of multivariate vector-valued functions."](https://epubs.siam.org/doi/pdf/10.1137/18M1221837).
+* [Olivier Zahm, Paul G. Constantine, Clementine Prieur, and Youssef M. Marzouk. "Gradient-based dimension reduction of multivariate vector-valued functions."](https://epubs.siam.org/doi/pdf/10.1137/18M1221837).
+
+* [Guannan Zhang, Jiaxin Zhang, and Jacob Hinkle. "Learning nonlinear level sets for dimensionality reduction in function approximation."](https://arxiv.org/abs/1902.10652).
