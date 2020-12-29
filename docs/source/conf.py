@@ -23,7 +23,7 @@ import sphinx_rtd_theme
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 sys.path.insert(0, os.path.abspath('../..'))
-import athena
+import athena.meta as meta
 
 # -- General configuration ------------------------------------------------
 
@@ -72,8 +72,8 @@ master_doc = 'index'
 
 # General information about the project.
 project = u'ATHENA'
-copyright = athena.__copyright__
-author = athena.__author__
+copyright = meta.__copyright__
+author = meta.__author__
 
 # autoclass
 autoclass_content = 'both'
@@ -83,7 +83,7 @@ autoclass_content = 'both'
 # built documents.
 #
 # The short X.Y version.
-version = athena.__version__
+version = meta.__version__
 # The full version, including alpha/beta/rc tags.
 release = version
 

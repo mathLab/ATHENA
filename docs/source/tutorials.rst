@@ -9,3 +9,4 @@ We made some tutorial examples:
 - `Tutorial 4 <tutorial4inverse.html>`_ shows how to employ the active subspaces property to sample from surrogate posteriors.
 - `Tutorial 5 <tutorial5spde.html>`_ shows how to employ the active subspaces property to vectorial outputs.
 - `Tutorial 6 <tutorial6kas.html>`_ shows how to study the presence of a kernel-based active subspace.
+- `Tutorial 7 <tutorial7nll.html>`_ shows how to use the nonlinear level-set learning technique.
