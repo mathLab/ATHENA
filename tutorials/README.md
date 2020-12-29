@@ -2,22 +2,22 @@
 
 In this folder you can find a collection of useful Notebooks containing several tutorials to understand the principles and the potential of **ATHENA**.
 
-#### [Tutorial 1](01_intro.ipynb)
+#### Tutorial 1 [[.ipynb](tutorial01/01_intro.ipynb), [.py](tutorial01/01_intro.py)]
 Here we show a basic application of active subspaces on a simple model in order to reconstruct and analyze it.
 
-#### [Tutorial 2](02_gradients_evaluation.ipynb)
-Here we focus on a crucial step of the procedure: the evaluation of the gradients of the model with respect to the inputs. We show two possible methods to approximate the gradients given pairs of input-output datasets: Gaussian process regression, which requires [GPy](https://github.com/SheffieldML/GPy) and local linear gradients, which is implemented in ATHENA. In [Tutorial 5](05_SPDE_on_athena_vectorial_AS.ipynb) we will use adjoint methods to reconstruct the gradients.
+#### Tutorial 2 [[.ipynb](tutorial02/02_gradients_evaluation.ipynb), [.py](tutorial02/02_gradients_evaluation.py)]
+Here we focus on a crucial step of the procedure: the evaluation of the gradients of the model with respect to the inputs. We show two possible methods to approximate the gradients given pairs of input-output datasets: Gaussian process regression, which makes use of [GPy](https://github.com/SheffieldML/GPy), and local linear gradients, which is implemented in ATHENA. In [Tutorial 5](tutorial05/05_SPDE_on_athena_vectorial_AS.ipynb) we will use adjoint methods to reconstruct the gradients.
 
-#### [Tutorial 3](03_response_surfaces.ipynb)
+#### [Tutorial 3](tutorial03/03_response_surfaces.ipynb)
 Here we exploit the presence of an active subspace to build one-dimensional response surfaces with Gaussian
 processes. We compare the choice of the original model as a profile of the ridge approximation with the choice of the optimal profile. It requires [GPy](https://github.com/SheffieldML/GPy) and [pyhmc](https://github.com/rmcgibbo/pyhmc) for Hamiltonian Monte Carlo.
 
-#### [Tutorial 4](04_inverse_problems.ipynb)
+#### [Tutorial 4](tutorial04/04_inverse_problems.ipynb)
 Here we show an application of the active subspaces property to speed up the sampling from the posterior of an inverse problem with Gaussian prior and likelihood. We use the library [Pyro](https://pyro.ai/) for probabilistic programming and Hamiltonian Monte Carlo and [GPy](https://github.com/SheffieldML/GPy) for Gaussian process regression.
 
-#### [Tutorial 5](05_SPDE_on_athena_vectorial_AS.ipynb)
-You need to run [Tutorial 5, solver](05_SPDE_on_fenics_solver.ipynb) first. Here we show how an
-active subspace can be searched for in the case of a model with vectorial outputs. We use [fenics](https://fenicsproject.org/) to solve a Poisson problem with red noise in the diffusion coefficient (approximated with truncated Karhunen-Loève decomposition). If you want to look at the active eigenvectors and K-L modes after having ran the tutorial, open [Tutorial 5, visualization tool](05_SPDE_on_fenics_modes.ipynb).
+#### [Tutorial 5](tutorial05/05_SPDE_on_athena_vectorial_AS.ipynb)
+You need to run [Tutorial 5, solver](tutorial05/05_SPDE_on_fenics_solver.ipynb) first. Here we show how an
+active subspace can be searched for in the case of a model with vectorial outputs. We use [fenics](https://fenicsproject.org/) to solve a Poisson problem with red noise in the diffusion coefficient (approximated with truncated Karhunen-Loève decomposition). If you want to look at the active eigenvectors and K-L modes after having ran the tutorial, open [Tutorial 5, visualization tool](tutorial05/05_SPDE_on_fenics_modes.ipynb).
 
 #### Tutorial 6 [[.ipynb](tutorial06/06_kernel-based_AS.ipynb), [.py](tutorial06/06_kernel-based_AS.py)]
 Here we show how a kernel-based active subspace can be detected and employed
