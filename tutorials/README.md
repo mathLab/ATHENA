@@ -8,7 +8,7 @@ Here we show a basic application of active subspaces on a simple model in order 
 #### Tutorial 2 [[.ipynb](tutorial02/02_gradients_evaluation.ipynb), [.py](tutorial02/02_gradients_evaluation.py)]
 Here we focus on a crucial step of the procedure: the evaluation of the gradients of the model with respect to the inputs. We show two possible methods to approximate the gradients given pairs of input-output datasets: Gaussian process regression, which makes use of [GPy](https://github.com/SheffieldML/GPy), and local linear gradients, which is implemented in ATHENA. In [Tutorial 5](tutorial05/05_SPDE_on_athena_vectorial_AS.ipynb) we will use adjoint methods to reconstruct the gradients.
 
-#### [Tutorial 3](tutorial03/03_response_surfaces.ipynb)
+#### Tutorial 3 [[.ipynb](tutorial03/03_response_surfaces.ipynb), [.py](tutorial03/03_response_surfaces.py)]
 Here we exploit the presence of an active subspace to build one-dimensional response surfaces with Gaussian
 processes. We compare the choice of the original model as a profile of the ridge approximation with the choice of the optimal profile. It requires [GPy](https://github.com/SheffieldML/GPy) and [pyhmc](https://github.com/rmcgibbo/pyhmc) for Hamiltonian Monte Carlo.
 
