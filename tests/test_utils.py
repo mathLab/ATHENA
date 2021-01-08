@@ -273,7 +273,7 @@ class TestUtils(TestCase):
                               subspace=ss)
         best = [0.1, np.zeros((3, 2))]
         hyperparams = np.array([-1.])
-        score = average_rrmse(hyperparams, csv, best, resample=1)
+        score = average_rrmse(hyperparams, best, csv, verbose=False, resample=1)
         np.testing.assert_equal(best[0], 0.1)
 
     def test_average_rrmse_02(self):
@@ -295,6 +295,6 @@ class TestUtils(TestCase):
                               subspace=ss)
         best = [0.1, np.zeros((3, 2))]
         hyperparams = np.array([-1.])
-        score = average_rrmse(hyperparams, csv, best, resample=1, verbose=True)
+        score = average_rrmse(hyperparams, best, csv, verbose=True, resample=1)
         true = 2.1357048222078703
         np.testing.assert_array_almost_equal(score, true)

@@ -21,25 +21,31 @@ torch.set_default_tensor_type(torch.DoubleTensor)
 class NonlinearLevelSet():
     """Nonlinear Level Set class. It is implemented as a Reversible neural
     networks (RevNet).
-    
+
     :param int n_layers: number of layers of the RevNet.
-    :param int active_dim: number of active dimensions. 
+    :param int active_dim: number of active dimensions.
     :param float lr: learning rate.
     :param int epochs: number of ephocs.
     :param float dh: so-called time step of the RevNet. Default is 0.25.
-    
+    :param `torch.optim.Optimizer` optimizer: optimizer used in the training of
+        the RevNet. Its argument are passed as args and optim_args when
+        :py:meth:`train` is called.
+
     :cvar `BackwardNet` backward: backward net of the RevNet. See
         :class:`BackwardNet` class in :py:mod:`nll` module.
     :cvar `ForwardNet` forward: forward net of the RevNet. See
         :class:`ForwardNet` class in :py:mod:`nll` module.
     :cvar list loss_vec: list containg the loss at every epoch.
     """
-    def __init__(self, n_layers, active_dim, lr, epochs, dh=0.25):
+    def __init__(self, n_layers, active_dim, lr, epochs, dh=0.25, optimizer=optim.Adam):
         self.n_layers = n_layers
         self.active_dim = active_dim
         self.lr = lr
         self.epochs = epochs
         self.dh = dh
+        if issubclass(optimizer, optim.Optimizer):
+            self.optimizer = optimizer
+
         self.backward = None
         self.forward = None
         self.loss_vec = []
@@ -49,7 +55,8 @@ class NonlinearLevelSet():
               gradients,
               outputs=None,
               interactive=False,
-              target_loss=0.0001):
+              target_loss=0.0001,
+              optim_args={}):
         """
         Train the whole RevNet.
 
@@ -64,6 +71,7 @@ class NonlinearLevelSet():
             and the sufficient summary plot will be showed and updated every
             10 epochs, and at the last epoch. Default is False.
         :param float target_loss: loss threshold. Default is 0.0001.
+        :param dict optim_args: dictionary passed to the optimizer.
         :raises: ValueError: in interactive mode outputs must be provided for
             the sufficient summary plot.
         """
@@ -86,7 +94,7 @@ class NonlinearLevelSet():
                                   active_dim=self.active_dim)
         # Initialize the gradient
         self.forward.zero_grad()
-        optimizer = optim.SGD(self.forward.parameters(), lr=self.lr)
+        optimizer = self.optimizer(self.forward.parameters(), self.lr, **optim_args)
 
         # Training
         for i in range(self.epochs):
@@ -157,7 +165,7 @@ class NonlinearLevelSet():
                                 title=''):
         """
         Plot the sufficient summary.
-        
+
         :param torch.Tensor inputs: DoubleTensor n_samples-by-n_params
             containing the points in the full input space.
         :param numpy.ndarray outputs: array n_samples-by-1 containing the
@@ -278,7 +286,7 @@ class ForwardNet(nn.Module):
     :param int n_params: number of input parameters.
     :param int n_layers: number of layers of the RevNet.
     :param float dh: so-called time step of the RevNet.
-    :param int active_dim: number of active dimensions. 
+    :param int active_dim: number of active dimensions.
 
     :cvar slice omega: a slice object indicating the active dimension to keep.
         For example to keep the first two dimension `omega = slice(2)`. It is
@@ -438,7 +446,7 @@ class ForwardNet(nn.Module):
 
 class BackwardNet(nn.Module):
     """Backward Net class. It is part of the RevNet.
-    
+
     :param int n_params: number of input parameters.
     :param int n_layers: number of layers of the RevNet.
     :param float dh: so-called time step of the RevNet.

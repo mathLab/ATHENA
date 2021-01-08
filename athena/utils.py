@@ -1,6 +1,7 @@
 """Utility functions module.
 """
 import numpy as np
+import matplotlib.pyplot as plt
 from scipy.optimize import linprog
 import GPy
 
@@ -313,7 +314,7 @@ def rrmse(predictions, targets):
     return np.linalg.norm(p - t) / std_deviation
 
 
-def average_rrmse(hyperparams, csv, best, resample=5, verbose=False):
+def average_rrmse(hyperparams, best, csv, verbose=False, resample=5):
     """
     Objective function to be optimized during the tuning process of the method
     :func:`~athena.FeatureMap.tune_pr_matrix`. The optimal hyperparameters of the
@@ -342,6 +343,8 @@ def average_rrmse(hyperparams, csv, best, resample=5, verbose=False):
         a specified number of resamples of the projection matrix.
     :rtype: numpy.float64
     """
+    if isinstance(csv, CrossValidation) is False:
+        raise ValueError("The argument csv must be of type athena.utils.CrossValidation")
 
     if len(hyperparams.shape) > 1:
         hyperparams = np.squeeze(hyperparams)
