@@ -12,10 +12,10 @@ Here we focus on a crucial step of the procedure: the evaluation of the gradient
 Here we exploit the presence of an active subspace to build one-dimensional response surfaces with Gaussian
 processes. We compare the choice of the original model as a profile of the ridge approximation with the choice of the optimal profile. It requires [GPy](https://github.com/SheffieldML/GPy) and [pyhmc](https://github.com/rmcgibbo/pyhmc) for Hamiltonian Monte Carlo.
 
-#### [Tutorial 4](tutorial04/04_inverse_problems.ipynb)
+#### [Tutorial 4][[.ipynb](tutorial04/04_inverse_problems.ipynb), [.py](tutorial04/04_inverse_problems.py)]
 Here we show an application of the active subspaces property to speed up the sampling from the posterior of an inverse problem with Gaussian prior and likelihood. We use the library [Pyro](https://pyro.ai/) for probabilistic programming and Hamiltonian Monte Carlo and [GPy](https://github.com/SheffieldML/GPy) for Gaussian process regression.
 
-#### [Tutorial 5](tutorial05/05_SPDE_on_athena_vectorial_AS.ipynb)
+#### [Tutorial 5][[.ipynb](tutorial05/05_SPDE_on_athena_vectorial_AS.ipynb), [.py](tutorial05/05_SPDE_on_athena_vectorial_AS.py)]
 You need to run [Tutorial 5, solver](tutorial05/05_SPDE_on_fenics_solver.ipynb) first. Here we show how an
 active subspace can be searched for in the case of a model with vectorial outputs. We use [fenics](https://fenicsproject.org/) to solve a Poisson problem with red noise in the diffusion coefficient (approximated with truncated Karhunen-Loève decomposition). If you want to look at the active eigenvectors and K-L modes after having ran the tutorial, open [Tutorial 5, visualization tool](tutorial05/05_SPDE_on_fenics_modes.ipynb).
 

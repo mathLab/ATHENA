@@ -21,11 +21,8 @@ class KernelActiveSubspaces(Subspaces):
     gradients of the model function wrt the input parameters, or given the
     input/outputs couples. Only two methods are available: 'exact' and 'local'.
 
-    :param FeatureMap feature_map: athena.feature_map.FeatureMap object, see
-        documentation. If the feature_map needs to be tuned pass it as argument
-        to __init__ before calling feature_map.tune_pr_matrix() method. If
-        feature map is already tuned you can directly pass it as argument to
-        KernelActiveSubspaces.compute().
+    :param `FeatureMap` feature_map: `athena.feature_map.FeatureMap` object. See
+        :class:`FeatureMap` class in :py:mod:`feature_map` module.
     :param int n_features: dimension of the feature space.
     :param str method: method to compute the AS. Possible choices are
         'exact' when the gradients are provided, or 'local' to use local linear

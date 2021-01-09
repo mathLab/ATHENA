@@ -11,7 +11,7 @@ from athena.feature_map import FeatureMap, rff_map, rff_jac
 from athena.projection_factory import ProjectionFactory
 from athena.utils import Normalizer, CrossValidation, average_rrmse
 
-from data.numpy_functions import radial
+from numpy_functions import radial
 
 
 np.random.seed(42)
@@ -48,8 +48,8 @@ y, t, dt = sample_in_out(input_dim, N)
 #AS
 ss = ActiveSubspaces(1)
 ss.fit(gradients=dt, outputs=t, inputs=y)
-ss.plot_eigenvalues()
-ss.plot_sufficient_summary(y, t)
+ss.plot_eigenvalues(figsize=(6, 4))
+ss.plot_sufficient_summary(y, t, figsize=(6, 4))
 
 # number of parameters of the spectral distribution associated to the feature map
 # this is the number of parameters to tune after
@@ -66,11 +66,12 @@ fm = FeatureMap(distr='laplace',
                 params=np.zeros(n_params),
                 sigma_f=f.var())
 
-# instantiate a KernelActiveSubspaces object with associated feature map 
+# instantiate a KernelActiveSubspaces object with associated feature map
 kss = KernelActiveSubspaces(feature_map=fm, dim=1, n_features=n_features)
 
 # number of folds for the cross-validation algorithm
 folds = 3
+verbose = True
 
 # Skip if bias and projection matrix are loaded
 csv = CrossValidation(inputs=xx,
@@ -80,10 +81,10 @@ csv = CrossValidation(inputs=xx,
                       subspace=kss)
 
 best = fm.tune_pr_matrix(func=average_rrmse,
-                  bounds=[slice(-2, 1, 0.2) for i in range(n_params)],
-                  args=(csv, ),
+                  bounds=[slice(-2, 0., 0.2) for i in range(n_params)],
+                  fn_args={'csv':csv, 'verbose':verbose},
                   method='bso',
-                  maxiter=20,
+                  maxiter=10,
                   save_file=False)
 
 print('The lowest rrmse is {}%'.format(best[0]))
@@ -97,6 +98,30 @@ kss.fit(gradients=dt.reshape(N, 1, input_dim),
             outputs=t,
             inputs=y)
 
-kss.plot_eigenvalues(n_evals=5)
-kss.plot_sufficient_summary(xx, f)
+kss.plot_eigenvalues(n_evals=5, figsize=(6, 4))
+kss.plot_sufficient_summary(xx, f, figsize=(6, 4))
 
+# comparison with Nonlinear Level-set Learning explained in detail in tutorial 07
+from athena.nll import NonlinearLevelSet
+import torch
+
+# create NonlinearLevelSet object, eventually passing an optimizer of choice
+nll = NonlinearLevelSet(n_layers=10,
+                        active_dim=1,
+                        lr=0.01,
+                        epochs=1000,
+                        dh=0.25,
+                        optimizer=torch.optim.Adam)
+
+# convert to pytorch tensors
+x_torch = torch.as_tensor(xx, dtype=torch.double)
+df_torch = torch.as_tensor(df, dtype=torch.double)
+
+# train RevNet
+nll.train(inputs=x_torch,
+          gradients=df_torch,
+          interactive=False)
+
+# loss history plot and sufficient summary plot
+nll.plot_loss(figsize=(6, 4))
+nll.plot_sufficient_summary(x_torch, f, figsize=(6, 4))

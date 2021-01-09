@@ -106,10 +106,10 @@ class FeatureMap():
     def tune_pr_matrix(self,
                        func,
                        bounds,
-                       args=(),
                        method=None,
                        maxiter=50,
-                       save_file=False):
+                       save_file=False,
+                       fn_args={}):
         """
         Tune the parameters of the spectral distribution. Three methods are
         available: log-grid-search (brute), annealing (dual_annealing) and
@@ -166,6 +166,7 @@ class FeatureMap():
         :param int maxiter: the maximum number of global search iterations.
             Default value is 50.
         :param bool save_file: True to save the optimal projection matrix
+        :param dict fn_args: dictionary of arguments passed to func.
         :raises: ValueError
         :return: list that records the best score and the best projection
             matrix. The initial values are 0.8 and a n_features-by-input_dim
@@ -184,8 +185,8 @@ class FeatureMap():
             self.params = brute(func=func,
                                 ranges=bounds,
                                 args=(
-                                    *args,
                                     best,
+                                    *tuple(fn_args.values()),
                                 ),
                                 finish=None)
         elif method == 'dual_annealing':
@@ -193,8 +194,8 @@ class FeatureMap():
             self.params = 10**dual_annealing(func=func,
                                              bounds=bounds_list,
                                              args=(
-                                                 *args,
                                                  best,
+                                                 *tuple(fn_args.values()),
                                              ),
                                              maxiter=maxiter,
                                              no_local_search=False).x
@@ -204,7 +205,7 @@ class FeatureMap():
                 'type': 'continuous',
                 'domain': [bound.start, bound.stop]
             } for i, bound in enumerate(bounds)]
-            func_obj = partial(func, csv=args[0], best=best)
+            func_obj = partial(func, best=best, **fn_args)
             bopt = GPyOpt.methods.BayesianOptimization(func_obj,
                                                        domain=bounds,
                                                        model_type='GP',
