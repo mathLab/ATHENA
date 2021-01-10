@@ -3,9 +3,9 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8">
+  <meta charset="utf-8" />
   
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>athena.active &mdash; ATHENA 0.0.2 documentation</title>
   
@@ -17,7 +17,10 @@
 
   
   
+
   
+  
+
   
 
   
@@ -50,7 +53,7 @@
           
 
           
-            <a href="../../index.html" class="icon icon-home" alt="Documentation Home"> ATHENA
+            <a href="../../index.html" class="icon icon-home"> ATHENA
           
 
           
@@ -87,6 +90,7 @@
             
               <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../code.html">Code Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials.html">Tutorials</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../contact.html">Contact</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../contributing.html">How to contribute</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../LICENSE.html">License</a></li>
@@ -130,6 +134,8 @@
 
 
 
+
+
 <div role="navigation" aria-label="breadcrumbs navigation">
 
   <ul class="wy-breadcrumbs">
@@ -157,30 +163,46 @@
 <span></span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">Active Subspaces module.</span>
 
-<span class="sd">Reference:</span>
+<span class="sd">:References:</span>
 
-<span class="sd">* Paul Constantine. Active subspaces: Emerging ideas for dimension reduction in</span>
-<span class="sd">parameter studies, vol. 2 of SIAM Spotlights, SIAM, 2015.</span>
+<span class="sd">    - Paul Constantine. Active subspaces: Emerging ideas for dimension</span>
+<span class="sd">      reduction in parameter studies, vol. 2 of SIAM Spotlights, SIAM, 2015.</span>
+
+<span class="sd">    - Constantine et al. Python Active-subspaces Utility Library,</span>
+<span class="sd">      Journal of Open Source Software, 1(5), 79, 2016.</span>
+
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">.subspaces</span> <span class="kn">import</span> <span class="n">Subspaces</span>
 <span class="kn">from</span> <span class="nn">.utils</span> <span class="kn">import</span> <span class="p">(</span><span class="n">Normalizer</span><span class="p">,</span> <span class="n">initialize_weights</span><span class="p">,</span> <span class="n">linear_program_ineq</span><span class="p">,</span>
-                    <span class="n">local_linear_gradients</span><span class="p">,</span> <span class="n">sort_eigpairs</span><span class="p">)</span>
+                    <span class="n">local_linear_gradients</span><span class="p">)</span>
 
 
 <div class="viewcode-block" id="ActiveSubspaces"><a class="viewcode-back" href="../../active.html#athena.active.ActiveSubspaces">[docs]</a><span class="k">class</span> <span class="nc">ActiveSubspaces</span><span class="p">(</span><span class="n">Subspaces</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Active Subspaces class</span>
+
+<span class="sd">    :param int dim: dimension of the active subspace.</span>
+<span class="sd">    :param str method: method to compute the AS. Possible choices are</span>
+<span class="sd">        &#39;exact&#39; when the gradients are provided, or &#39;local&#39; to use local linear</span>
+<span class="sd">        models. This approach is related to the sufficient dimension reduction</span>
+<span class="sd">        method known sometimes as the outer product of gradient method. See the</span>
+<span class="sd">        2001 paper &#39;Structure adaptive approach for dimension reduction&#39; from</span>
+<span class="sd">        Hristache, et al.</span>
+<span class="sd">    :param int n_boot: number of bootstrap samples. Default is 100.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dim</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;exact&#39;</span><span class="p">,</span> <span class="n">n_boot</span><span class="o">=</span><span class="mi">100</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">dim</span><span class="p">,</span> <span class="n">method</span><span class="p">,</span> <span class="n">n_boot</span><span class="p">)</span>
 
-<div class="viewcode-block" id="ActiveSubspaces._build_decompose_cov_matrix"><a class="viewcode-back" href="../../active.html#athena.active.ActiveSubspaces._build_decompose_cov_matrix">[docs]</a>    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">_build_decompose_cov_matrix</span><span class="p">(</span><span class="n">gradients</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                                    <span class="n">weights</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                                    <span class="n">method</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                                    <span class="n">metric</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="ActiveSubspaces.fit"><a class="viewcode-back" href="../../active.html#athena.active.ActiveSubspaces.fit">[docs]</a>    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+            <span class="n">inputs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+            <span class="n">outputs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+            <span class="n">gradients</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+            <span class="n">weights</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+            <span class="n">metric</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Build and decompose the covariance matrix of the gradients.</span>
+<span class="sd">        Compute the active subspaces given the gradients of the model function</span>
+<span class="sd">        wrt the input parameters, or given the input/outputs couples. Only two</span>
+<span class="sd">        methods are available: &#39;exact&#39; and &#39;local&#39;.</span>
 
 <span class="sd">        :param numpy.ndarray inputs: input parameters oriented as rows.</span>
 <span class="sd">        :param numpy.ndarray outputs: corresponding outputs oriented as rows.</span>
@@ -189,112 +211,74 @@
 <span class="sd">        :param numpy.ndarray weights: n_samples-by-1 weight vector, corresponds</span>
 <span class="sd">            to numerical quadrature rule used to estimate matrix whose</span>
 <span class="sd">            eigenspaces define the active subspace.</span>
-<span class="sd">        :param str method: method to compute the AS. Possible choices are</span>
-<span class="sd">            &#39;exact&#39; when the gradients are provided, or &#39;local&#39; to use</span>
-<span class="sd">            local linear models. This approach is related to the sufficient</span>
-<span class="sd">            dimension reduction method known sometimes as the outer product</span>
-<span class="sd">            of gradient method. See the 2001 paper &#39;Structure adaptive approach</span>
-<span class="sd">            for dimension reduction&#39; from Hristache, et al.</span>
-<span class="sd">        :return: the covariance matrix, the sorted eigenvalues, and the</span>
-<span class="sd">            corresponding eigenvectors.</span>
-<span class="sd">        :rtype: numpy.ndarray, numpy.ndarray, numpy.ndarray</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">method</span> <span class="o">==</span> <span class="s1">&#39;exact&#39;</span> <span class="ow">or</span> <span class="n">method</span> <span class="o">==</span> <span class="s1">&#39;local&#39;</span><span class="p">:</span>
-            <span class="n">cov_matrix</span> <span class="o">=</span> <span class="n">gradients</span><span class="o">.</span><span class="n">T</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">gradients</span> <span class="o">*</span> <span class="n">weights</span><span class="p">)</span>
-            <span class="n">evals</span><span class="p">,</span> <span class="n">evects</span> <span class="o">=</span> <span class="n">sort_eigpairs</span><span class="p">(</span><span class="n">cov_matrix</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">evals</span><span class="p">,</span> <span class="n">evects</span></div>
-
-<div class="viewcode-block" id="ActiveSubspaces.compute"><a class="viewcode-back" href="../../active.html#athena.active.ActiveSubspaces.compute">[docs]</a>    <span class="k">def</span> <span class="nf">compute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
-                <span class="n">inputs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                <span class="n">outputs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                <span class="n">gradients</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                <span class="n">weights</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                <span class="n">method</span><span class="o">=</span><span class="s1">&#39;exact&#39;</span><span class="p">,</span>
-                <span class="n">nboot</span><span class="o">=</span><span class="mi">100</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Compute the active subspaces given the gradients of the model</span>
-<span class="sd">        function wrt the input parameters, or given the input/outputs</span>
-<span class="sd">        couples. Only two methods are available: &#39;exact&#39; and &#39;local&#39;.</span>
-
-<span class="sd">        :param numpy.ndarray inputs: input parameters oriented as rows.</span>
-<span class="sd">        :param numpy.ndarray outputs: corresponding outputs oriented as rows.</span>
-<span class="sd">        :param numpy.ndarray gradients: n_samples-by-n_params matrix containing</span>
-<span class="sd">            the gradient samples oriented as rows.</span>
-<span class="sd">        :param numpy.ndarray weights: n_samples-by-1 weight vector, corresponds</span>
-<span class="sd">            to numerical quadrature rule used to estimate matrix whose</span>
-<span class="sd">            eigenspaces define the active subspace.</span>
-<span class="sd">        :param str method: method to compute the AS. Possible choices are</span>
-<span class="sd">            &#39;exact&#39; when the gradients are provided, or &#39;local&#39; to use</span>
-<span class="sd">            local linear models. This approach is related to the sufficient</span>
-<span class="sd">            dimension reduction method known sometimes as the outer product</span>
-<span class="sd">            of gradient method. See the 2001 paper &#39;Structure adaptive approach</span>
-<span class="sd">            for dimension reduction&#39; from Hristache, et al.</span>
-<span class="sd">        :param int nboot: number of bootstrap samples. Default is 100.</span>
+<span class="sd">        :param numpy.ndarray metric: metric matrix output_dim-by-output-dim for</span>
+<span class="sd">            vectorial active subspaces.</span>
 <span class="sd">        :raises: ValueError</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">method</span> <span class="o">==</span> <span class="s1">&#39;exact&#39;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">method</span> <span class="o">==</span> <span class="s1">&#39;exact&#39;</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">gradients</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;gradients argument is None.&#39;</span><span class="p">)</span>
 
         <span class="c1"># estimate active subspace with local linear models.</span>
-        <span class="k">if</span> <span class="n">method</span> <span class="o">==</span> <span class="s1">&#39;local&#39;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">method</span> <span class="o">==</span> <span class="s1">&#39;local&#39;</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">inputs</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">outputs</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;inputs or outputs argument is None.&#39;</span><span class="p">)</span>
             <span class="n">gradients</span> <span class="o">=</span> <span class="n">local_linear_gradients</span><span class="p">(</span><span class="n">inputs</span><span class="o">=</span><span class="n">inputs</span><span class="p">,</span>
                                                <span class="n">outputs</span><span class="o">=</span><span class="n">outputs</span><span class="p">,</span>
-                                               <span class="n">weights</span><span class="o">=</span><span class="n">weights</span><span class="p">)</span>
+                                               <span class="n">weights</span><span class="o">=</span><span class="n">weights</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
 
-        <span class="k">if</span> <span class="n">weights</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="c1"># use the new gradients to compute the weights,</span>
-            <span class="c1"># otherwise dimension mismatch accours.</span>
+        <span class="k">if</span> <span class="n">weights</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">method</span> <span class="o">==</span> <span class="s1">&#39;local&#39;</span><span class="p">:</span>
+            <span class="c1"># use the new gradients to compute the weights, otherwise dimension</span>
+            <span class="c1"># mismatch accours.</span>
             <span class="n">weights</span> <span class="o">=</span> <span class="n">initialize_weights</span><span class="p">(</span><span class="n">gradients</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">evals</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">evects</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_build_decompose_cov_matrix</span><span class="p">(</span>
-            <span class="n">gradients</span><span class="o">=</span><span class="n">gradients</span><span class="p">,</span> <span class="n">weights</span><span class="o">=</span><span class="n">weights</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="n">method</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_compute_bootstrap_ranges</span><span class="p">(</span><span class="n">gradients</span><span class="p">,</span>
-                                       <span class="n">weights</span><span class="p">,</span>
-                                       <span class="n">method</span><span class="o">=</span><span class="n">method</span><span class="p">,</span>
-                                       <span class="n">nboot</span><span class="o">=</span><span class="n">nboot</span><span class="p">)</span></div>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">gradients</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">==</span> <span class="mi">3</span> <span class="ow">and</span> <span class="n">metric</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">metric</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">gradients</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
 
-<div class="viewcode-block" id="ActiveSubspaces.forward"><a class="viewcode-back" href="../../active.html#athena.active.ActiveSubspaces.forward">[docs]</a>    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inputs</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">evals</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">evects</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_build_decompose_cov_matrix</span><span class="p">(</span>
+            <span class="n">gradients</span><span class="o">=</span><span class="n">gradients</span><span class="p">,</span> <span class="n">weights</span><span class="o">=</span><span class="n">weights</span><span class="p">,</span> <span class="n">metric</span><span class="o">=</span><span class="n">metric</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_compute_bootstrap_ranges</span><span class="p">(</span><span class="n">gradients</span><span class="p">,</span> <span class="n">weights</span><span class="p">,</span> <span class="n">metric</span><span class="o">=</span><span class="n">metric</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_partition</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="ActiveSubspaces.transform"><a class="viewcode-back" href="../../active.html#athena.active.ActiveSubspaces.transform">[docs]</a>    <span class="k">def</span> <span class="nf">transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inputs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Map full variables to active and inactive variables.</span>
 
-<span class="sd">        Points in the original input space are mapped to the active and</span>
-<span class="sd">        inactive subspace.</span>
+<span class="sd">        Points in the original input space are mapped to the active and inactive</span>
+<span class="sd">        subspace.</span>
 
-<span class="sd">        :param numpy.ndarray inputs: array n_samples-by-n_params containing</span>
-<span class="sd">            the points in the original parameter space.</span>
+<span class="sd">        :param numpy.ndarray inputs: array n_samples-by-n_params containing the</span>
+<span class="sd">            points in the original parameter space.</span>
 <span class="sd">        :return: array n_samples-by-active_dim containing the mapped active</span>
-<span class="sd">            variables; array n_samples-by-inactive_dim containing the mapped</span>
-<span class="sd">            inactive variables.</span>
+<span class="sd">            variables;</span>
+<span class="sd">            array n_samples-by-inactive_dim containing the mapped inactive</span>
+<span class="sd">            variables.</span>
 <span class="sd">        :rtype: numpy.ndarray, numpy.ndarray</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">active</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">inputs</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">W1</span><span class="p">)</span>
         <span class="n">inactive</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">inputs</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">W2</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">active</span><span class="p">,</span> <span class="n">inactive</span></div>
 
-<div class="viewcode-block" id="ActiveSubspaces.backward"><a class="viewcode-back" href="../../active.html#athena.active.ActiveSubspaces.backward">[docs]</a>    <span class="k">def</span> <span class="nf">backward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reduced_inputs</span><span class="p">,</span> <span class="n">n_points</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+<div class="viewcode-block" id="ActiveSubspaces.inverse_transform"><a class="viewcode-back" href="../../active.html#athena.active.ActiveSubspaces.inverse_transform">[docs]</a>    <span class="k">def</span> <span class="nf">inverse_transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reduced_inputs</span><span class="p">,</span> <span class="n">n_points</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Map the points in the active variable space to the original parameter</span>
 <span class="sd">        space.</span>
 
-<span class="sd">        :param numpy.ndarray reduced_inputs: n_samples-by-n_params matrix that</span>
+<span class="sd">        :param numpy.ndarray reduced_inputs: n_samples-by-dim matrix that</span>
 <span class="sd">            contains points in the space of active variables.</span>
 <span class="sd">        :param int n_points: the number of points in the original parameter</span>
 <span class="sd">            space that are returned that map to the given active variables.</span>
 <span class="sd">            Defaults to 1.</span>
-<span class="sd">        :return: (n_samples * n_points)-by-n_params matrix that contains points</span>
-<span class="sd">            in the original parameter space,</span>
-<span class="sd">            (n_samples * n_points)-by-n_params matrix that contains integer</span>
-<span class="sd">            indices. These indices identify which rows of the previous matrix</span>
-<span class="sd">            (the full parameters) map to which rows of the active variables</span>
-<span class="sd">            matrix.</span>
+<span class="sd">        :return: (n_samples * n_points)-by-n_params matrix that contains</span>
+<span class="sd">            points in the original parameter space, (n_samples *</span>
+<span class="sd">            n_points)-by-n_params matrix that contains integer indices. These</span>
+<span class="sd">            indices identify which rows of the previous matrix (the full</span>
+<span class="sd">            parameters) map to which rows of the active variables matrix.</span>
 <span class="sd">        :rtype: numpy.ndarray, numpy.ndarray</span>
 
-<span class="sd">        .. note::</span>
-<span class="sd">            The inverse map depends critically on the `self._sample_inactive`</span>
-<span class="sd">            method.</span>
+<span class="sd">        .. note:: The inverse map depends critically on the</span>
+<span class="sd">            `self._sample_inactive` method.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">inactive_swap</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_sample_inactive</span><span class="p">(</span><span class="n">red_inp</span><span class="p">,</span> <span class="n">n_points</span><span class="p">)</span>
@@ -308,31 +292,29 @@
 <div class="viewcode-block" id="ActiveSubspaces._sample_inactive"><a class="viewcode-back" href="../../active.html#athena.active.ActiveSubspaces._sample_inactive">[docs]</a>    <span class="k">def</span> <span class="nf">_sample_inactive</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reduced_input</span><span class="p">,</span> <span class="n">n_points</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Sample inactive variables.</span>
-<span class="sd">        </span>
+
 <span class="sd">        Sample values of the inactive variables for a fixed value of the active</span>
 <span class="sd">        variables when the original variables are bounded by a hypercube.</span>
-<span class="sd">        </span>
+
 <span class="sd">        :param numpy.ndarray reduced_input: the value of the active variables.</span>
 <span class="sd">        :param int n_points: the number of inactive variable samples,</span>
 <span class="sd">        :return: n_points-by-(inactive_dim) matrix that contains values of the</span>
 <span class="sd">            inactive variable that correspond to the given `reduced_input`.</span>
 <span class="sd">        :rtype: numpy.ndarray</span>
-<span class="sd">        </span>
-<span class="sd">        .. note::</span>
-<span class="sd">            The trick here is to sample the inactive variables z so that</span>
-<span class="sd">            -1 &lt;= W1*y + W2*z &lt;= 1,</span>
-<span class="sd">            where y is the given value of the active variables. In other words,</span>
-<span class="sd">            we need to sample z such that it respects the linear inequalities</span>
-<span class="sd">            W2*z &lt;= 1 - W1*y, -W2*z &lt;= 1 + W1*y.</span>
-<span class="sd">            These inequalities define a polytope in R^(inactive_dim). We want to</span>
-<span class="sd">            sample N points uniformly from the polytope.</span>
-<span class="sd">            This function first tries a simple rejection sampling scheme, which</span>
-<span class="sd">            finds a bounding hyperbox for the polytope, draws points uniformly</span>
-<span class="sd">            from the bounding hyperbox, and rejects points outside the</span>
-<span class="sd">            polytope. If that method does not return enough samples, the method</span>
-<span class="sd">            tries a &quot;hit and run&quot; method for sampling from the polytope.</span>
-<span class="sd">            If that does not work, it returns an array with `N` copies of a</span>
-<span class="sd">            feasible point computed as the Chebyshev center of the polytope.</span>
+
+<span class="sd">        .. note:: The trick here is to sample the inactive variables z so that</span>
+<span class="sd">            -1 &lt;= W1*y + W2*z &lt;= 1, where y is the given value of the active</span>
+<span class="sd">            variables. In other words, we need to sample z such that it respects</span>
+<span class="sd">            the linear inequalities W2*z &lt;= 1 - W1*y, -W2*z &lt;= 1 + W1*y. These</span>
+<span class="sd">            inequalities define a polytope in R^(inactive_dim). We want to</span>
+<span class="sd">            sample N points uniformly from the polytope. This function first</span>
+<span class="sd">            tries a simple rejection sampling scheme, which finds a bounding</span>
+<span class="sd">            hyperbox for the polytope, draws points uniformly from the bounding</span>
+<span class="sd">            hyperbox, and rejects points outside the polytope. If that method</span>
+<span class="sd">            does not return enough samples, the method tries a &quot;hit and run&quot;</span>
+<span class="sd">            method for sampling from the polytope. If that does not work, it</span>
+<span class="sd">            returns an array with `N` copies of a feasible point computed as the</span>
+<span class="sd">            Chebyshev center of the polytope.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">Z</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rejection_sampling_inactive</span><span class="p">(</span><span class="n">reduced_input</span><span class="p">,</span> <span class="n">n_points</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">Z</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -341,15 +323,14 @@
 
 <div class="viewcode-block" id="ActiveSubspaces._compute_A_b"><a class="viewcode-back" href="../../active.html#athena.active.ActiveSubspaces._compute_A_b">[docs]</a>    <span class="k">def</span> <span class="nf">_compute_A_b</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reduced_input</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Compute the matrix A and the vector b to build a box around the</span>
-<span class="sd">        inactive subspace for uniform sampling.</span>
-<span class="sd">        </span>
+<span class="sd">        Compute the matrix A and the vector b to build a box around the inactive</span>
+<span class="sd">        subspace for uniform sampling.</span>
+
 <span class="sd">        :param numpy.ndarray reduced_input: the value of the active variables.</span>
-<span class="sd">        :return: matrix A, and vector b.</span>
-<span class="sd">        :rtype: numpy.ndarray, numpy.ndarray</span>
+<span class="sd">        :return: matrix A, and vector b. :rtype: numpy.ndarray, numpy.ndarray</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">s</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">W1</span><span class="p">,</span> <span class="n">reduced_input</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
-        <span class="n">A</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">W2</span><span class="p">,</span> <span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">W2</span><span class="p">))</span>
+        <span class="n">A</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">W2</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">W2</span><span class="p">))</span>
         <span class="n">b</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">((</span><span class="o">-</span><span class="mi">1</span> <span class="o">-</span> <span class="n">s</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span> <span class="o">+</span> <span class="n">s</span><span class="p">))</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
         <span class="k">return</span> <span class="n">A</span><span class="p">,</span> <span class="n">b</span></div>
 
@@ -359,7 +340,7 @@
 
 <span class="sd">        :param numpy.ndarray reduced_input: the value of the active variables.</span>
 <span class="sd">        :param int n_points: the number of inactive variable samples,</span>
-<span class="sd">        :return: n_points-by-(inactive_dim) matrix that contains values of the</span>
+<span class="sd">        :return: n_points-by-inactive_dim matrix that contains values of the</span>
 <span class="sd">            inactive variable that correspond to the given `reduced_input`.</span>
 <span class="sd">        :rtype: numpy.ndarray</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -409,7 +390,7 @@
         <span class="n">c</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">inactive_dim</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
         <span class="n">c</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="mf">1.0</span>
 
-        <span class="n">zc</span> <span class="o">=</span> <span class="n">linear_program_ineq</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="o">-</span><span class="n">A</span><span class="p">,</span> <span class="o">-</span><span class="n">b</span><span class="p">)</span>
+        <span class="n">zc</span> <span class="o">=</span> <span class="n">linear_program_ineq</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span> <span class="o">*</span> <span class="n">A</span><span class="p">,</span> <span class="o">-</span><span class="n">b</span><span class="p">)</span>
         <span class="n">z0</span> <span class="o">=</span> <span class="n">zc</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="n">inactive_dim</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
 
         <span class="c1"># define the polytope A &gt;= b</span>
@@ -463,11 +444,10 @@
 <span class="sd">        :param numpy.ndarray reduced_input: the value of the active variables.</span>
 <span class="sd">        :param int n_points: the number of inactive variable samples,</span>
 <span class="sd">        :return: (n_samples * n_points)-by-n_params matrix that contains points</span>
-<span class="sd">            in the original parameter space,</span>
-<span class="sd">            (n_samples * n_points)-by-n_params matrix that contains integer</span>
-<span class="sd">            indices. These indices identify which rows of the previous matrix</span>
-<span class="sd">            (the full parameters) map to which rows of the active variables</span>
-<span class="sd">            matrix.</span>
+<span class="sd">            in the original parameter space, (n_samples * n_points)-by-n_params</span>
+<span class="sd">            matrix that contains integer indices. These indices identify which</span>
+<span class="sd">            rows of the previous matrix (the full parameters) map to which rows</span>
+<span class="sd">            of the active variables matrix.</span>
 <span class="sd">        :rtype: numpy.ndarray, numpy.ndarray</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">NY</span><span class="p">,</span> <span class="n">n</span> <span class="o">=</span> <span class="n">reduced_inputs</span><span class="o">.</span><span class="n">shape</span>
@@ -486,16 +466,14 @@
            
           </div>
           <footer>
-  
 
   <hr/>
 
   <div role="contentinfo">
     <p>
-        
-        &copy; Copyright Copyright 2019-2020, Athena contributors
+        &#169; Copyright Copyright 2019-2020, Athena contributors.
       <span class="lastupdated">
-        Last updated on Jul 08, 2020.
+        Last updated on Jan 10, 2021.
       </span>
 
     </p>
@@ -503,14 +481,13 @@
     
     
     
-    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
     
-    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
     
     provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
-
         </div>
       </div>
 

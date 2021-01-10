@@ -3,9 +3,9 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8">
+  <meta charset="utf-8" />
   
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>Feature Map &mdash; ATHENA 0.0.2 documentation</title>
   
@@ -17,7 +17,10 @@
 
   
   
+
   
+  
+
   
 
   
@@ -38,7 +41,7 @@
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="athena.feature_map.FeatureMap._compute_pr_matrix" href="_summaries/athena.feature_map.FeatureMap._compute_pr_matrix.html" />
-    <link rel="prev" title="athena.active.ActiveSubspaces.plot_sufficient_summary" href="_summaries/athena.active.ActiveSubspaces.plot_sufficient_summary.html" /> 
+    <link rel="prev" title="athena.active.ActiveSubspaces.transform" href="_summaries/athena.active.ActiveSubspaces.transform.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -52,7 +55,7 @@
           
 
           
-            <a href="index.html" class="icon icon-home" alt="Documentation Home"> ATHENA
+            <a href="index.html" class="icon icon-home"> ATHENA
           
 
           
@@ -107,6 +110,7 @@
 <li class="toctree-l2"><a class="reference internal" href="utils.html">Utilities</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials.html">Tutorials</a></li>
 <li class="toctree-l1"><a class="reference internal" href="contact.html">Contact</a></li>
 <li class="toctree-l1"><a class="reference internal" href="contributing.html">How to contribute</a></li>
 <li class="toctree-l1"><a class="reference internal" href="LICENSE.html">License</a></li>
@@ -150,6 +154,8 @@
 
 
 
+
+
 <div role="navigation" aria-label="breadcrumbs navigation">
 
   <ul class="wy-breadcrumbs">
@@ -163,7 +169,7 @@
     
       <li class="wy-breadcrumbs-aside">
         
-            
+          
             <a href="_sources/feature_map.rst.txt" rel="nofollow"> View page source</a>
           
         
@@ -179,7 +185,17 @@
             
   <div class="section" id="module-athena.feature_map">
 <span id="feature-map"></span><h1>Feature Map<a class="headerlink" href="#module-athena.feature_map" title="Permalink to this headline">¶</a></h1>
-<p>Module for the feature map class.</p>
+<p>Module for the feature map class</p>
+<dl class="field-list simple">
+<dt class="field-odd">References</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p>Francesco Romor, Marco Tezzele, Andrea Lario, Gianluigi Rozza.
+Kernel-based Active Subspaces with application to CFD problems using
+Discontinuous Galerkin Method. 2020.
+arxiv: <a class="reference external" href="https://arxiv.org/abs/2008.12083">https://arxiv.org/abs/2008.12083</a></p></li>
+</ul>
+</dd>
+</dl>
 <table class="longtable docutils align-default">
 <colgroup>
 <col style="width: 10%" />
@@ -187,50 +203,108 @@
 </colgroup>
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="_summaries/athena.feature_map.FeatureMap._compute_pr_matrix.html#athena.feature_map.FeatureMap._compute_pr_matrix" title="athena.feature_map.FeatureMap._compute_pr_matrix"><code class="xref py py-obj docutils literal notranslate"><span class="pre">FeatureMap._compute_pr_matrix</span></code></a></p></td>
-<td><p></p></td>
+<td><p>Sample the projection matrixx from the spectral distribution.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="_summaries/athena.feature_map.FeatureMap.compute_fmap.html#athena.feature_map.FeatureMap.compute_fmap" title="athena.feature_map.FeatureMap.compute_fmap"><code class="xref py py-obj docutils literal notranslate"><span class="pre">FeatureMap.compute_fmap</span></code></a></p></td>
-<td><p></p></td>
+<td><p>Evaluate the feature map at inputs.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="_summaries/athena.feature_map.FeatureMap.compute_fmap_jac.html#athena.feature_map.FeatureMap.compute_fmap_jac" title="athena.feature_map.FeatureMap.compute_fmap_jac"><code class="xref py py-obj docutils literal notranslate"><span class="pre">FeatureMap.compute_fmap_jac</span></code></a></p></td>
-<td><p></p></td>
+<td><p>Evaluate the Jacobian matrix of feature map at inputs.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="_summaries/athena.feature_map.FeatureMap.pr_matrix.html#athena.feature_map.FeatureMap.pr_matrix" title="athena.feature_map.FeatureMap.pr_matrix"><code class="xref py py-obj docutils literal notranslate"><span class="pre">FeatureMap.pr_matrix</span></code></a></p></td>
 <td><p>Get the projection matrix.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="_summaries/athena.feature_map.FeatureMap.tune_pr_matrix.html#athena.feature_map.FeatureMap.tune_pr_matrix" title="athena.feature_map.FeatureMap.tune_pr_matrix"><code class="xref py py-obj docutils literal notranslate"><span class="pre">FeatureMap.tune_pr_matrix</span></code></a></p></td>
-<td><p>TO DOC ADD EXAMPLE for bounds</p></td>
+<td><p>Tune the parameters of the spectral distribution.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#athena.feature_map.rff_map" title="athena.feature_map.rff_map"><code class="xref py py-obj docutils literal notranslate"><span class="pre">rff_map</span></code></a></p></td>
-<td><p>Random Fourier Features TO DOC</p></td>
+<td><p>Random Fourier Features map.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#athena.feature_map.rff_jac" title="athena.feature_map.rff_jac"><code class="xref py py-obj docutils literal notranslate"><span class="pre">rff_jac</span></code></a></p></td>
-<td><p>Random Fourier Features jacobian TO DOC</p></td>
+<td><p>Random Fourier Features map’s Jacobian.</p></td>
 </tr>
 </tbody>
 </table>
 <dl class="class">
 <dt>
 <em class="property">class </em><code class="sig-name descname">FeatureMap</code><span class="sig-paren">(</span><em class="sig-param">distr</em>, <em class="sig-param">bias</em>, <em class="sig-param">input_dim</em>, <em class="sig-param">n_features</em>, <em class="sig-param">params</em>, <em class="sig-param">sigma_f</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/athena/feature_map.html#FeatureMap"><span class="viewcode-link">[source]</span></a></dt>
-<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
-<p>Feature map class.
-TO DOC
-:param array_like params:
-:raises TypeError</p>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>Feature map class.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>distr</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – name of the spectral distribution to sample from the
+matrix.</p></li>
+<li><p><strong>bias</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><em>numpy.ndarray</em></a>) – n_features dimensional bias. It is sampled from a
+Unifrom distribution on the interval [0, 2*PI].</p></li>
+<li><p><strong>input_dim</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – dimension of the input space.</p></li>
+<li><p><strong>n_features</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – dimension of the Reproducing Kernel Hilbert Space.</p></li>
+<li><p><strong>params</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.9)"><em>list</em></a>) – number of hyperparameters of the spectral distribution.</p></li>
+<li><p><strong>sigma_f</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – multiplicative constant of the feature
+map. Usually it is set as the empirical variance of the outputs.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Variables</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>fmap</strong> (<em>callable</em>) – feature map used to project the input samples to the RKHS.
+Default value is rff_map.</p></li>
+<li><p><strong>fjac</strong> (<em>callable</em>) – Jacobian matrix of fmap. Default value is rff_jac, the
+analytical Jacobian of fmap.</p></li>
+<li><p><strong>_pr_matrix</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><em>numpy.ndarray</em></a>) – n_features-by-input_dim projection
+matrix, whose rows are sampled from the spectral distribution distr.</p></li>
+</ul>
+</dd>
+</dl>
+<p>:raises TypeError</p>
 <dl class="method">
 <dt>
 <code class="sig-name descname">_compute_pr_matrix</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/athena/feature_map.html#FeatureMap._compute_pr_matrix"><span class="viewcode-link">[source]</span></a></dt>
-<dd></dd></dl>
+<dd><p>Sample the projection matrixx from the spectral distribution.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>the projection matrix.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)">numpy.ndarray</a></p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="method">
 <dt>
 <code class="sig-name descname">compute_fmap</code><span class="sig-paren">(</span><em class="sig-param">inputs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/athena/feature_map.html#FeatureMap.compute_fmap"><span class="viewcode-link">[source]</span></a></dt>
-<dd></dd></dl>
+<dd><p>Evaluate the feature map at inputs.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>inputs</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><em>numpy.ndarray</em></a>) – the inputs to project on the RKHS.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>the n_features dimensional projection of the inputs.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)">numpy.ndarray</a></p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="method">
 <dt>
 <code class="sig-name descname">compute_fmap_jac</code><span class="sig-paren">(</span><em class="sig-param">inputs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/athena/feature_map.html#FeatureMap.compute_fmap_jac"><span class="viewcode-link">[source]</span></a></dt>
-<dd></dd></dl>
+<dd><p>Evaluate the Jacobian matrix of feature map at inputs.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>inputs</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><em>numpy.ndarray</em></a>) – the inputs at which compute the Jacobian
+matrix of the feature map.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>the n_features-by-input_dim dimensional Jacobian of the
+feature map at the inputs.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)">numpy.ndarray</a></p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="method">
 <dt>
@@ -248,9 +322,45 @@ TO DOC
 
 <dl class="method">
 <dt>
-<code class="sig-name descname">tune_pr_matrix</code><span class="sig-paren">(</span><em class="sig-param">func</em>, <em class="sig-param">bounds</em>, <em class="sig-param">args=()</em>, <em class="sig-param">method=None</em>, <em class="sig-param">maxiter=50</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/athena/feature_map.html#FeatureMap.tune_pr_matrix"><span class="viewcode-link">[source]</span></a></dt>
-<dd><p>TO DOC
-ADD EXAMPLE for bounds</p>
+<code class="sig-name descname">tune_pr_matrix</code><span class="sig-paren">(</span><em class="sig-param">func</em>, <em class="sig-param">bounds</em>, <em class="sig-param">method=None</em>, <em class="sig-param">maxiter=50</em>, <em class="sig-param">save_file=False</em>, <em class="sig-param">fn_args={}</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/athena/feature_map.html#FeatureMap.tune_pr_matrix"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Tune the parameters of the spectral distribution. Three methods are
+available: log-grid-search (brute), annealing (dual_annealing) and
+Bayesian stochastic optimization (bso) from GpyOpt. The default object
+function to optimize is athena.utils.average_rrmse, which uses a
+cross-validation procedure from athena.utils, see Example and tutorial 06_kernel-based_AS.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Example</dt>
+<dd class="field-odd"><p></p></dd>
+</dl>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">athena.kas</span> <span class="kn">import</span> <span class="n">KernelActiveSubspaces</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">athena.feature_map</span> <span class="kn">import</span> <span class="n">FeatureMap</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">athena.projection_factory</span> <span class="kn">import</span> <span class="n">ProjectionFactory</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">athena.utils</span> <span class="kn">import</span> <span class="n">CrossValidation</span><span class="p">,</span> <span class="n">average_rrmse</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">input_dim</span><span class="p">,</span> <span class="n">output_dim</span><span class="p">,</span> <span class="n">n_samples</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">30</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">n_features</span><span class="p">,</span> <span class="n">n_params</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">1</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">xx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="n">n_samples</span><span class="p">,</span> <span class="n">input_dim</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">f</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="n">n_samples</span><span class="p">,</span> <span class="n">output_dim</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">df</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="n">n_samples</span><span class="p">,</span> <span class="n">output_dim</span><span class="p">,</span> <span class="n">input_dim</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">fm</span> <span class="o">=</span> <span class="n">FeatureMap</span><span class="p">(</span><span class="n">distr</span><span class="o">=</span><span class="s1">&#39;laplace&#39;</span><span class="p">,</span>
+<span class="go">                    bias=np.random.uniform(0, 2 * np.pi, n_features),</span>
+<span class="go">                    input_dim=input_dim,</span>
+<span class="go">                    n_features=n_features,</span>
+<span class="go">                    params=np.zeros(n_params),</span>
+<span class="go">                    sigma_f=f.var())</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">kss</span> <span class="o">=</span> <span class="n">KernelActiveSubspaces</span><span class="p">(</span><span class="n">feature_map</span><span class="o">=</span><span class="n">fm</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">n_features</span><span class="o">=</span><span class="n">n_features</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">csv</span> <span class="o">=</span> <span class="n">CrossValidation</span><span class="p">(</span><span class="n">inputs</span><span class="o">=</span><span class="n">xx</span><span class="p">,</span>
+<span class="go">                        outputs=f.reshape(-1, 1),</span>
+<span class="go">                        gradients=df.reshape(n_samples, output_dim, input_dim),</span>
+<span class="go">                        folds=3,</span>
+<span class="go">                        subspace=kss)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">best</span> <span class="o">=</span> <span class="n">fm</span><span class="o">.</span><span class="n">tune_pr_matrix</span><span class="p">(</span><span class="n">func</span><span class="o">=</span><span class="n">average_rrmse</span><span class="p">,</span>
+<span class="go">                            bounds=[slice(-2, 1, 0.2) for i in range(n_params)],</span>
+<span class="go">                            args=(csv, ),</span>
+<span class="go">                            method=&#39;bso&#39;,</span>
+<span class="go">                            maxiter=20,</span>
+<span class="go">                            save_file=False)</span>
+</pre></div>
+</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -258,25 +368,35 @@ ADD EXAMPLE for bounds</p>
 Must be in the form f(x, <a href="#id1"><span class="problematic" id="id2">*</span></a>args), where x is the argument in the
 form of a 1-D array and args is a tuple of any additional fixed
 parameters needed to completely specify the function.</p></li>
-<li><p><strong>bounds</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.8)"><em>tuple</em></a>) – each component of the bounds tuple must be a
+<li><p><strong>bounds</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.9)"><em>tuple</em></a>) – each component of the bounds tuple must be a
 slice tuple of the form (low, high, step). It defines bounds for
-the objective function parameter. Step will be ignored for
-‘dual_annealing’ method.</p></li>
-<li><p><strong>args</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.8)"><em>tuple</em></a>) – any additional fixed parameters needed to
+the objective function parameter in a logarithmic scale. Step will
+be ignored for ‘dual_annealing’ method.</p></li>
+<li><p><strong>args</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.9)"><em>tuple</em></a>) – any additional fixed parameters needed to
 completely specify the objective function.</p></li>
-<li><p><strong>method</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – method used to optimize the objective function.
+<li><p><strong>method</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – method used to optimize the objective function.
 Possible values are ‘brute’, or ‘dual_annealing’.
 Default value is None, and the choice is made automatically wrt
 the dimension of <cite>self.params</cite>. If the dimension is less than 4
 brute force is used, otherwise a traditional Generalized
 Simulated Annealing will be performed with no local search
 strategy applied.</p></li>
-<li><p><strong>maxiter</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – the maximum number of global search iterations.
+<li><p><strong>maxiter</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – the maximum number of global search iterations.
 Default value is 50.</p></li>
+<li><p><strong>save_file</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a>) – True to save the optimal projection matrix</p></li>
+<li><p><strong>fn_args</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.9)"><em>dict</em></a>) – dictionary of arguments passed to func.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Raises</dt>
 <dd class="field-even"><p>ValueError</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>list that records the best score and the best projection
+matrix. The initial values are 0.8 and a n_features-by-input_dim
+numpy.ndarray of zeros.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.9)">list</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -286,15 +406,53 @@ Default value is 50.</p></li>
 <dl class="method">
 <dt id="athena.feature_map.rff_map">
 <code class="sig-prename descclassname">feature_map.</code><code class="sig-name descname">rff_map</code><span class="sig-paren">(</span><em class="sig-param">pr_matrix</em>, <em class="sig-param">bias</em>, <em class="sig-param">n_features</em>, <em class="sig-param">sigma_f</em><span class="sig-paren">)</span><a class="headerlink" href="#athena.feature_map.rff_map" title="Permalink to this definition">¶</a></dt>
-<dd><p>Random Fourier Features
-TO DOC</p>
+<dd><p>Random Fourier Features map. It can be vectorized for inputs of shape n_samples-by-input_dim.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>inputs</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><em>numpy.ndarray</em></a>) – input_dim dimensional inputs to project to the RKHS.</p></li>
+<li><p><strong>pr_matrix</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><em>numpy.ndarray</em></a>) – n_features-by-input_dim projection matrix,
+whose rows are sampled from the spectral distribution.</p></li>
+<li><p><strong>bias</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><em>numpy.ndarray</em></a>) – n_features dimensional bias. It is sampled from a
+Unifrom distribution on the interval [0, 2*PI].</p></li>
+<li><p><strong>n_features</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – dimension of the RKHS</p></li>
+<li><p><strong>sigma_f</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – multiplicative term representing the empirical variance
+the outptus.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>n_features dimensional projection of the inputs to the RKHS</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)">numpy.ndarray</a></p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="athena.feature_map.rff_jac">
 <code class="sig-prename descclassname">feature_map.</code><code class="sig-name descname">rff_jac</code><span class="sig-paren">(</span><em class="sig-param">pr_matrix</em>, <em class="sig-param">bias</em>, <em class="sig-param">n_features</em>, <em class="sig-param">sigma_f</em><span class="sig-paren">)</span><a class="headerlink" href="#athena.feature_map.rff_jac" title="Permalink to this definition">¶</a></dt>
-<dd><p>Random Fourier Features jacobian
-TO DOC</p>
+<dd><p>Random Fourier Features map’s Jacobian. It can be vectorized for inputs of shape n_samples-by-input_dim.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>inputs</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><em>numpy.ndarray</em></a>) – input_dim dimensional inputs to project to the RKHS.</p></li>
+<li><p><strong>pr_matrix</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><em>numpy.ndarray</em></a>) – n_features-by-input_dim projection matrix,
+whose rows are sampled from the spectral distribution.</p></li>
+<li><p><strong>bias</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><em>numpy.ndarray</em></a>) – n_features dimensional bias. It is sampled from a
+Unifrom distribution on the interval [0, 2*PI].</p></li>
+<li><p><strong>n_features</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – dimension of the RKHS</p></li>
+<li><p><strong>sigma_f</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – multiplicative term representing the empirical variance
+the outptus.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>n_features-by-input_dim dimensional projection of the inputs to the RKHS</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)">numpy.ndarray</a></p>
+</dd>
+</dl>
 </dd></dl>
 
 </div>
@@ -304,25 +462,18 @@ TO DOC</p>
            
           </div>
           <footer>
-  
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-      
-        <a href="_summaries/athena.feature_map.FeatureMap._compute_pr_matrix.html" class="btn btn-neutral float-right" title="athena.feature_map.FeatureMap._compute_pr_matrix" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
-      
-      
-        <a href="_summaries/athena.active.ActiveSubspaces.plot_sufficient_summary.html" class="btn btn-neutral float-left" title="athena.active.ActiveSubspaces.plot_sufficient_summary" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
-      
+        <a href="_summaries/athena.feature_map.FeatureMap._compute_pr_matrix.html" class="btn btn-neutral float-right" title="athena.feature_map.FeatureMap._compute_pr_matrix" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="_summaries/athena.active.ActiveSubspaces.transform.html" class="btn btn-neutral float-left" title="athena.active.ActiveSubspaces.transform" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
-  
 
   <hr/>
 
   <div role="contentinfo">
     <p>
-        
-        &copy; Copyright Copyright 2019-2020, Athena contributors
+        &#169; Copyright Copyright 2019-2020, Athena contributors.
       <span class="lastupdated">
-        Last updated on Jul 08, 2020.
+        Last updated on Jan 10, 2021.
       </span>
 
     </p>
@@ -330,14 +481,13 @@ TO DOC</p>
     
     
     
-    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
     
-    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
     
     provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
-
         </div>
       </div>
 

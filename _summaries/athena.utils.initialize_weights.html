@@ -3,9 +3,9 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8">
+  <meta charset="utf-8" />
   
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>athena.utils.initialize_weights &mdash; ATHENA 0.0.2 documentation</title>
   
@@ -17,7 +17,10 @@
 
   
   
+
   
+  
+
   
 
   
@@ -38,7 +41,7 @@
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="athena.utils.linear_program_ineq" href="athena.utils.linear_program_ineq.html" />
-    <link rel="prev" title="athena.utils.Normalizer.inverse_transform" href="athena.utils.Normalizer.inverse_transform.html" /> 
+    <link rel="prev" title="athena.utils.average_rrmse" href="athena.utils.average_rrmse.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -52,7 +55,7 @@
           
 
           
-            <a href="../index.html" class="icon icon-home" alt="Documentation Home"> ATHENA
+            <a href="../index.html" class="icon icon-home"> ATHENA
           
 
           
@@ -96,16 +99,23 @@
 <li class="toctree-l2"><a class="reference internal" href="../nll.html">Nonlinear Level Set Learning</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../projection_factory.html">Projection Matrix Factory</a></li>
 <li class="toctree-l2 current"><a class="reference internal" href="../utils.html">Utilities</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="athena.utils.CrossValidation.fit.html">athena.utils.CrossValidation.fit</a></li>
+<li class="toctree-l3"><a class="reference internal" href="athena.utils.CrossValidation.predict.html">athena.utils.CrossValidation.predict</a></li>
+<li class="toctree-l3"><a class="reference internal" href="athena.utils.CrossValidation.run.html">athena.utils.CrossValidation.run</a></li>
+<li class="toctree-l3"><a class="reference internal" href="athena.utils.CrossValidation.scorer.html">athena.utils.CrossValidation.scorer</a></li>
 <li class="toctree-l3"><a class="reference internal" href="athena.utils.Normalizer.fit_transform.html">athena.utils.Normalizer.fit_transform</a></li>
 <li class="toctree-l3"><a class="reference internal" href="athena.utils.Normalizer.inverse_transform.html">athena.utils.Normalizer.inverse_transform</a></li>
+<li class="toctree-l3"><a class="reference internal" href="athena.utils.average_rrmse.html">athena.utils.average_rrmse</a></li>
 <li class="toctree-l3 current"><a class="current reference internal" href="#">athena.utils.initialize_weights</a></li>
 <li class="toctree-l3"><a class="reference internal" href="athena.utils.linear_program_ineq.html">athena.utils.linear_program_ineq</a></li>
 <li class="toctree-l3"><a class="reference internal" href="athena.utils.local_linear_gradients.html">athena.utils.local_linear_gradients</a></li>
+<li class="toctree-l3"><a class="reference internal" href="athena.utils.rrmse.html">athena.utils.rrmse</a></li>
 <li class="toctree-l3"><a class="reference internal" href="athena.utils.sort_eigpairs.html">athena.utils.sort_eigpairs</a></li>
 </ul>
 </li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials.html">Tutorials</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../contact.html">Contact</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../contributing.html">How to contribute</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../LICENSE.html">License</a></li>
@@ -149,6 +159,8 @@
 
 
 
+
+
 <div role="navigation" aria-label="breadcrumbs navigation">
 
   <ul class="wy-breadcrumbs">
@@ -164,7 +176,7 @@
     
       <li class="wy-breadcrumbs-aside">
         
-            
+          
             <a href="../_sources/_summaries/athena.utils.initialize_weights.rst.txt" rel="nofollow"> View page source</a>
           
         
@@ -183,7 +195,21 @@
 <dl class="function">
 <dt id="athena.utils.initialize_weights">
 <code class="sig-name descname">initialize_weights</code><span class="sig-paren">(</span><em class="sig-param">matrix</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/athena/utils.html#initialize_weights"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#athena.utils.initialize_weights" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Inizialize uniform weights for simple Monte Carlo method or linear regression in
+local linear gradients.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>matrix</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><em>numpy.ndarray</em></a>) – matrix which shape[0] value contains the
+dimension of the weights to be computed.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>weights</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)">numpy.ndarray</a></p>
+</dd>
+</dl>
+</dd></dl>
 
 </div>
 
@@ -192,25 +218,18 @@
            
           </div>
           <footer>
-  
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-      
-        <a href="athena.utils.linear_program_ineq.html" class="btn btn-neutral float-right" title="athena.utils.linear_program_ineq" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
-      
-      
-        <a href="athena.utils.Normalizer.inverse_transform.html" class="btn btn-neutral float-left" title="athena.utils.Normalizer.inverse_transform" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
-      
+        <a href="athena.utils.linear_program_ineq.html" class="btn btn-neutral float-right" title="athena.utils.linear_program_ineq" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="athena.utils.average_rrmse.html" class="btn btn-neutral float-left" title="athena.utils.average_rrmse" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
-  
 
   <hr/>
 
   <div role="contentinfo">
     <p>
-        
-        &copy; Copyright Copyright 2019-2020, Athena contributors
+        &#169; Copyright Copyright 2019-2020, Athena contributors.
       <span class="lastupdated">
-        Last updated on Jul 08, 2020.
+        Last updated on Jan 10, 2021.
       </span>
 
     </p>
@@ -218,14 +237,13 @@
     
     
     
-    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
     
-    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
     
     provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
-
         </div>
       </div>
 

@@ -3,9 +3,9 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8">
+  <meta charset="utf-8" />
   
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>athena.feature_map.rff_jac &mdash; ATHENA 0.0.2 documentation</title>
   
@@ -17,7 +17,10 @@
 
   
   
+
   
+  
+
   
 
   
@@ -52,7 +55,7 @@
           
 
           
-            <a href="../index.html" class="icon icon-home" alt="Documentation Home"> ATHENA
+            <a href="../index.html" class="icon icon-home"> ATHENA
           
 
           
@@ -107,6 +110,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../utils.html">Utilities</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials.html">Tutorials</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../contact.html">Contact</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../contributing.html">How to contribute</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../LICENSE.html">License</a></li>
@@ -150,6 +154,8 @@
 
 
 
+
+
 <div role="navigation" aria-label="breadcrumbs navigation">
 
   <ul class="wy-breadcrumbs">
@@ -165,7 +171,7 @@
     
       <li class="wy-breadcrumbs-aside">
         
-            
+          
             <a href="../_sources/_summaries/athena.feature_map.rff_jac.rst.txt" rel="nofollow"> View page source</a>
           
         
@@ -184,8 +190,27 @@
 <dl class="function">
 <dt id="athena.feature_map.rff_jac">
 <code class="sig-name descname">rff_jac</code><span class="sig-paren">(</span><em class="sig-param">inputs</em>, <em class="sig-param">pr_matrix</em>, <em class="sig-param">bias</em>, <em class="sig-param">n_features</em>, <em class="sig-param">sigma_f</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/athena/feature_map.html#rff_jac"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#athena.feature_map.rff_jac" title="Permalink to this definition">¶</a></dt>
-<dd><p>Random Fourier Features jacobian
-TO DOC</p>
+<dd><p>Random Fourier Features map’s Jacobian. It can be vectorized for inputs of shape n_samples-by-input_dim.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>inputs</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><em>numpy.ndarray</em></a>) – input_dim dimensional inputs to project to the RKHS.</p></li>
+<li><p><strong>pr_matrix</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><em>numpy.ndarray</em></a>) – n_features-by-input_dim projection matrix,
+whose rows are sampled from the spectral distribution.</p></li>
+<li><p><strong>bias</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><em>numpy.ndarray</em></a>) – n_features dimensional bias. It is sampled from a
+Unifrom distribution on the interval [0, 2*PI].</p></li>
+<li><p><strong>n_features</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – dimension of the RKHS</p></li>
+<li><p><strong>sigma_f</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – multiplicative term representing the empirical variance
+the outptus.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>n_features-by-input_dim dimensional projection of the inputs to the RKHS</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)">numpy.ndarray</a></p>
+</dd>
+</dl>
 </dd></dl>
 
 </div>
@@ -195,25 +220,18 @@ TO DOC</p>
            
           </div>
           <footer>
-  
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-      
-        <a href="../kas.html" class="btn btn-neutral float-right" title="Kernel Active Subspaces" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
-      
-      
-        <a href="athena.feature_map.rff_map.html" class="btn btn-neutral float-left" title="athena.feature_map.rff_map" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
-      
+        <a href="../kas.html" class="btn btn-neutral float-right" title="Kernel Active Subspaces" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="athena.feature_map.rff_map.html" class="btn btn-neutral float-left" title="athena.feature_map.rff_map" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
-  
 
   <hr/>
 
   <div role="contentinfo">
     <p>
-        
-        &copy; Copyright Copyright 2019-2020, Athena contributors
+        &#169; Copyright Copyright 2019-2020, Athena contributors.
       <span class="lastupdated">
-        Last updated on Jul 08, 2020.
+        Last updated on Jan 10, 2021.
       </span>
 
     </p>
@@ -221,14 +239,13 @@ TO DOC</p>
     
     
     
-    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
     
-    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
     
     provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
-
         </div>
       </div>
 

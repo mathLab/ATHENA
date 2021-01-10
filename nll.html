@@ -3,9 +3,9 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8">
+  <meta charset="utf-8" />
   
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>Nonlinear Level Set Learning &mdash; ATHENA 0.0.2 documentation</title>
   
@@ -17,7 +17,10 @@
 
   
   
+
   
+  
+
   
 
   
@@ -38,7 +41,7 @@
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="athena.nll.NonlinearLevelSet.load_backward" href="_summaries/athena.nll.NonlinearLevelSet.load_backward.html" />
-    <link rel="prev" title="athena.kas.KernelActiveSubspaces.plot_sufficient_summary" href="_summaries/athena.kas.KernelActiveSubspaces.plot_sufficient_summary.html" /> 
+    <link rel="prev" title="athena.kas.KernelActiveSubspaces.transform" href="_summaries/athena.kas.KernelActiveSubspaces.transform.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -52,7 +55,7 @@
           
 
           
-            <a href="index.html" class="icon icon-home" alt="Documentation Home"> ATHENA
+            <a href="index.html" class="icon icon-home"> ATHENA
           
 
           
@@ -110,6 +113,7 @@
 <li class="toctree-l2"><a class="reference internal" href="utils.html">Utilities</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials.html">Tutorials</a></li>
 <li class="toctree-l1"><a class="reference internal" href="contact.html">Contact</a></li>
 <li class="toctree-l1"><a class="reference internal" href="contributing.html">How to contribute</a></li>
 <li class="toctree-l1"><a class="reference internal" href="LICENSE.html">License</a></li>
@@ -153,6 +157,8 @@
 
 
 
+
+
 <div role="navigation" aria-label="breadcrumbs navigation">
 
   <ul class="wy-breadcrumbs">
@@ -166,7 +172,7 @@
     
       <li class="wy-breadcrumbs-aside">
         
-            
+          
             <a href="_sources/nll.rst.txt" rel="nofollow"> View page source</a>
           
         
@@ -183,10 +189,16 @@
   <div class="section" id="module-athena.nll">
 <span id="nonlinear-level-set-learning"></span><h1>Nonlinear Level Set Learning<a class="headerlink" href="#module-athena.nll" title="Permalink to this headline">¶</a></h1>
 <p>Module for Nonlinear Level-set Learning (NLL).</p>
-<p>Reference:
-- Guannan Zhang, Jiaxin Zhang, Jacob Hinkle. 
+<dl class="field-list simple">
+<dt class="field-odd">References</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p>Guannan Zhang, Jiaxin Zhang, Jacob Hinkle.
 Learning nonlinear level sets for dimensionality reduction in function
-approximation. NeurIPS 2019, 13199-13208. <a class="reference external" href="https://arxiv.org/abs/1902.10652">https://arxiv.org/abs/1902.10652</a></p>
+approximation. NeurIPS 2019, 13199-13208.
+arxiv: <a class="reference external" href="https://arxiv.org/abs/1902.10652">https://arxiv.org/abs/1902.10652</a></p></li>
+</ul>
+</dd>
+</dl>
 <table class="longtable docutils align-default">
 <colgroup>
 <col style="width: 10%" />
@@ -212,32 +224,58 @@ approximation. NeurIPS 2019, 13199-13208. <a class="reference external" href="ht
 <td><p>Save the forward map for future inference.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="_summaries/athena.nll.NonlinearLevelSet.train.html#athena.nll.NonlinearLevelSet.train" title="athena.nll.NonlinearLevelSet.train"><code class="xref py py-obj docutils literal notranslate"><span class="pre">NonlinearLevelSet.train</span></code></a></p></td>
-<td><p>all the input parameters have to be torch</p></td>
+<td><p>Train the whole RevNet.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="_summaries/athena.nll.ForwardNet.customized_loss.html#athena.nll.ForwardNet.customized_loss" title="athena.nll.ForwardNet.customized_loss"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ForwardNet.customized_loss</span></code></a></p></td>
-<td><p>TO DOC</p></td>
+<td><p>Custom loss function.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="_summaries/athena.nll.ForwardNet.forward.html#athena.nll.ForwardNet.forward" title="athena.nll.ForwardNet.forward"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ForwardNet.forward</span></code></a></p></td>
-<td><p>TO DOC</p></td>
+<td><p>Maps original inputs to transformed inputs.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="_summaries/athena.nll.BackwardNet.forward.html#athena.nll.BackwardNet.forward" title="athena.nll.BackwardNet.forward"><code class="xref py py-obj docutils literal notranslate"><span class="pre">BackwardNet.forward</span></code></a></p></td>
-<td><p>TO DOC</p></td>
+<td><p>Maps transformed inputs to original inputs.</p></td>
 </tr>
 </tbody>
 </table>
 <dl class="class">
 <dt>
-<em class="property">class </em><code class="sig-name descname">NonlinearLevelSet</code><span class="sig-paren">(</span><em class="sig-param">n_layers</em>, <em class="sig-param">active_dim</em>, <em class="sig-param">lr</em>, <em class="sig-param">epochs</em>, <em class="sig-param">dh=0.25</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/athena/nll.html#NonlinearLevelSet"><span class="viewcode-link">[source]</span></a></dt>
-<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
-<p>Nonlinear Level Set class</p>
-<p>[description]</p>
+<em class="property">class </em><code class="sig-name descname">NonlinearLevelSet</code><span class="sig-paren">(</span><em class="sig-param">n_layers</em>, <em class="sig-param">active_dim</em>, <em class="sig-param">lr</em>, <em class="sig-param">epochs</em>, <em class="sig-param">dh=0.25</em>, <em class="sig-param">optimizer=&lt;class 'torch.optim.adam.Adam'&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/athena/nll.html#NonlinearLevelSet"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>Nonlinear Level Set class. It is implemented as a Reversible neural
+networks (RevNet).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>n_layers</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – number of layers of the RevNet.</p></li>
+<li><p><strong>active_dim</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – number of active dimensions.</p></li>
+<li><p><strong>lr</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a>) – learning rate.</p></li>
+<li><p><strong>epochs</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – number of ephocs.</p></li>
+<li><p><strong>dh</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a>) – so-called time step of the RevNet. Default is 0.25.</p></li>
+<li><p><strong>optimizer</strong> (<a class="reference external" href="https://pytorch.org/docs/master/optim.html#torch.optim.Optimizer" title="(in PyTorch vmaster (1.8.0a0+5f767b4 ))"><em>torch.optim.Optimizer</em></a>) – optimizer used in the training of
+the RevNet. Its argument are passed as args and optim_args when
+<a class="reference internal" href="_summaries/athena.nll.NonlinearLevelSet.train.html#athena.nll.NonlinearLevelSet.train" title="athena.nll.NonlinearLevelSet.train"><code class="xref py py-meth docutils literal notranslate"><span class="pre">train()</span></code></a> is called.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Variables</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>backward</strong> (<em>BackwardNet</em>) – backward net of the RevNet. See
+<code class="xref py py-class docutils literal notranslate"><span class="pre">BackwardNet</span></code> class in <code class="xref py py-mod docutils literal notranslate"><span class="pre">nll</span></code> module.</p></li>
+<li><p><a class="reference internal" href="_summaries/athena.nll.BackwardNet.forward.html#athena.nll.BackwardNet.forward" title="athena.nll.BackwardNet.forward"><strong>forward</strong></a> (<em>ForwardNet</em>) – forward net of the RevNet. See
+<code class="xref py py-class docutils literal notranslate"><span class="pre">ForwardNet</span></code> class in <code class="xref py py-mod docutils literal notranslate"><span class="pre">nll</span></code> module.</p></li>
+<li><p><strong>loss_vec</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.9)"><em>list</em></a>) – list containg the loss at every epoch.</p></li>
+</ul>
+</dd>
+</dl>
 <dl class="method">
 <dt>
 <code class="sig-name descname">load_backward</code><span class="sig-paren">(</span><em class="sig-param">infile</em>, <em class="sig-param">n_params</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/athena/nll.html#NonlinearLevelSet.load_backward"><span class="viewcode-link">[source]</span></a></dt>
 <dd><p>Load the backward map for inference.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>infile</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – filename of the saved net to load. See notes below.</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>infile</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – filename of the saved net to load. See notes below.</p></li>
+<li><p><strong>n_params</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – number of input parameters.</p></li>
+</ul>
 </dd>
 </dl>
 <div class="admonition note">
@@ -253,7 +291,10 @@ approximation. NeurIPS 2019, 13199-13208. <a class="reference external" href="ht
 <dd><p>Load the forward map for inference.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>infile</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – filename of the saved net to load. See notes below.</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>infile</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – filename of the saved net to load. See notes below.</p></li>
+<li><p><strong>n_params</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – number of input parameters.</p></li>
+</ul>
 </dd>
 </dl>
 <div class="admonition note">
@@ -270,10 +311,10 @@ approximation. NeurIPS 2019, 13199-13208. <a class="reference external" href="ht
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – if specified, the plot is saved at <cite>filename</cite>.</p></li>
-<li><p><strong>figsize</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.8)"><em>tuple</em></a><em>(</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a><em>,</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a><em>)</em>) – tuple in inches defining the figure
+<li><p><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – if specified, the plot is saved at <cite>filename</cite>.</p></li>
+<li><p><strong>figsize</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.9)"><em>tuple</em></a><em>(</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em>,</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em>)</em>) – tuple in inches defining the figure
 size. Defaults to (10, 8).</p></li>
-<li><p><strong>title</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – title of the plot.</p></li>
+<li><p><strong>title</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – title of the plot.</p></li>
 </ul>
 </dd>
 </dl>
@@ -286,14 +327,14 @@ size. Defaults to (10, 8).</p></li>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>inputs</strong> (<em>torch.DoubleTensor</em>) – array n_samples-by-n_params
+<li><p><strong>inputs</strong> (<a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.8.0a0+5f767b4 ))"><em>torch.Tensor</em></a>) – DoubleTensor n_samples-by-n_params
 containing the points in the full input space.</p></li>
 <li><p><strong>outputs</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><em>numpy.ndarray</em></a>) – array n_samples-by-1 containing the
 corresponding function evaluations.</p></li>
-<li><p><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – if specified, the plot is saved at <cite>filename</cite>.</p></li>
-<li><p><strong>figsize</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.8)"><em>tuple</em></a><em>(</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a><em>,</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a><em>)</em>) – tuple in inches defining the figure
+<li><p><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – if specified, the plot is saved at <cite>filename</cite>.</p></li>
+<li><p><strong>figsize</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.9)"><em>tuple</em></a><em>(</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em>,</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em>)</em>) – tuple in inches defining the figure
 size. Defaults to (10, 8).</p></li>
-<li><p><strong>title</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – title of the plot.</p></li>
+<li><p><strong>title</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – title of the plot.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Raises</dt>
@@ -312,7 +353,7 @@ size. Defaults to (10, 8).</p></li>
 <dd><p>Save the backward map for future inference.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>outfile</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – filename of the net to save.
+<dd class="field-odd"><p><strong>outfile</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – filename of the net to save.
 Use either .pt or .pth. See notes below.</p>
 </dd>
 </dl>
@@ -329,7 +370,7 @@ Use either .pt or .pth. See notes below.</p>
 <dd><p>Save the forward map for future inference.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>outfile</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – filename of the net to save.
+<dd class="field-odd"><p><strong>outfile</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – filename of the net to save.
 Use either .pt or .pth. See notes below.</p>
 </dd>
 </dl>
@@ -342,19 +383,28 @@ Use either .pt or .pth. See notes below.</p>
 
 <dl class="method">
 <dt>
-<code class="sig-name descname">train</code><span class="sig-paren">(</span><em class="sig-param">inputs</em>, <em class="sig-param">gradients</em>, <em class="sig-param">outputs=None</em>, <em class="sig-param">interactive=False</em>, <em class="sig-param">target_loss=0.0001</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/athena/nll.html#NonlinearLevelSet.train"><span class="viewcode-link">[source]</span></a></dt>
-<dd><p>all the input parameters have to be torch</p>
+<code class="sig-name descname">train</code><span class="sig-paren">(</span><em class="sig-param">inputs</em>, <em class="sig-param">gradients</em>, <em class="sig-param">outputs=None</em>, <em class="sig-param">interactive=False</em>, <em class="sig-param">target_loss=0.0001</em>, <em class="sig-param">optim_args={}</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/athena/nll.html#NonlinearLevelSet.train"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Train the whole RevNet.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>interactive</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a>) – if True a plot with the loss function decay,
+<li><p><strong>inputs</strong> (<a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.8.0a0+5f767b4 ))"><em>torch.Tensor</em></a>) – DoubleTensor n_samples-by-n_params
+containing the points in the full input space.</p></li>
+<li><p><strong>gradients</strong> (<a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.8.0a0+5f767b4 ))"><em>torch.Tensor</em></a>) – DoubleTensor n_samples-by-n_params
+containing the gradient samples wrt the input parameters.</p></li>
+<li><p><strong>outputs</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><em>numpy.ndarray</em></a>) – array n_samples-by-1 containing the
+corresponding function evaluations. Needed only for the interactive
+mode. Default is None.</p></li>
+<li><p><strong>interactive</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a>) – if True a plot with the loss function decay,
 and the sufficient summary plot will be showed and updated every
-10 epochs. Default is False.</p></li>
-<li><p><strong>target_loss</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a>) – Default is 0.0001.</p></li>
+10 epochs, and at the last epoch. Default is False.</p></li>
+<li><p><strong>target_loss</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a>) – loss threshold. Default is 0.0001.</p></li>
+<li><p><strong>optim_args</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.9)"><em>dict</em></a>) – dictionary passed to the optimizer.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Raises</dt>
-<dd class="field-even"><p>ValueError</p>
+<dd class="field-even"><p>ValueError: in interactive mode outputs must be provided for
+the sufficient summary plot.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -365,24 +415,65 @@ and the sufficient summary plot will be showed and updated every
 <dt>
 <em class="property">class </em><code class="sig-name descname">ForwardNet</code><span class="sig-paren">(</span><em class="sig-param">n_params</em>, <em class="sig-param">n_layers</em>, <em class="sig-param">dh</em>, <em class="sig-param">active_dim</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/athena/nll.html#ForwardNet"><span class="viewcode-link">[source]</span></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">torch.nn.modules.module.Module</span></code></p>
+<p>Forward net class. It is part of the RevNet.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Variables</dt>
-<dd class="field-odd"><p><strong>omega</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#slice" title="(in Python v3.8)"><em>slice</em></a>) – a slice object indicating the active dimension to keep.
-For example to keep the first two dimension <a href="#id1"><span class="problematic" id="id2">`</span></a>omega = slice(2).</p>
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>n_params</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – number of input parameters.</p></li>
+<li><p><strong>n_layers</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – number of layers of the RevNet.</p></li>
+<li><p><strong>dh</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a>) – so-called time step of the RevNet.</p></li>
+<li><p><strong>active_dim</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – number of active dimensions.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Variables</dt>
+<dd class="field-even"><p><strong>omega</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#slice" title="(in Python v3.9)"><em>slice</em></a>) – a slice object indicating the active dimension to keep.
+For example to keep the first two dimension <cite>omega = slice(2)</cite>. It is
+automatically set with <cite>active_dim</cite>.</p>
 </dd>
 </dl>
 <p>Initializes internal Module state, shared by both nn.Module and ScriptModule.</p>
 <dl class="method">
 <dt>
-<code class="sig-name descname">customized_loss</code><span class="sig-paren">(</span><em class="sig-param">x</em>, <em class="sig-param">output</em>, <em class="sig-param">gradients</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/athena/nll.html#ForwardNet.customized_loss"><span class="viewcode-link">[source]</span></a></dt>
-<dd><p>TO DOC</p>
+<code class="sig-name descname">customized_loss</code><span class="sig-paren">(</span><em class="sig-param">inputs</em>, <em class="sig-param">mapped_inputs</em>, <em class="sig-param">gradients</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/athena/nll.html#ForwardNet.customized_loss"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Custom loss function.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>inputs</strong> (<a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.8.0a0+5f767b4 ))"><em>torch.Tensor</em></a>) – DoubleTensor n_samples-by-n_params
+containing the points in the full input space.</p></li>
+<li><p><strong>mapped_inputs</strong> (<a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.8.0a0+5f767b4 ))"><em>torch.Tensor</em></a>) – DoubleTensor
+n_samples-by-n_params containing the mapped points in the
+full input space. They are the result of the forward application.</p></li>
+<li><p><strong>gradients</strong> (<a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.8.0a0+5f767b4 ))"><em>torch.Tensor</em></a>) – DoubleTensor n_samples-by-n_params
+containing the gradient samples wrt the input parameters.</p></li>
+</ul>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt>
-<code class="sig-name descname">forward</code><span class="sig-paren">(</span><em class="sig-param">x</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/athena/nll.html#ForwardNet.forward"><span class="viewcode-link">[source]</span></a></dt>
-<dd><p>TO DOC</p>
+<code class="sig-name descname">forward</code><span class="sig-paren">(</span><em class="sig-param">inputs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/athena/nll.html#ForwardNet.forward"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Maps original inputs to transformed inputs.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>inputs</strong> (<a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.8.0a0+5f767b4 ))"><em>torch.Tensor</em></a>) – DoubleTensor n_samples-by-n_params
+containing the points in the original full input space.</p>
+</dd>
+<dt class="field-even">Return mapped_inputs</dt>
+<dd class="field-even"><p>DoubleTensor n_samples-by-n_params with
+the nonlinear transformed inputs.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.8.0a0+5f767b4 ))">torch.Tensor</a></p>
+</dd>
+</dl>
 </dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="sig-name descname">training</code><em class="property"> = None</em></dt>
+<dd></dd></dl>
 
 </dd></dl>
 
@@ -390,14 +481,40 @@ For example to keep the first two dimension <a href="#id1"><span class="problema
 <dt>
 <em class="property">class </em><code class="sig-name descname">BackwardNet</code><span class="sig-paren">(</span><em class="sig-param">n_params</em>, <em class="sig-param">n_layers</em>, <em class="sig-param">dh</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/athena/nll.html#BackwardNet"><span class="viewcode-link">[source]</span></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">torch.nn.modules.module.Module</span></code></p>
-<p>Backward Net class</p>
-<p>[description]</p>
+<p>Backward Net class. It is part of the RevNet.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>n_params</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – number of input parameters.</p></li>
+<li><p><strong>n_layers</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – number of layers of the RevNet.</p></li>
+<li><p><strong>dh</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a>) – so-called time step of the RevNet.</p></li>
+</ul>
+</dd>
+</dl>
 <p>Initializes internal Module state, shared by both nn.Module and ScriptModule.</p>
 <dl class="method">
 <dt>
-<code class="sig-name descname">forward</code><span class="sig-paren">(</span><em class="sig-param">x</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/athena/nll.html#BackwardNet.forward"><span class="viewcode-link">[source]</span></a></dt>
-<dd><p>TO DOC</p>
+<code class="sig-name descname">forward</code><span class="sig-paren">(</span><em class="sig-param">mapped_inputs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/athena/nll.html#BackwardNet.forward"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Maps transformed inputs to original inputs.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>mapped_inputs</strong> (<a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.8.0a0+5f767b4 ))"><em>torch.Tensor</em></a>) – DoubleTensor n_samples-by-n_params
+containing the nonlinear transformed inputs.</p>
+</dd>
+<dt class="field-even">Return inputs</dt>
+<dd class="field-even"><p>DoubleTensor n_samples-by-n_params with
+the points in the original full input space.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.8.0a0+5f767b4 ))">torch.Tensor</a></p>
+</dd>
+</dl>
 </dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="sig-name descname">training</code><em class="property"> = None</em></dt>
+<dd></dd></dl>
 
 </dd></dl>
 
@@ -408,25 +525,18 @@ For example to keep the first two dimension <a href="#id1"><span class="problema
            
           </div>
           <footer>
-  
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-      
-        <a href="_summaries/athena.nll.NonlinearLevelSet.load_backward.html" class="btn btn-neutral float-right" title="athena.nll.NonlinearLevelSet.load_backward" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
-      
-      
-        <a href="_summaries/athena.kas.KernelActiveSubspaces.plot_sufficient_summary.html" class="btn btn-neutral float-left" title="athena.kas.KernelActiveSubspaces.plot_sufficient_summary" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
-      
+        <a href="_summaries/athena.nll.NonlinearLevelSet.load_backward.html" class="btn btn-neutral float-right" title="athena.nll.NonlinearLevelSet.load_backward" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="_summaries/athena.kas.KernelActiveSubspaces.transform.html" class="btn btn-neutral float-left" title="athena.kas.KernelActiveSubspaces.transform" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
-  
 
   <hr/>
 
   <div role="contentinfo">
     <p>
-        
-        &copy; Copyright Copyright 2019-2020, Athena contributors
+        &#169; Copyright Copyright 2019-2020, Athena contributors.
       <span class="lastupdated">
-        Last updated on Jul 08, 2020.
+        Last updated on Jan 10, 2021.
       </span>
 
     </p>
@@ -434,14 +544,13 @@ For example to keep the first two dimension <a href="#id1"><span class="problema
     
     
     
-    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
     
-    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
     
     provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
-
         </div>
       </div>
 

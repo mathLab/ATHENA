@@ -3,9 +3,9 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8">
+  <meta charset="utf-8" />
   
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>athena.kas &mdash; ATHENA 0.0.2 documentation</title>
   
@@ -17,7 +17,10 @@
 
   
   
+
   
+  
+
   
 
   
@@ -50,7 +53,7 @@
           
 
           
-            <a href="../../index.html" class="icon icon-home" alt="Documentation Home"> ATHENA
+            <a href="../../index.html" class="icon icon-home"> ATHENA
           
 
           
@@ -87,6 +90,7 @@
             
               <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../code.html">Code Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials.html">Tutorials</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../contact.html">Contact</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../contributing.html">How to contribute</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../LICENSE.html">License</a></li>
@@ -130,6 +134,8 @@
 
 
 
+
+
 <div role="navigation" aria-label="breadcrumbs navigation">
 
   <ul class="wy-breadcrumbs">
@@ -157,67 +163,153 @@
 <span></span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">Module for Kernel-based Active Subspaces.</span>
 
-<span class="sd">Reference:</span>
-<span class="sd">- Francesco Romor, Marco Tezzele, Andrea Lario, Gianluigi Rozza.</span>
-<span class="sd">Kernel-based Active Subspaces with application to CFD problems using</span>
-<span class="sd">Discontinuous Galerkin Method. 2020. </span>
-<span class="sd">arxiv: </span>
+<span class="sd">:References:</span>
+
+<span class="sd">    - Francesco Romor, Marco Tezzele, Andrea Lario, Gianluigi Rozza.</span>
+<span class="sd">      Kernel-based Active Subspaces with application to CFD problems using</span>
+<span class="sd">      Discontinuous Galerkin Method. 2020.</span>
+<span class="sd">      arxiv: https://arxiv.org/abs/2008.12083</span>
+
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">.subspaces</span> <span class="kn">import</span> <span class="n">Subspaces</span>
-<span class="kn">from</span> <span class="nn">.utils</span> <span class="kn">import</span> <span class="p">(</span><span class="n">initialize_weights</span><span class="p">,</span> <span class="n">sort_eigpairs</span><span class="p">,</span> <span class="n">local_linear_gradients</span><span class="p">)</span>
+<span class="kn">from</span> <span class="nn">.utils</span> <span class="kn">import</span> <span class="p">(</span><span class="n">initialize_weights</span><span class="p">,</span> <span class="n">local_linear_gradients</span><span class="p">)</span>
 <span class="kn">from</span> <span class="nn">.feature_map</span> <span class="kn">import</span> <span class="n">FeatureMap</span>
 
 
 <div class="viewcode-block" id="KernelActiveSubspaces"><a class="viewcode-back" href="../../kas.html#athena.kas.KernelActiveSubspaces">[docs]</a><span class="k">class</span> <span class="nc">KernelActiveSubspaces</span><span class="p">(</span><span class="n">Subspaces</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Kernel Active Subspaces class</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Compute the kernel-based active subspaces given the inputs and the</span>
+<span class="sd">    gradients of the model function wrt the input parameters, or given the</span>
+<span class="sd">    input/outputs couples. Only two methods are available: &#39;exact&#39; and &#39;local&#39;.</span>
+
+<span class="sd">    :param `FeatureMap` feature_map: `athena.feature_map.FeatureMap` object. See</span>
+<span class="sd">        :class:`FeatureMap` class in :py:mod:`feature_map` module.</span>
+<span class="sd">    :param int n_features: dimension of the feature space.</span>
+<span class="sd">    :param str method: method to compute the AS. Possible choices are</span>
+<span class="sd">        &#39;exact&#39; when the gradients are provided, or &#39;local&#39; to use local linear</span>
+<span class="sd">        models. This approach is related to the sufficient dimension reduction</span>
+<span class="sd">        method known sometimes as the outer product of gradient method. See the</span>
+<span class="sd">        2001 paper &#39;Structure adaptive approach for dimension reduction&#39; from</span>
+<span class="sd">        Hristache, et al.</span>
+<span class="sd">    :param int n_boot: number of bootstrap samples. Default is None.</span>
+
+<span class="sd">    :cvar numpy.ndarray inputs: input parameters oriented as rows.</span>
+<span class="sd">    :cvar numpy.ndarray outputs: corresponding outputs oriented as rows.</span>
+<span class="sd">    :cvar numpy.ndarray gradients: n_samples-by-n_params matrix containing the</span>
+<span class="sd">        gradient samples oriented as rows.</span>
+<span class="sd">    :cvar numpy.ndarray weights: n_samples-by-1 weight vector, corresponds</span>
+<span class="sd">        to numerical quadrature rule used to estimate matrix whose eigenspaces</span>
+<span class="sd">        define the active subspace.</span>
+<span class="sd">    :cvar int n_features: dimension of the feature space.</span>
+<span class="sd">    :cvar numpy.ndarray features: n_samples-by-n_features matrix containing</span>
+<span class="sd">        the projections of the inputs to the n_features-dimensional feature</span>
+<span class="sd">        space.</span>
+<span class="sd">    :cvar numpy.ndarray pseudo_gradients:</span>
+<span class="sd">    :cvar str method: method to compute the AS. Possible choices are</span>
+<span class="sd">        &#39;exact&#39; when the gradients are provided, or &#39;local&#39; to use local linear</span>
+<span class="sd">        models. This approach is related to the sufficient dimension reduction</span>
+<span class="sd">        method known sometimes as the outer product of gradient method. See the</span>
+<span class="sd">        2001 paper &#39;Structure adaptive approach for dimension reduction&#39; from</span>
+<span class="sd">        Hristache, et al.</span>
+<span class="sd">    :cvar int n_boot: number of bootstrap samples.</span>
+<span class="sd">    :cvar numpy.ndarray metric: metric matrix for vectorial active</span>
+<span class="sd">        subspaces.</span>
+<span class="sd">    :raises: ValueError</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">n_features</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">feature_map</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                 <span class="n">dim</span><span class="p">,</span>
+                 <span class="n">feature_map</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">n_features</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">method</span><span class="o">=</span><span class="s1">&#39;exact&#39;</span><span class="p">,</span>
+                 <span class="n">n_boot</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">dim</span><span class="p">,</span> <span class="n">method</span><span class="p">,</span> <span class="n">n_boot</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">feature_map</span> <span class="o">=</span> <span class="n">feature_map</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_features</span> <span class="o">=</span> <span class="n">n_features</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">features</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">pseudo_gradients</span> <span class="o">=</span> <span class="kc">None</span>
 
-<div class="viewcode-block" id="KernelActiveSubspaces._build_decompose_cov_matrix"><a class="viewcode-back" href="../../kas.html#athena.kas.KernelActiveSubspaces._build_decompose_cov_matrix">[docs]</a>    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">_build_decompose_cov_matrix</span><span class="p">(</span><span class="n">gradients</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                                    <span class="n">weights</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                                    <span class="n">method</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                                    <span class="n">metric</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="KernelActiveSubspaces.fit"><a class="viewcode-back" href="../../kas.html#athena.kas.KernelActiveSubspaces.fit">[docs]</a>    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+            <span class="n">inputs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+            <span class="n">outputs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+            <span class="n">gradients</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+            <span class="n">weights</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+            <span class="n">metric</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Computes the uncentered covariance matrix of the pseudo_gradients.</span>
+<span class="sd">        Compute the kernel based active subspaces given the inputs and the</span>
+<span class="sd">        gradients of the model function wrt the input parameters, or given the</span>
+<span class="sd">        input/outputs couples. Only two methods are available: &#39;exact&#39; and</span>
+<span class="sd">        &#39;local&#39;.</span>
 
-<span class="sd">        :param numpy.ndarray gradients: n_samples-by-output_dim-by-n_params matrix containing</span>
-<span class="sd">            the pseudo gradients corresponding to each sample.</span>
-<span class="sd">        :param numpy.ndarray weights: n_samples-by-1 weight vector, corresponds to numerical</span>
-<span class="sd">            quadrature rule used to estimate matrix whose eigenspaces define the active</span>
-<span class="sd">            subspace.</span>
-<span class="sd">        :param str method: the method used to compute the gradients.</span>
-<span class="sd">        :param numpy.ndarray metric: output_dim-byoutput-dim the matrix representing the metric</span>
-<span class="sd">            in the output space</span>
-<span class="sd">        :return: array n_features containing the eigenvalues ordered decreasingly in magnitude;</span>
-<span class="sd">            array n_features-by-n_features the columns contain the ordered eigenvectors.</span>
-<span class="sd">        :rtype: numpy.ndarray, numpy.ndarray, numpy.ndarray</span>
+<span class="sd">        :param numpy.ndarray inputs: array n_samples-by-n_params containing</span>
+<span class="sd">            the points in the original parameter space.</span>
+<span class="sd">        :param numpy.ndarray outputs: array n_samples-by-1 containing</span>
+<span class="sd">            the values of the model function.</span>
+<span class="sd">        :param numpy.ndarray gradients: array n_samples-by-n_params containing</span>
+<span class="sd">            the gradient samples oriented as rows.</span>
+<span class="sd">        :param numpy.ndarray weights: n_samples-by-1 weight vector, corresponds</span>
+<span class="sd">            to numerical quadrature rule used to estimate matrix whose</span>
+<span class="sd">            eigenspaces define the active subspace.</span>
+<span class="sd">        :param numpy.ndarray metric: metric matrix output_dim-by-output-dim for</span>
+<span class="sd">            vectorial active subspaces.</span>
+<span class="sd">        :raises: ValueError</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">method</span> <span class="o">==</span> <span class="s1">&#39;exact&#39;</span> <span class="ow">or</span> <span class="n">method</span> <span class="o">==</span> <span class="s1">&#39;local&#39;</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">metric</span><span class="p">:</span>
-                <span class="n">cov_matrix</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
-                    <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">([</span>
-                        <span class="n">weights</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">*</span>
-                        <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">gradients</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:]</span><span class="o">.</span><span class="n">T</span><span class="p">,</span>
-                               <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">metric</span><span class="p">,</span> <span class="n">gradients</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:]))</span>
-                        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">gradients</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-                    <span class="p">],</span>
-                           <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">))</span>
-                <span class="n">evals</span><span class="p">,</span> <span class="n">evects</span> <span class="o">=</span> <span class="n">sort_eigpairs</span><span class="p">(</span><span class="n">cov_matrix</span><span class="p">)</span>
-                <span class="k">return</span> <span class="n">evals</span><span class="p">,</span> <span class="n">evects</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">squeeze</span><span class="p">(</span><span class="n">gradients</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">weights</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
-                <span class="n">_</span><span class="p">,</span> <span class="n">singular</span><span class="p">,</span> <span class="n">evects</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">svd</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">full_matrices</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-                <span class="n">evals</span> <span class="o">=</span> <span class="n">singular</span><span class="o">**</span><span class="mi">2</span>
-                <span class="k">return</span> <span class="n">evals</span><span class="p">,</span> <span class="n">evects</span><span class="o">.</span><span class="n">T</span></div>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">method</span> <span class="o">==</span> <span class="s1">&#39;exact&#39;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">gradients</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">inputs</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;gradients or inputs argument is None.&#39;</span><span class="p">)</span>
 
-<div class="viewcode-block" id="KernelActiveSubspaces.forward"><a class="viewcode-back" href="../../kas.html#athena.kas.KernelActiveSubspaces.forward">[docs]</a>    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inputs</span><span class="p">):</span>
+        <span class="c1"># estimate active subspace with local linear models.</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">method</span> <span class="o">==</span> <span class="s1">&#39;local&#39;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">inputs</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">outputs</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;inputs or outputs argument is None.&#39;</span><span class="p">)</span>
+            <span class="n">gradients</span><span class="p">,</span> <span class="n">inputs</span> <span class="o">=</span> <span class="n">local_linear_gradients</span><span class="p">(</span><span class="n">inputs</span><span class="o">=</span><span class="n">inputs</span><span class="p">,</span>
+                                                       <span class="n">outputs</span><span class="o">=</span><span class="n">outputs</span><span class="p">,</span>
+                                                       <span class="n">weights</span><span class="o">=</span><span class="n">weights</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">gradients</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="n">gradients</span> <span class="o">=</span> <span class="n">gradients</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">gradients</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">1</span><span class="p">,</span>
+                                          <span class="n">gradients</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+
+        <span class="k">if</span> <span class="n">weights</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">method</span> <span class="o">==</span> <span class="s1">&#39;local&#39;</span><span class="p">:</span>
+            <span class="c1"># use the new gradients to compute the weights, otherwise dimension</span>
+            <span class="c1"># mismatch accours.</span>
+            <span class="n">weights</span> <span class="o">=</span> <span class="n">initialize_weights</span><span class="p">(</span><span class="n">gradients</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_features</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">n_features</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">feature_map</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1"># default spectral measure is Gaussian</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">feature_map</span> <span class="o">=</span> <span class="n">FeatureMap</span><span class="p">(</span><span class="n">distr</span><span class="o">=</span><span class="s1">&#39;multivariate_normal&#39;</span><span class="p">,</span>
+                                          <span class="n">bias</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span>
+                                              <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_features</span><span class="p">)),</span>
+                                          <span class="n">input_dim</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+                                          <span class="n">n_features</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">n_features</span><span class="p">,</span>
+                                          <span class="n">params</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">inputs</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span>
+                                          <span class="n">sigma_f</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">gradients</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">==</span> <span class="mi">3</span> <span class="ow">and</span> <span class="n">metric</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">metric</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">gradients</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">pseudo_gradients</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">features</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_reparametrize</span><span class="p">(</span>
+            <span class="n">inputs</span><span class="p">,</span> <span class="n">gradients</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">evals</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">evects</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_build_decompose_cov_matrix</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">pseudo_gradients</span><span class="p">,</span> <span class="n">weights</span><span class="p">,</span> <span class="n">metric</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_boot</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_boot</span> <span class="o">&lt;=</span> <span class="mi">50</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_compute_bootstrap_ranges</span><span class="p">(</span><span class="n">gradients</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">pseudo_gradients</span><span class="p">,</span>
+                                               <span class="n">weights</span><span class="o">=</span><span class="n">weights</span><span class="p">,</span>
+                                               <span class="n">metric</span><span class="o">=</span><span class="n">metric</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="s1">&#39;n_boot is too high for the bootstrap method applied to kas&#39;</span>
+                <span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_partition</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="KernelActiveSubspaces.transform"><a class="viewcode-back" href="../../kas.html#athena.kas.KernelActiveSubspaces.transform">[docs]</a>    <span class="k">def</span> <span class="nf">transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inputs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Map full variables to active and inactive variables.</span>
 <span class="sd">        Points in the original input space are mapped to the active and</span>
@@ -226,8 +318,9 @@
 <span class="sd">        :param numpy.ndarray inputs: array n_samples-by-n_params containing</span>
 <span class="sd">            the points in the original parameter space.</span>
 <span class="sd">        :return: array n_samples-by-active_dim containing the mapped active</span>
-<span class="sd">            variables; array n_samples-by-inactive_dim containing the mapped</span>
-<span class="sd">            inactive variables.</span>
+<span class="sd">            variables;</span>
+<span class="sd">            array n_samples-by-inactive_dim containing the mapped inactive</span>
+<span class="sd">            variables.</span>
 <span class="sd">        :rtype: numpy.ndarray, numpy.ndarray</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">features</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">feature_map</span><span class="o">.</span><span class="n">compute_fmap</span><span class="p">(</span><span class="n">inputs</span><span class="p">)</span>
@@ -235,7 +328,7 @@
         <span class="n">inactive</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">features</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">W2</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">active</span><span class="p">,</span> <span class="n">inactive</span></div>
 
-<div class="viewcode-block" id="KernelActiveSubspaces.backward"><a class="viewcode-back" href="../../kas.html#athena.kas.KernelActiveSubspaces.backward">[docs]</a>    <span class="k">def</span> <span class="nf">backward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reduced_inputs</span><span class="p">,</span> <span class="n">n_points</span><span class="p">):</span>
+<div class="viewcode-block" id="KernelActiveSubspaces.inverse_transform"><a class="viewcode-back" href="../../kas.html#athena.kas.KernelActiveSubspaces.inverse_transform">[docs]</a>    <span class="k">def</span> <span class="nf">inverse_transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reduced_inputs</span><span class="p">,</span> <span class="n">n_points</span><span class="p">):</span>
         <span class="k">pass</span></div>
 
 <div class="viewcode-block" id="KernelActiveSubspaces._reparametrize"><a class="viewcode-back" href="../../kas.html#athena.kas.KernelActiveSubspaces._reparametrize">[docs]</a>    <span class="k">def</span> <span class="nf">_reparametrize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inputs</span><span class="p">,</span> <span class="n">gradients</span><span class="p">):</span>
@@ -247,8 +340,9 @@
 <span class="sd">        :param numpy.ndarray gradients: array n_samples-by-n_params containing</span>
 <span class="sd">            the gradient samples oriented as rows.</span>
 <span class="sd">        :return: array n_samples-by-output_dim-by-n_params matrix containing</span>
-<span class="sd">            the pseudo gradients corresponding to each sample.; array </span>
-<span class="sd">            n_samples-by-n_features containing the image of the inputs in the feature space.</span>
+<span class="sd">            the pseudo gradients corresponding to each sample;</span>
+<span class="sd">            array n_samples-by-n_features containing the image of the inputs</span>
+<span class="sd">            in the feature space.</span>
 <span class="sd">        :rtype: numpy.ndarray, numpy.ndarray</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">n_samples</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
@@ -266,104 +360,21 @@
         <span class="c1"># Compute features</span>
         <span class="n">features</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">feature_map</span><span class="o">.</span><span class="n">compute_fmap</span><span class="p">(</span><span class="n">inputs</span><span class="p">)</span>
 
-        <span class="k">return</span> <span class="n">pseudo_gradients</span><span class="p">,</span> <span class="n">features</span></div>
-
-<div class="viewcode-block" id="KernelActiveSubspaces.compute"><a class="viewcode-back" href="../../kas.html#athena.kas.KernelActiveSubspaces.compute">[docs]</a>    <span class="k">def</span> <span class="nf">compute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
-                <span class="n">inputs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                <span class="n">outputs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                <span class="n">gradients</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                <span class="n">weights</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                <span class="n">method</span><span class="o">=</span><span class="s1">&#39;exact&#39;</span><span class="p">,</span>
-                <span class="n">nboot</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                <span class="n">n_features</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                <span class="n">feature_map</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                <span class="n">metric</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Compute the kernel based active subspaces given the inputs and the </span>
-<span class="sd">        gradients of the model function wrt the input parameters, or given the input/outputs</span>
-<span class="sd">        couples. Only two methods are available: &#39;exact&#39; and &#39;local&#39;.</span>
-
-<span class="sd">        :param numpy.ndarray inputs: array n_samples-by-n_params containing</span>
-<span class="sd">            the points in the original parameter space.</span>
-<span class="sd">        :param numpy.ndarray outputs: array n_samples-by-1 containing</span>
-<span class="sd">            the values of the model function.</span>
-<span class="sd">        :param numpy.ndarray gradients: array n_samples-by-n_params containing</span>
-<span class="sd">            the gradient samples oriented as rows.</span>
-<span class="sd">        :param numpy.ndarray weights: n_samples-by-1 weight vector, corresponds to numerical</span>
-<span class="sd">            quadrature rule used to estimate matrix whose eigenspaces define the active</span>
-<span class="sd">            subspace.</span>
-<span class="sd">        :param str method: the method used to compute the gradients.</span>
-<span class="sd">        :param int nboot: number of bootstrap samples.</span>
-<span class="sd">        :param int n_features: dimension of the feature space.</span>
-<span class="sd">        :param feature_map: feature map object.</span>
-<span class="sd">        :param numpy.ndarray metric: output_dim-byoutput-dim the matrix representing the metric</span>
-<span class="sd">            in the output space</span>
-<span class="sd">        :raises: ValueError</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">method</span> <span class="o">==</span> <span class="s1">&#39;exact&#39;</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">gradients</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">inputs</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;gradients or inputs argument is None.&#39;</span><span class="p">)</span>
-
-        <span class="c1"># estimate active subspace with local linear models.</span>
-        <span class="k">elif</span> <span class="n">method</span> <span class="o">==</span> <span class="s1">&#39;local&#39;</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">inputs</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">outputs</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;inputs or outputs argument is None.&#39;</span><span class="p">)</span>
-            <span class="n">gradients</span> <span class="o">=</span> <span class="n">local_linear_gradients</span><span class="p">(</span><span class="n">inputs</span><span class="o">=</span><span class="n">inputs</span><span class="p">,</span>
-                                               <span class="n">outputs</span><span class="o">=</span><span class="n">outputs</span><span class="p">,</span>
-                                               <span class="n">weights</span><span class="o">=</span><span class="n">weights</span><span class="p">)</span>
-            <span class="nb">print</span><span class="p">(</span><span class="n">gradients</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">weights</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="c1"># default weights is for Monte Carlo</span>
-            <span class="n">weights</span> <span class="o">=</span> <span class="n">initialize_weights</span><span class="p">(</span><span class="n">gradients</span><span class="p">)</span>
-
-        <span class="k">if</span> <span class="n">n_features</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">n_features</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">n_features</span> <span class="o">=</span> <span class="n">n_features</span>
-
-        <span class="k">if</span> <span class="n">feature_map</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="c1"># default spectral measure is Gaussian</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">feature_map</span> <span class="o">=</span> <span class="n">FeatureMap</span><span class="p">(</span><span class="n">distr</span><span class="o">=</span><span class="s1">&#39;multivariate_normal&#39;</span><span class="p">,</span>
-                                          <span class="n">bias</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="n">n_features</span><span class="p">)),</span>
-                                          <span class="n">input_dim</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
-                                          <span class="n">n_features</span><span class="o">=</span><span class="n">n_features</span><span class="p">,</span>
-                                          <span class="n">params</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">inputs</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span>
-                                          <span class="n">sigma_f</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">feature_map</span> <span class="o">=</span> <span class="n">feature_map</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">pseudo_gradients</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">features</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_reparametrize</span><span class="p">(</span>
-            <span class="n">inputs</span><span class="p">,</span> <span class="n">gradients</span><span class="p">)</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">evals</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">evects</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_build_decompose_cov_matrix</span><span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">pseudo_gradients</span><span class="p">,</span> <span class="n">weights</span><span class="p">,</span> <span class="n">method</span><span class="p">,</span> <span class="n">metric</span><span class="p">)</span>
-
-        <span class="k">if</span> <span class="n">nboot</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">nboot</span> <span class="o">&lt;=</span> <span class="mi">50</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_compute_bootstrap_ranges</span><span class="p">(</span><span class="n">gradients</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">pseudo_gradients</span><span class="p">,</span>
-                                               <span class="n">weights</span><span class="o">=</span><span class="n">weights</span><span class="p">,</span>
-                                               <span class="n">method</span><span class="o">=</span><span class="n">method</span><span class="p">,</span>
-                                               <span class="n">nboot</span><span class="o">=</span><span class="n">nboot</span><span class="p">)</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                    <span class="s1">&#39;the value of nboot is too high for the bootstrap method applied to kas&#39;</span>
-                <span class="p">)</span></div></div>
+        <span class="k">return</span> <span class="n">pseudo_gradients</span><span class="p">,</span> <span class="n">features</span></div></div>
 </pre></div>
 
            </div>
            
           </div>
           <footer>
-  
 
   <hr/>
 
   <div role="contentinfo">
     <p>
-        
-        &copy; Copyright Copyright 2019-2020, Athena contributors
+        &#169; Copyright Copyright 2019-2020, Athena contributors.
       <span class="lastupdated">
-        Last updated on Jul 08, 2020.
+        Last updated on Jan 10, 2021.
       </span>
 
     </p>
@@ -371,14 +382,13 @@
     
     
     
-    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
     
-    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
     
     provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
-
         </div>
       </div>
 

@@ -3,9 +3,9 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8">
+  <meta charset="utf-8" />
   
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>athena.feature_map.FeatureMap.tune_pr_matrix &mdash; ATHENA 0.0.2 documentation</title>
   
@@ -17,7 +17,10 @@
 
   
   
+
   
+  
+
   
 
   
@@ -52,7 +55,7 @@
           
 
           
-            <a href="../index.html" class="icon icon-home" alt="Documentation Home"> ATHENA
+            <a href="../index.html" class="icon icon-home"> ATHENA
           
 
           
@@ -107,6 +110,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../utils.html">Utilities</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials.html">Tutorials</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../contact.html">Contact</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../contributing.html">How to contribute</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../LICENSE.html">License</a></li>
@@ -150,6 +154,8 @@
 
 
 
+
+
 <div role="navigation" aria-label="breadcrumbs navigation">
 
   <ul class="wy-breadcrumbs">
@@ -165,7 +171,7 @@
     
       <li class="wy-breadcrumbs-aside">
         
-            
+          
             <a href="../_sources/_summaries/athena.feature_map.FeatureMap.tune_pr_matrix.rst.txt" rel="nofollow"> View page source</a>
           
         
@@ -183,9 +189,45 @@
 <h1>athena.feature_map.FeatureMap.tune_pr_matrix<a class="headerlink" href="#athena-feature-map-featuremap-tune-pr-matrix" title="Permalink to this headline">¶</a></h1>
 <dl class="method">
 <dt id="athena.feature_map.FeatureMap.tune_pr_matrix">
-<code class="sig-prename descclassname">FeatureMap.</code><code class="sig-name descname">tune_pr_matrix</code><span class="sig-paren">(</span><em class="sig-param">func</em>, <em class="sig-param">bounds</em>, <em class="sig-param">args=()</em>, <em class="sig-param">method=None</em>, <em class="sig-param">maxiter=50</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/athena/feature_map.html#FeatureMap.tune_pr_matrix"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#athena.feature_map.FeatureMap.tune_pr_matrix" title="Permalink to this definition">¶</a></dt>
-<dd><p>TO DOC
-ADD EXAMPLE for bounds</p>
+<code class="sig-prename descclassname">FeatureMap.</code><code class="sig-name descname">tune_pr_matrix</code><span class="sig-paren">(</span><em class="sig-param">func</em>, <em class="sig-param">bounds</em>, <em class="sig-param">method=None</em>, <em class="sig-param">maxiter=50</em>, <em class="sig-param">save_file=False</em>, <em class="sig-param">fn_args={}</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/athena/feature_map.html#FeatureMap.tune_pr_matrix"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#athena.feature_map.FeatureMap.tune_pr_matrix" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tune the parameters of the spectral distribution. Three methods are
+available: log-grid-search (brute), annealing (dual_annealing) and
+Bayesian stochastic optimization (bso) from GpyOpt. The default object
+function to optimize is athena.utils.average_rrmse, which uses a
+cross-validation procedure from athena.utils, see Example and tutorial 06_kernel-based_AS.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Example</dt>
+<dd class="field-odd"><p></p></dd>
+</dl>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">athena.kas</span> <span class="kn">import</span> <span class="n">KernelActiveSubspaces</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">athena.feature_map</span> <span class="kn">import</span> <span class="n">FeatureMap</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">athena.projection_factory</span> <span class="kn">import</span> <span class="n">ProjectionFactory</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">athena.utils</span> <span class="kn">import</span> <span class="n">CrossValidation</span><span class="p">,</span> <span class="n">average_rrmse</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">input_dim</span><span class="p">,</span> <span class="n">output_dim</span><span class="p">,</span> <span class="n">n_samples</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">30</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">n_features</span><span class="p">,</span> <span class="n">n_params</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">1</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">xx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="n">n_samples</span><span class="p">,</span> <span class="n">input_dim</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">f</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="n">n_samples</span><span class="p">,</span> <span class="n">output_dim</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">df</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="n">n_samples</span><span class="p">,</span> <span class="n">output_dim</span><span class="p">,</span> <span class="n">input_dim</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">fm</span> <span class="o">=</span> <span class="n">FeatureMap</span><span class="p">(</span><span class="n">distr</span><span class="o">=</span><span class="s1">&#39;laplace&#39;</span><span class="p">,</span>
+<span class="go">                    bias=np.random.uniform(0, 2 * np.pi, n_features),</span>
+<span class="go">                    input_dim=input_dim,</span>
+<span class="go">                    n_features=n_features,</span>
+<span class="go">                    params=np.zeros(n_params),</span>
+<span class="go">                    sigma_f=f.var())</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">kss</span> <span class="o">=</span> <span class="n">KernelActiveSubspaces</span><span class="p">(</span><span class="n">feature_map</span><span class="o">=</span><span class="n">fm</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">n_features</span><span class="o">=</span><span class="n">n_features</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">csv</span> <span class="o">=</span> <span class="n">CrossValidation</span><span class="p">(</span><span class="n">inputs</span><span class="o">=</span><span class="n">xx</span><span class="p">,</span>
+<span class="go">                        outputs=f.reshape(-1, 1),</span>
+<span class="go">                        gradients=df.reshape(n_samples, output_dim, input_dim),</span>
+<span class="go">                        folds=3,</span>
+<span class="go">                        subspace=kss)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">best</span> <span class="o">=</span> <span class="n">fm</span><span class="o">.</span><span class="n">tune_pr_matrix</span><span class="p">(</span><span class="n">func</span><span class="o">=</span><span class="n">average_rrmse</span><span class="p">,</span>
+<span class="go">                            bounds=[slice(-2, 1, 0.2) for i in range(n_params)],</span>
+<span class="go">                            args=(csv, ),</span>
+<span class="go">                            method=&#39;bso&#39;,</span>
+<span class="go">                            maxiter=20,</span>
+<span class="go">                            save_file=False)</span>
+</pre></div>
+</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -193,25 +235,35 @@ ADD EXAMPLE for bounds</p>
 Must be in the form f(x, <a href="#id1"><span class="problematic" id="id2">*</span></a>args), where x is the argument in the
 form of a 1-D array and args is a tuple of any additional fixed
 parameters needed to completely specify the function.</p></li>
-<li><p><strong>bounds</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.8)"><em>tuple</em></a>) – each component of the bounds tuple must be a
+<li><p><strong>bounds</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.9)"><em>tuple</em></a>) – each component of the bounds tuple must be a
 slice tuple of the form (low, high, step). It defines bounds for
-the objective function parameter. Step will be ignored for
-‘dual_annealing’ method.</p></li>
-<li><p><strong>args</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.8)"><em>tuple</em></a>) – any additional fixed parameters needed to
+the objective function parameter in a logarithmic scale. Step will
+be ignored for ‘dual_annealing’ method.</p></li>
+<li><p><strong>args</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.9)"><em>tuple</em></a>) – any additional fixed parameters needed to
 completely specify the objective function.</p></li>
-<li><p><strong>method</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – method used to optimize the objective function.
+<li><p><strong>method</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – method used to optimize the objective function.
 Possible values are ‘brute’, or ‘dual_annealing’.
 Default value is None, and the choice is made automatically wrt
 the dimension of <cite>self.params</cite>. If the dimension is less than 4
 brute force is used, otherwise a traditional Generalized
 Simulated Annealing will be performed with no local search
 strategy applied.</p></li>
-<li><p><strong>maxiter</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – the maximum number of global search iterations.
+<li><p><strong>maxiter</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – the maximum number of global search iterations.
 Default value is 50.</p></li>
+<li><p><strong>save_file</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a>) – True to save the optimal projection matrix</p></li>
+<li><p><strong>fn_args</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.9)"><em>dict</em></a>) – dictionary of arguments passed to func.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Raises</dt>
 <dd class="field-even"><p>ValueError</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>list that records the best score and the best projection
+matrix. The initial values are 0.8 and a n_features-by-input_dim
+numpy.ndarray of zeros.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.9)">list</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -223,25 +275,18 @@ Default value is 50.</p></li>
            
           </div>
           <footer>
-  
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-      
-        <a href="athena.feature_map.rff_map.html" class="btn btn-neutral float-right" title="athena.feature_map.rff_map" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
-      
-      
-        <a href="athena.feature_map.FeatureMap.pr_matrix.html" class="btn btn-neutral float-left" title="athena.feature_map.FeatureMap.pr_matrix" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
-      
+        <a href="athena.feature_map.rff_map.html" class="btn btn-neutral float-right" title="athena.feature_map.rff_map" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="athena.feature_map.FeatureMap.pr_matrix.html" class="btn btn-neutral float-left" title="athena.feature_map.FeatureMap.pr_matrix" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
-  
 
   <hr/>
 
   <div role="contentinfo">
     <p>
-        
-        &copy; Copyright Copyright 2019-2020, Athena contributors
+        &#169; Copyright Copyright 2019-2020, Athena contributors.
       <span class="lastupdated">
-        Last updated on Jul 08, 2020.
+        Last updated on Jan 10, 2021.
       </span>
 
     </p>
@@ -249,14 +294,13 @@ Default value is 50.</p></li>
     
     
     
-    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
     
-    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
     
     provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
-
         </div>
       </div>
 

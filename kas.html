@@ -3,9 +3,9 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8">
+  <meta charset="utf-8" />
   
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>Kernel Active Subspaces &mdash; ATHENA 0.0.2 documentation</title>
   
@@ -17,7 +17,10 @@
 
   
   
+
   
+  
+
   
 
   
@@ -52,7 +55,7 @@
           
 
           
-            <a href="index.html" class="icon icon-home" alt="Documentation Home"> ATHENA
+            <a href="index.html" class="icon icon-home"> ATHENA
           
 
           
@@ -96,14 +99,14 @@
 <li class="toctree-l3"><a class="reference internal" href="_summaries/athena.kas.KernelActiveSubspaces._bootstrap_replicate.html">athena.kas.KernelActiveSubspaces._bootstrap_replicate</a></li>
 <li class="toctree-l3"><a class="reference internal" href="_summaries/athena.kas.KernelActiveSubspaces._build_decompose_cov_matrix.html">athena.kas.KernelActiveSubspaces._build_decompose_cov_matrix</a></li>
 <li class="toctree-l3"><a class="reference internal" href="_summaries/athena.kas.KernelActiveSubspaces._compute_bootstrap_ranges.html">athena.kas.KernelActiveSubspaces._compute_bootstrap_ranges</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_summaries/athena.kas.KernelActiveSubspaces._partition.html">athena.kas.KernelActiveSubspaces._partition</a></li>
 <li class="toctree-l3"><a class="reference internal" href="_summaries/athena.kas.KernelActiveSubspaces._reparametrize.html">athena.kas.KernelActiveSubspaces._reparametrize</a></li>
-<li class="toctree-l3"><a class="reference internal" href="_summaries/athena.kas.KernelActiveSubspaces.backward.html">athena.kas.KernelActiveSubspaces.backward</a></li>
-<li class="toctree-l3"><a class="reference internal" href="_summaries/athena.kas.KernelActiveSubspaces.compute.html">athena.kas.KernelActiveSubspaces.compute</a></li>
-<li class="toctree-l3"><a class="reference internal" href="_summaries/athena.kas.KernelActiveSubspaces.forward.html">athena.kas.KernelActiveSubspaces.forward</a></li>
-<li class="toctree-l3"><a class="reference internal" href="_summaries/athena.kas.KernelActiveSubspaces.partition.html">athena.kas.KernelActiveSubspaces.partition</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_summaries/athena.kas.KernelActiveSubspaces.fit.html">athena.kas.KernelActiveSubspaces.fit</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_summaries/athena.kas.KernelActiveSubspaces.inverse_transform.html">athena.kas.KernelActiveSubspaces.inverse_transform</a></li>
 <li class="toctree-l3"><a class="reference internal" href="_summaries/athena.kas.KernelActiveSubspaces.plot_eigenvalues.html">athena.kas.KernelActiveSubspaces.plot_eigenvalues</a></li>
 <li class="toctree-l3"><a class="reference internal" href="_summaries/athena.kas.KernelActiveSubspaces.plot_eigenvectors.html">athena.kas.KernelActiveSubspaces.plot_eigenvectors</a></li>
 <li class="toctree-l3"><a class="reference internal" href="_summaries/athena.kas.KernelActiveSubspaces.plot_sufficient_summary.html">athena.kas.KernelActiveSubspaces.plot_sufficient_summary</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_summaries/athena.kas.KernelActiveSubspaces.transform.html">athena.kas.KernelActiveSubspaces.transform</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="nll.html">Nonlinear Level Set Learning</a></li>
@@ -111,6 +114,7 @@
 <li class="toctree-l2"><a class="reference internal" href="utils.html">Utilities</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials.html">Tutorials</a></li>
 <li class="toctree-l1"><a class="reference internal" href="contact.html">Contact</a></li>
 <li class="toctree-l1"><a class="reference internal" href="contributing.html">How to contribute</a></li>
 <li class="toctree-l1"><a class="reference internal" href="LICENSE.html">License</a></li>
@@ -154,6 +158,8 @@
 
 
 
+
+
 <div role="navigation" aria-label="breadcrumbs navigation">
 
   <ul class="wy-breadcrumbs">
@@ -167,7 +173,7 @@
     
       <li class="wy-breadcrumbs-aside">
         
-            
+          
             <a href="_sources/kas.rst.txt" rel="nofollow"> View page source</a>
           
         
@@ -184,11 +190,16 @@
   <div class="section" id="module-athena.kas">
 <span id="kernel-active-subspaces"></span><h1>Kernel Active Subspaces<a class="headerlink" href="#module-athena.kas" title="Permalink to this headline">¶</a></h1>
 <p>Module for Kernel-based Active Subspaces.</p>
-<p>Reference:
-- Francesco Romor, Marco Tezzele, Andrea Lario, Gianluigi Rozza.
+<dl class="field-list simple">
+<dt class="field-odd">References</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p>Francesco Romor, Marco Tezzele, Andrea Lario, Gianluigi Rozza.
 Kernel-based Active Subspaces with application to CFD problems using
-Discontinuous Galerkin Method. 2020. 
-arxiv:</p>
+Discontinuous Galerkin Method. 2020.
+arxiv: <a class="reference external" href="https://arxiv.org/abs/2008.12083">https://arxiv.org/abs/2008.12083</a></p></li>
+</ul>
+</dd>
+</dl>
 <table class="longtable docutils align-default">
 <colgroup>
 <col style="width: 10%" />
@@ -199,69 +210,88 @@ arxiv:</p>
 <td><p>Return a bootstrap replicate.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="_summaries/athena.kas.KernelActiveSubspaces._build_decompose_cov_matrix.html#athena.kas.KernelActiveSubspaces._build_decompose_cov_matrix" title="athena.kas.KernelActiveSubspaces._build_decompose_cov_matrix"><code class="xref py py-obj docutils literal notranslate"><span class="pre">KernelActiveSubspaces._build_decompose_cov_matrix</span></code></a></p></td>
-<td><p>Computes the uncentered covariance matrix of the pseudo_gradients.</p></td>
+<td><p>Build and decompose the covariance matrix of the gradients.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="_summaries/athena.kas.KernelActiveSubspaces._compute_bootstrap_ranges.html#athena.kas.KernelActiveSubspaces._compute_bootstrap_ranges" title="athena.kas.KernelActiveSubspaces._compute_bootstrap_ranges"><code class="xref py py-obj docutils literal notranslate"><span class="pre">KernelActiveSubspaces._compute_bootstrap_ranges</span></code></a></p></td>
 <td><p>Compute bootstrap ranges for eigenvalues and subspaces.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="_summaries/athena.kas.KernelActiveSubspaces._reparametrize.html#athena.kas.KernelActiveSubspaces._reparametrize" title="athena.kas.KernelActiveSubspaces._reparametrize"><code class="xref py py-obj docutils literal notranslate"><span class="pre">KernelActiveSubspaces._reparametrize</span></code></a></p></td>
-<td><p>Computes the pseudo-gradients solving an overdetermined linear system.</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="_summaries/athena.kas.KernelActiveSubspaces.backward.html#athena.kas.KernelActiveSubspaces.backward" title="athena.kas.KernelActiveSubspaces.backward"><code class="xref py py-obj docutils literal notranslate"><span class="pre">KernelActiveSubspaces.backward</span></code></a></p></td>
-<td><p>Abstract method to find points in full space that map to reduced variable points.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="_summaries/athena.kas.KernelActiveSubspaces.compute.html#athena.kas.KernelActiveSubspaces.compute" title="athena.kas.KernelActiveSubspaces.compute"><code class="xref py py-obj docutils literal notranslate"><span class="pre">KernelActiveSubspaces.compute</span></code></a></p></td>
-<td><p>Compute the kernel based active subspaces given the inputs and the  gradients of the model function wrt the input parameters, or given the input/outputs couples.</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="_summaries/athena.kas.KernelActiveSubspaces.forward.html#athena.kas.KernelActiveSubspaces.forward" title="athena.kas.KernelActiveSubspaces.forward"><code class="xref py py-obj docutils literal notranslate"><span class="pre">KernelActiveSubspaces.forward</span></code></a></p></td>
-<td><p>Map full variables to active and inactive variables.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="_summaries/athena.kas.KernelActiveSubspaces.partition.html#athena.kas.KernelActiveSubspaces.partition" title="athena.kas.KernelActiveSubspaces.partition"><code class="xref py py-obj docutils literal notranslate"><span class="pre">KernelActiveSubspaces.partition</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="_summaries/athena.kas.KernelActiveSubspaces._partition.html#athena.kas.KernelActiveSubspaces._partition" title="athena.kas.KernelActiveSubspaces._partition"><code class="xref py py-obj docutils literal notranslate"><span class="pre">KernelActiveSubspaces._partition</span></code></a></p></td>
 <td><p>Partition the eigenvectors to define the active and inactive subspaces.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="_summaries/athena.kas.KernelActiveSubspaces.plot_eigenvalues.html#athena.kas.KernelActiveSubspaces.plot_eigenvalues" title="athena.kas.KernelActiveSubspaces.plot_eigenvalues"><code class="xref py py-obj docutils literal notranslate"><span class="pre">KernelActiveSubspaces.plot_eigenvalues</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="_summaries/athena.kas.KernelActiveSubspaces._reparametrize.html#athena.kas.KernelActiveSubspaces._reparametrize" title="athena.kas.KernelActiveSubspaces._reparametrize"><code class="xref py py-obj docutils literal notranslate"><span class="pre">KernelActiveSubspaces._reparametrize</span></code></a></p></td>
+<td><p>Computes the pseudo-gradients solving an overdetermined linear system.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="_summaries/athena.kas.KernelActiveSubspaces.fit.html#athena.kas.KernelActiveSubspaces.fit" title="athena.kas.KernelActiveSubspaces.fit"><code class="xref py py-obj docutils literal notranslate"><span class="pre">KernelActiveSubspaces.fit</span></code></a></p></td>
+<td><p>Compute the kernel based active subspaces given the inputs and the gradients of the model function wrt the input parameters, or given the input/outputs couples.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="_summaries/athena.kas.KernelActiveSubspaces.inverse_transform.html#athena.kas.KernelActiveSubspaces.inverse_transform" title="athena.kas.KernelActiveSubspaces.inverse_transform"><code class="xref py py-obj docutils literal notranslate"><span class="pre">KernelActiveSubspaces.inverse_transform</span></code></a></p></td>
+<td><p>Abstract method to find points in full space that map to reduced variable points.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="_summaries/athena.kas.KernelActiveSubspaces.plot_eigenvalues.html#athena.kas.KernelActiveSubspaces.plot_eigenvalues" title="athena.kas.KernelActiveSubspaces.plot_eigenvalues"><code class="xref py py-obj docutils literal notranslate"><span class="pre">KernelActiveSubspaces.plot_eigenvalues</span></code></a></p></td>
 <td><p>Plot the eigenvalues.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="_summaries/athena.kas.KernelActiveSubspaces.plot_eigenvectors.html#athena.kas.KernelActiveSubspaces.plot_eigenvectors" title="athena.kas.KernelActiveSubspaces.plot_eigenvectors"><code class="xref py py-obj docutils literal notranslate"><span class="pre">KernelActiveSubspaces.plot_eigenvectors</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="_summaries/athena.kas.KernelActiveSubspaces.plot_eigenvectors.html#athena.kas.KernelActiveSubspaces.plot_eigenvectors" title="athena.kas.KernelActiveSubspaces.plot_eigenvectors"><code class="xref py py-obj docutils literal notranslate"><span class="pre">KernelActiveSubspaces.plot_eigenvectors</span></code></a></p></td>
 <td><p>Plot the eigenvectors.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="_summaries/athena.kas.KernelActiveSubspaces.plot_sufficient_summary.html#athena.kas.KernelActiveSubspaces.plot_sufficient_summary" title="athena.kas.KernelActiveSubspaces.plot_sufficient_summary"><code class="xref py py-obj docutils literal notranslate"><span class="pre">KernelActiveSubspaces.plot_sufficient_summary</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="_summaries/athena.kas.KernelActiveSubspaces.plot_sufficient_summary.html#athena.kas.KernelActiveSubspaces.plot_sufficient_summary" title="athena.kas.KernelActiveSubspaces.plot_sufficient_summary"><code class="xref py py-obj docutils literal notranslate"><span class="pre">KernelActiveSubspaces.plot_sufficient_summary</span></code></a></p></td>
 <td><p>Plot the sufficient summary.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="_summaries/athena.kas.KernelActiveSubspaces.transform.html#athena.kas.KernelActiveSubspaces.transform" title="athena.kas.KernelActiveSubspaces.transform"><code class="xref py py-obj docutils literal notranslate"><span class="pre">KernelActiveSubspaces.transform</span></code></a></p></td>
+<td><p>Map full variables to active and inactive variables.</p></td>
 </tr>
 </tbody>
 </table>
 <dl class="class">
 <dt>
-<em class="property">class </em><code class="sig-name descname">KernelActiveSubspaces</code><a class="reference internal" href="_modules/athena/kas.html#KernelActiveSubspaces"><span class="viewcode-link">[source]</span></a></dt>
+<em class="property">class </em><code class="sig-name descname">KernelActiveSubspaces</code><span class="sig-paren">(</span><em class="sig-param">dim</em>, <em class="sig-param">feature_map=None</em>, <em class="sig-param">n_features=None</em>, <em class="sig-param">method='exact'</em>, <em class="sig-param">n_boot=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/athena/kas.html#KernelActiveSubspaces"><span class="viewcode-link">[source]</span></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">athena.subspaces.Subspaces</span></code></p>
-<p>Kernel Active Subspaces class</p>
-<dl class="method">
-<dt>
-<em class="property">static </em><code class="sig-name descname">_build_decompose_cov_matrix</code><span class="sig-paren">(</span><em class="sig-param">gradients=None</em>, <em class="sig-param">weights=None</em>, <em class="sig-param">method=None</em>, <em class="sig-param">metric=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/athena/kas.html#KernelActiveSubspaces._build_decompose_cov_matrix"><span class="viewcode-link">[source]</span></a></dt>
-<dd><p>Computes the uncentered covariance matrix of the pseudo_gradients.</p>
+<p>Compute the kernel-based active subspaces given the inputs and the
+gradients of the model function wrt the input parameters, or given the
+input/outputs couples. Only two methods are available: ‘exact’ and ‘local’.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>gradients</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><em>numpy.ndarray</em></a>) – n_samples-by-output_dim-by-n_params matrix containing
-the pseudo gradients corresponding to each sample.</p></li>
-<li><p><strong>weights</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><em>numpy.ndarray</em></a>) – n_samples-by-1 weight vector, corresponds to numerical
-quadrature rule used to estimate matrix whose eigenspaces define the active
-subspace.</p></li>
-<li><p><strong>method</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – the method used to compute the gradients.</p></li>
-<li><p><strong>metric</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><em>numpy.ndarray</em></a>) – output_dim-byoutput-dim the matrix representing the metric
-in the output space</p></li>
+<li><p><strong>feature_map</strong> (<em>FeatureMap</em>) – <cite>athena.feature_map.FeatureMap</cite> object. See
+<code class="xref py py-class docutils literal notranslate"><span class="pre">FeatureMap</span></code> class in <code class="xref py py-mod docutils literal notranslate"><span class="pre">feature_map</span></code> module.</p></li>
+<li><p><strong>n_features</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – dimension of the feature space.</p></li>
+<li><p><strong>method</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – method to compute the AS. Possible choices are
+‘exact’ when the gradients are provided, or ‘local’ to use local linear
+models. This approach is related to the sufficient dimension reduction
+method known sometimes as the outer product of gradient method. See the
+2001 paper ‘Structure adaptive approach for dimension reduction’ from
+Hristache, et al.</p></li>
+<li><p><strong>n_boot</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – number of bootstrap samples. Default is None.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>array n_features containing the eigenvalues ordered decreasingly in magnitude;
-array n_features-by-n_features the columns contain the ordered eigenvectors.</p>
+<dt class="field-even">Variables</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>inputs</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><em>numpy.ndarray</em></a>) – input parameters oriented as rows.</p></li>
+<li><p><strong>outputs</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><em>numpy.ndarray</em></a>) – corresponding outputs oriented as rows.</p></li>
+<li><p><strong>gradients</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><em>numpy.ndarray</em></a>) – n_samples-by-n_params matrix containing the
+gradient samples oriented as rows.</p></li>
+<li><p><strong>weights</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><em>numpy.ndarray</em></a>) – n_samples-by-1 weight vector, corresponds
+to numerical quadrature rule used to estimate matrix whose eigenspaces
+define the active subspace.</p></li>
+<li><p><strong>n_features</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – dimension of the feature space.</p></li>
+<li><p><strong>features</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><em>numpy.ndarray</em></a>) – n_samples-by-n_features matrix containing
+the projections of the inputs to the n_features-dimensional feature
+space.</p></li>
+<li><p><strong>pseudo_gradients</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><em>numpy.ndarray</em></a>) – </p></li>
+<li><p><strong>method</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – method to compute the AS. Possible choices are
+‘exact’ when the gradients are provided, or ‘local’ to use local linear
+models. This approach is related to the sufficient dimension reduction
+method known sometimes as the outer product of gradient method. See the
+2001 paper ‘Structure adaptive approach for dimension reduction’ from
+Hristache, et al.</p></li>
+<li><p><strong>n_boot</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – number of bootstrap samples.</p></li>
+<li><p><strong>metric</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><em>numpy.ndarray</em></a>) – metric matrix for vectorial active
+subspaces.</p></li>
+</ul>
 </dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)">numpy.ndarray</a>, <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)">numpy.ndarray</a>, <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)">numpy.ndarray</a></p>
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><p>ValueError</p>
 </dd>
 </dl>
-</dd></dl>
-
 <dl class="method">
 <dt>
 <code class="sig-name descname">_reparametrize</code><span class="sig-paren">(</span><em class="sig-param">inputs</em>, <em class="sig-param">gradients</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/athena/kas.html#KernelActiveSubspaces._reparametrize"><span class="viewcode-link">[source]</span></a></dt>
@@ -277,8 +307,9 @@ the gradient samples oriented as rows.</p></li>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>array n_samples-by-output_dim-by-n_params matrix containing
-the pseudo gradients corresponding to each sample.; array 
-n_samples-by-n_features containing the image of the inputs in the feature space.</p>
+the pseudo gradients corresponding to each sample;
+array n_samples-by-n_features containing the image of the inputs
+in the feature space.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)">numpy.ndarray</a>, <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)">numpy.ndarray</a></p>
@@ -288,28 +319,11 @@ n_samples-by-n_features containing the image of the inputs in the feature space.
 
 <dl class="method">
 <dt>
-<code class="sig-name descname">backward</code><span class="sig-paren">(</span><em class="sig-param">reduced_inputs</em>, <em class="sig-param">n_points</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/athena/kas.html#KernelActiveSubspaces.backward"><span class="viewcode-link">[source]</span></a></dt>
-<dd><p>Abstract method to find points in full space that map to reduced
-variable points.
-Not implemented, it has to be implemented in subclasses.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>reduced_inputs</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><em>numpy.ndarray</em></a>) – n_samples-by-n_params matrix that
-contains points in the space of active variables.</p></li>
-<li><p><strong>n_points</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – the number of points in the original parameter
-space that are returned that map to the given active variables.</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="method">
-<dt>
-<code class="sig-name descname">compute</code><span class="sig-paren">(</span><em class="sig-param">inputs=None</em>, <em class="sig-param">outputs=None</em>, <em class="sig-param">gradients=None</em>, <em class="sig-param">weights=None</em>, <em class="sig-param">method='exact'</em>, <em class="sig-param">nboot=None</em>, <em class="sig-param">n_features=None</em>, <em class="sig-param">feature_map=None</em>, <em class="sig-param">metric=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/athena/kas.html#KernelActiveSubspaces.compute"><span class="viewcode-link">[source]</span></a></dt>
-<dd><p>Compute the kernel based active subspaces given the inputs and the 
-gradients of the model function wrt the input parameters, or given the input/outputs
-couples. Only two methods are available: ‘exact’ and ‘local’.</p>
+<code class="sig-name descname">fit</code><span class="sig-paren">(</span><em class="sig-param">inputs=None</em>, <em class="sig-param">outputs=None</em>, <em class="sig-param">gradients=None</em>, <em class="sig-param">weights=None</em>, <em class="sig-param">metric=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/athena/kas.html#KernelActiveSubspaces.fit"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Compute the kernel based active subspaces given the inputs and the
+gradients of the model function wrt the input parameters, or given the
+input/outputs couples. Only two methods are available: ‘exact’ and
+‘local’.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -319,15 +333,11 @@ the points in the original parameter space.</p></li>
 the values of the model function.</p></li>
 <li><p><strong>gradients</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><em>numpy.ndarray</em></a>) – array n_samples-by-n_params containing
 the gradient samples oriented as rows.</p></li>
-<li><p><strong>weights</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><em>numpy.ndarray</em></a>) – n_samples-by-1 weight vector, corresponds to numerical
-quadrature rule used to estimate matrix whose eigenspaces define the active
-subspace.</p></li>
-<li><p><strong>method</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – the method used to compute the gradients.</p></li>
-<li><p><strong>nboot</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – number of bootstrap samples.</p></li>
-<li><p><strong>n_features</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – dimension of the feature space.</p></li>
-<li><p><strong>feature_map</strong> – feature map object.</p></li>
-<li><p><strong>metric</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><em>numpy.ndarray</em></a>) – output_dim-byoutput-dim the matrix representing the metric
-in the output space</p></li>
+<li><p><strong>weights</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><em>numpy.ndarray</em></a>) – n_samples-by-1 weight vector, corresponds
+to numerical quadrature rule used to estimate matrix whose
+eigenspaces define the active subspace.</p></li>
+<li><p><strong>metric</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><em>numpy.ndarray</em></a>) – metric matrix output_dim-by-output-dim for
+vectorial active subspaces.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Raises</dt>
@@ -338,7 +348,25 @@ in the output space</p></li>
 
 <dl class="method">
 <dt>
-<code class="sig-name descname">forward</code><span class="sig-paren">(</span><em class="sig-param">inputs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/athena/kas.html#KernelActiveSubspaces.forward"><span class="viewcode-link">[source]</span></a></dt>
+<code class="sig-name descname">inverse_transform</code><span class="sig-paren">(</span><em class="sig-param">reduced_inputs</em>, <em class="sig-param">n_points</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/athena/kas.html#KernelActiveSubspaces.inverse_transform"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Abstract method to find points in full space that map to reduced
+variable points. Not implemented, it has to be implemented in
+subclasses.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>reduced_inputs</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><em>numpy.ndarray</em></a>) – n_samples-by-n_params matrix that
+contains points in the space of active variables.</p></li>
+<li><p><strong>n_points</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – the number of points in the original parameter
+space that are returned that map to the given active variables.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<code class="sig-name descname">transform</code><span class="sig-paren">(</span><em class="sig-param">inputs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/athena/kas.html#KernelActiveSubspaces.transform"><span class="viewcode-link">[source]</span></a></dt>
 <dd><p>Map full variables to active and inactive variables.
 Points in the original input space are mapped to the active and
 inactive non-linear subspace.</p>
@@ -349,8 +377,9 @@ the points in the original parameter space.</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>array n_samples-by-active_dim containing the mapped active
-variables; array n_samples-by-inactive_dim containing the mapped
-inactive variables.</p>
+variables;
+array n_samples-by-inactive_dim containing the mapped inactive
+variables.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)">numpy.ndarray</a>, <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)">numpy.ndarray</a></p>
@@ -367,25 +396,18 @@ inactive variables.</p>
            
           </div>
           <footer>
-  
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-      
-        <a href="_summaries/athena.kas.KernelActiveSubspaces._bootstrap_replicate.html" class="btn btn-neutral float-right" title="athena.kas.KernelActiveSubspaces._bootstrap_replicate" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
-      
-      
-        <a href="_summaries/athena.feature_map.rff_jac.html" class="btn btn-neutral float-left" title="athena.feature_map.rff_jac" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
-      
+        <a href="_summaries/athena.kas.KernelActiveSubspaces._bootstrap_replicate.html" class="btn btn-neutral float-right" title="athena.kas.KernelActiveSubspaces._bootstrap_replicate" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="_summaries/athena.feature_map.rff_jac.html" class="btn btn-neutral float-left" title="athena.feature_map.rff_jac" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
-  
 
   <hr/>
 
   <div role="contentinfo">
     <p>
-        
-        &copy; Copyright Copyright 2019-2020, Athena contributors
+        &#169; Copyright Copyright 2019-2020, Athena contributors.
       <span class="lastupdated">
-        Last updated on Jul 08, 2020.
+        Last updated on Jan 10, 2021.
       </span>
 
     </p>
@@ -393,14 +415,13 @@ inactive variables.</p>
     
     
     
-    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
     
-    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
     
     provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
-
         </div>
       </div>
 

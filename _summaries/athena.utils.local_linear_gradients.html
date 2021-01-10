@@ -3,9 +3,9 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8">
+  <meta charset="utf-8" />
   
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>athena.utils.local_linear_gradients &mdash; ATHENA 0.0.2 documentation</title>
   
@@ -17,7 +17,10 @@
 
   
   
+
   
+  
+
   
 
   
@@ -37,7 +40,7 @@
     
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="athena.utils.sort_eigpairs" href="athena.utils.sort_eigpairs.html" />
+    <link rel="next" title="athena.utils.rrmse" href="athena.utils.rrmse.html" />
     <link rel="prev" title="athena.utils.linear_program_ineq" href="athena.utils.linear_program_ineq.html" /> 
 </head>
 
@@ -52,7 +55,7 @@
           
 
           
-            <a href="../index.html" class="icon icon-home" alt="Documentation Home"> ATHENA
+            <a href="../index.html" class="icon icon-home"> ATHENA
           
 
           
@@ -96,16 +99,23 @@
 <li class="toctree-l2"><a class="reference internal" href="../nll.html">Nonlinear Level Set Learning</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../projection_factory.html">Projection Matrix Factory</a></li>
 <li class="toctree-l2 current"><a class="reference internal" href="../utils.html">Utilities</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="athena.utils.CrossValidation.fit.html">athena.utils.CrossValidation.fit</a></li>
+<li class="toctree-l3"><a class="reference internal" href="athena.utils.CrossValidation.predict.html">athena.utils.CrossValidation.predict</a></li>
+<li class="toctree-l3"><a class="reference internal" href="athena.utils.CrossValidation.run.html">athena.utils.CrossValidation.run</a></li>
+<li class="toctree-l3"><a class="reference internal" href="athena.utils.CrossValidation.scorer.html">athena.utils.CrossValidation.scorer</a></li>
 <li class="toctree-l3"><a class="reference internal" href="athena.utils.Normalizer.fit_transform.html">athena.utils.Normalizer.fit_transform</a></li>
 <li class="toctree-l3"><a class="reference internal" href="athena.utils.Normalizer.inverse_transform.html">athena.utils.Normalizer.inverse_transform</a></li>
+<li class="toctree-l3"><a class="reference internal" href="athena.utils.average_rrmse.html">athena.utils.average_rrmse</a></li>
 <li class="toctree-l3"><a class="reference internal" href="athena.utils.initialize_weights.html">athena.utils.initialize_weights</a></li>
 <li class="toctree-l3"><a class="reference internal" href="athena.utils.linear_program_ineq.html">athena.utils.linear_program_ineq</a></li>
 <li class="toctree-l3 current"><a class="current reference internal" href="#">athena.utils.local_linear_gradients</a></li>
+<li class="toctree-l3"><a class="reference internal" href="athena.utils.rrmse.html">athena.utils.rrmse</a></li>
 <li class="toctree-l3"><a class="reference internal" href="athena.utils.sort_eigpairs.html">athena.utils.sort_eigpairs</a></li>
 </ul>
 </li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials.html">Tutorials</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../contact.html">Contact</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../contributing.html">How to contribute</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../LICENSE.html">License</a></li>
@@ -149,6 +159,8 @@
 
 
 
+
+
 <div role="navigation" aria-label="breadcrumbs navigation">
 
   <ul class="wy-breadcrumbs">
@@ -164,7 +176,7 @@
     
       <li class="wy-breadcrumbs-aside">
         
-            
+          
             <a href="../_sources/_summaries/athena.utils.local_linear_gradients.rst.txt" rel="nofollow"> View page source</a>
           
         
@@ -186,37 +198,29 @@
 <dd><p>Estimate a collection of gradients from input/output pairs.</p>
 <p>Given a set of input/output pairs, choose subsets of neighboring points and
 build a local linear model for each subset. The gradients of these local
-linear models comprise estimates of sampled gradients.
-Parameters
-———-
-inputs : ndarray</p>
-<blockquote>
-<div><p>M-by-m matrix that contains the m-dimensional inputs</p>
-</div></blockquote>
-<dl class="simple">
-<dt>outputs<span class="classifier">ndarray </span></dt><dd><p>M-by-1 matrix that contains scalar outputs</p>
-</dd>
-<dt>n_neighbors<span class="classifier">int, optional</span></dt><dd><p>how many nearest neighbors to use when constructing the local linear 
-model (default 1)</p>
-</dd>
-<dt>weights<span class="classifier">ndarray, optional</span></dt><dd><p>M-by-1 matrix that contains the weights for each observation (default 
-None)</p>
-</dd>
-</dl>
-<dl class="simple">
-<dt>gradients<span class="classifier">ndarray</span></dt><dd><p>M-by-m matrix that contains estimated partial derivatives approximated 
-by the local linear models</p>
-</dd>
-</dl>
+linear models comprise estimates of sampled gradients.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Raises</dt>
-<dd class="field-odd"><p>ValueError, TypeError</p>
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>inputs</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><em>numpy.ndarray</em></a>) – M-by-m matrix that contains the m-dimensional inputs</p></li>
+<li><p><strong>outputs</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><em>numpy.ndarray</em></a>) – M-by-1 matrix that contains scalar outputs</p></li>
+<li><p><strong>weights</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><em>numpy.ndarray</em></a>) – M-by-1 matrix that contains the weights for each observation (default
+None)</p></li>
+<li><p><strong>n_neighbors</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – how many nearest neighbors to use when constructing the local linear
+model. the default value is floor(1.7*m)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>M-by-m matrix that contains estimated partial derivatives approximated
+by the local linear models; the corresponding new inputs</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)">numpy.ndarray</a>, <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)">numpy.ndarray</a></p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p>ValueError, TypeError</p>
 </dd>
 </dl>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>If <cite>n_neighbors</cite> is not specified, the default value is floor(1.7*m).</p>
-</div>
 </dd></dl>
 
 </div>
@@ -226,25 +230,18 @@ by the local linear models</p>
            
           </div>
           <footer>
-  
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-      
-        <a href="athena.utils.sort_eigpairs.html" class="btn btn-neutral float-right" title="athena.utils.sort_eigpairs" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
-      
-      
-        <a href="athena.utils.linear_program_ineq.html" class="btn btn-neutral float-left" title="athena.utils.linear_program_ineq" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
-      
+        <a href="athena.utils.rrmse.html" class="btn btn-neutral float-right" title="athena.utils.rrmse" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="athena.utils.linear_program_ineq.html" class="btn btn-neutral float-left" title="athena.utils.linear_program_ineq" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
-  
 
   <hr/>
 
   <div role="contentinfo">
     <p>
-        
-        &copy; Copyright Copyright 2019-2020, Athena contributors
+        &#169; Copyright Copyright 2019-2020, Athena contributors.
       <span class="lastupdated">
-        Last updated on Jul 08, 2020.
+        Last updated on Jan 10, 2021.
       </span>
 
     </p>
@@ -252,14 +249,13 @@ by the local linear models</p>
     
     
     
-    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
     
-    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
     
     provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
-
         </div>
       </div>
 

@@ -3,9 +3,9 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8">
+  <meta charset="utf-8" />
   
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>Welcome to ATHENA’s documentation! &mdash; ATHENA 0.0.2 documentation</title>
   
@@ -17,7 +17,10 @@
 
   
   
+
   
+  
+
   
 
   
@@ -51,7 +54,7 @@
           
 
           
-            <a href="#" class="icon icon-home" alt="Documentation Home"> ATHENA
+            <a href="#" class="icon icon-home"> ATHENA
           
 
           
@@ -88,6 +91,7 @@
             
               <ul>
 <li class="toctree-l1"><a class="reference internal" href="code.html">Code Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials.html">Tutorials</a></li>
 <li class="toctree-l1"><a class="reference internal" href="contact.html">Contact</a></li>
 <li class="toctree-l1"><a class="reference internal" href="contributing.html">How to contribute</a></li>
 <li class="toctree-l1"><a class="reference internal" href="LICENSE.html">License</a></li>
@@ -131,6 +135,8 @@
 
 
 
+
+
 <div role="navigation" aria-label="breadcrumbs navigation">
 
   <ul class="wy-breadcrumbs">
@@ -142,7 +148,7 @@
     
       <li class="wy-breadcrumbs-aside">
         
-            
+          
             <a href="_sources/index.rst.txt" rel="nofollow"> View page source</a>
           
         
@@ -158,14 +164,15 @@
             
   <div class="section" id="welcome-to-athena-s-documentation">
 <h1>Welcome to ATHENA’s documentation!<a class="headerlink" href="#welcome-to-athena-s-documentation" title="Permalink to this headline">¶</a></h1>
+<a class="reference internal image-reference" href="_images/logo_athena.png"><img alt="_images/logo_athena.png" class="align-right" src="_images/logo_athena.png" style="width: 150px; height: 150px;" /></a>
 <p>ATHENA: Advanced Techniques for High dimensional parameter spaces to Enhance Numerical Analysis</p>
 <div class="section" id="description">
 <h2>Description<a class="headerlink" href="#description" title="Permalink to this headline">¶</a></h2>
-<p>ATHENA is a Python package for reduction in parameter spaces.</p>
+<p>ATHENA is a Python package for reduction of high dimensional parameter spaces in the context of numerical analysis. It allows the use of several dimensionality reduction techniques such as Active Subspaces (AS), Kernel-based Active Subspaces (KAS), and Nonlinear Level-set Learning (NLL). It is particularly suited for the study of parametric PDEs, for sensitivity analysis, and for the approximation of engineering quantities of interest. It can handle both scalar and vectorial high dimensional functions, making it a useful tool also to reduce the burden of computational intensive optimization tasks.</p>
 </div>
 <div class="section" id="installation">
 <h2>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h2>
-<p>ATHENA requires requires numpy, matplotlib, sphinx (for the documentation) and nose (for local test). The code is compatible with Python 3.6 and above. It can be installed directly from the source code.</p>
+<p>ATHENA requires requires numpy, matplotlib, scipy, torch, GPy, GPyOpt, sphinx (for the documentation) and nose (for local test). The code is compatible with Python 3.6 and above. It can be installed directly from the source code available at the official GitHub <a class="reference external" href="https://github.com/mathLab/ATHENA">repository</a>.</p>
 <div class="section" id="installing-from-source">
 <h3>Installing from source<a class="headerlink" href="#installing-from-source" title="Permalink to this headline">¶</a></h3>
 <p>To install the latest version of the package just type</p>
@@ -192,6 +199,7 @@
 <div class="toctree-wrapper compound">
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="code.html">Code Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials.html">Tutorials</a></li>
 <li class="toctree-l1"><a class="reference internal" href="contact.html">Contact</a></li>
 <li class="toctree-l1"><a class="reference internal" href="contributing.html">How to contribute</a></li>
 <li class="toctree-l1"><a class="reference internal" href="LICENSE.html">License</a></li>
@@ -200,14 +208,16 @@
 </div>
 <div class="section" id="tutorials">
 <h2>Tutorials<a class="headerlink" href="#tutorials" title="Permalink to this headline">¶</a></h2>
-<p>We made some tutorial examples.</p>
+<p>We made several tutorials to present the main features of the package. Please refer to the <a class="reference internal" href="tutorials.html"><span class="doc">dedicated page</span></a> of the documentation.</p>
 </div>
 <div class="section" id="references">
 <h2>References<a class="headerlink" href="#references" title="Permalink to this headline">¶</a></h2>
 <p>To implement the numerical methods present in this package we followed these works:</p>
 <ul class="simple">
-<li><p>Constantine. Active subspaces: Emerging ideas for dimension reduction in parameter studies. Volume 2 SIAM Spotlights, 2015.</p></li>
-<li><p>Constantine et al. Python Active-subspaces Utility Library, Journal of Open Source Software, 1(5), 79, 2016.</p></li>
+<li><p>Constantine. <em>Active subspaces: Emerging ideas for dimension reduction in parameter studies</em>. Volume 2 SIAM Spotlights, 2015. [<a class="reference external" href="https://doi.org/10.1137/1.9781611973860">DOI</a>]</p></li>
+<li><p>Constantine et al. <em>Python Active-subspaces Utility Library</em>, Journal of Open Source Software, 1(5), 79, 2016. [<a class="reference external" href="https://doi.org/10.21105/joss.00079">DOI</a>]</p></li>
+<li><p>Romor, Tezzele, Lario, Rozza. <em>Kernel-based Active Subspaces with application to CFD parametric problems using Discontinuous Galerkin method</em>. 2020. [<a class="reference external" href="https://arxiv.org/abs/2008.12083">arXiv</a>]</p></li>
+<li><p>Zhang, Zhang, Hinkle. <em>Learning nonlinear level sets for dimensionality reduction in function approximation</em>. Advances in Neural Information Processing Systems 32: Annual Conference on Neural Information Processing Systems 2019, NeurIPS 2019, 8-14 December 2019, Vancouver, BC, Canada. [<a class="reference external" href="https://arxiv.org/abs/1902.10652">arXiv</a>]</p></li>
 </ul>
 </div>
 <div class="section" id="indices-and-tables">
@@ -225,23 +235,17 @@
            
           </div>
           <footer>
-  
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-      
-        <a href="code.html" class="btn btn-neutral float-right" title="Code Documentation" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
-      
-      
+        <a href="code.html" class="btn btn-neutral float-right" title="Code Documentation" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
-  
 
   <hr/>
 
   <div role="contentinfo">
     <p>
-        
-        &copy; Copyright Copyright 2019-2020, Athena contributors
+        &#169; Copyright Copyright 2019-2020, Athena contributors.
       <span class="lastupdated">
-        Last updated on Jul 08, 2020.
+        Last updated on Jan 10, 2021.
       </span>
 
     </p>
@@ -249,14 +253,13 @@
     
     
     
-    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
     
-    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
     
     provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
-
         </div>
       </div>
 
