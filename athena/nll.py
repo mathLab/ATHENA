@@ -56,6 +56,8 @@ class NonlinearLevelSet():
               outputs=None,
               interactive=False,
               target_loss=0.0001,
+              scheduler=None,
+              scheduler_args={},
               optim_args={}):
         """
         Train the whole RevNet.
@@ -95,6 +97,10 @@ class NonlinearLevelSet():
         # Initialize the gradient
         self.forward.zero_grad()
         optimizer = self.optimizer(self.forward.parameters(), self.lr, **optim_args)
+
+        # Initialize scheduler if present
+        if scheduler and issubclass(scheduler, torch.optim.lr_scheduler._LRScheduler):
+            sched = scheduler(optimizer, **scheduler_args)
 
         # Training
         for i in range(self.epochs):
@@ -152,6 +158,7 @@ class NonlinearLevelSet():
 
             loss.backward()
             optimizer.step()
+            sched.step()
 
         if interactive:
             plt.ioff()

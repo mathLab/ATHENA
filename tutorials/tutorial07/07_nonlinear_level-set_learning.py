@@ -40,7 +40,9 @@ nll.train(inputs=x_torch,
           gradients=df_torch,
           outputs=f.reshape(-1, 1),
           interactive=True,
-          momentum=0.9)
+          optim_args={'momentum':0.9},
+          scheduler=torch.optim.lr_scheduler.StepLR,
+          scheduler_args={'step_size': 100})
 
 # in case of interactive=False
 # nll.plot_loss(figsize=(6, 4))
