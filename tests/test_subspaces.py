@@ -108,19 +108,19 @@ class TestUtils(TestCase):
 
     def test_plot_eigenvalues(self):
         ss = Subspaces(dim=1)
-        with self.assertRaises(ValueError):
+        with self.assertRaises(TypeError):
             ss.plot_eigenvalues(figsize=(7, 7), title='Eigenvalues')
 
     def test_plot_eigenvectors(self):
         ss = Subspaces(dim=1)
-        with self.assertRaises(ValueError):
+        with self.assertRaises(TypeError):
             ss.plot_eigenvectors(n_evects=2, title='Eigenvectors')
 
     def test_plot_sufficient_summary(self):
         ss = Subspaces(dim=1)
         inputs = np.diag(np.ones(3))
         outputs = np.ones(3).reshape(3, 1)
-        with self.assertRaises(ValueError):
+        with self.assertRaises(TypeError):
             ss.plot_sufficient_summary(inputs,
                                        outputs,
                                        figsize=(7, 7),

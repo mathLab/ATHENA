@@ -99,7 +99,7 @@ class TestUtils(TestCase):
 
     def test_compute_01(self):
         ss = KernelActiveSubspaces(dim=2)
-        with self.assertRaises(ValueError):
+        with self.assertRaises(TypeError):
             ss.fit()
 
     def test_compute_02(self):
@@ -411,7 +411,7 @@ class TestUtils(TestCase):
 
     def test_plot_eigenvalues_01(self):
         ss = KernelActiveSubspaces(dim=2)
-        with self.assertRaises(ValueError):
+        with self.assertRaises(TypeError):
             ss.plot_eigenvalues(figsize=(7, 7), title='Eigenvalues')
 
     def test_plot_eigenvalues_02(self):
@@ -439,7 +439,7 @@ class TestUtils(TestCase):
 
     def test_plot_eigenvectors_01(self):
         ss = KernelActiveSubspaces(dim=2)
-        with self.assertRaises(ValueError):
+        with self.assertRaises(TypeError):
             ss.plot_eigenvectors(figsize=(7, 7), title='Eigenvalues')
 
     def test_plot_eigenvectors_02(self):
@@ -474,7 +474,7 @@ class TestUtils(TestCase):
 
     def test_plot_sufficient_summary_01(self):
         ss = KernelActiveSubspaces(dim=2)
-        with self.assertRaises(ValueError):
+        with self.assertRaises(TypeError):
             ss.plot_sufficient_summary(10, 10)
 
     def test_plot_sufficient_summary_02(self):
