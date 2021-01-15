@@ -53,16 +53,16 @@ class ActiveSubspaces(Subspaces):
             eigenspaces define the active subspace.
         :param numpy.ndarray metric: metric matrix output_dim-by-output-dim for
             vectorial active subspaces.
-        :raises: ValueError
+        :raises: ValueError, TypeError
         """
         if self.method == 'exact':
             if gradients is None:
-                raise ValueError('gradients argument is None.')
+                raise TypeError('gradients argument is None.')
 
         # estimate active subspace with local linear models.
         if self.method == 'local':
             if inputs is None or outputs is None:
-                raise ValueError('inputs or outputs argument is None.')
+                raise TypeError('inputs or outputs argument is None.')
             gradients = local_linear_gradients(inputs=inputs,
                                                outputs=outputs,
                                                weights=weights)[0]
@@ -95,9 +95,10 @@ class ActiveSubspaces(Subspaces):
             array n_samples-by-inactive_dim containing the mapped inactive
             variables.
         :rtype: numpy.ndarray, numpy.ndarray
+        :raises: TypeError
         """
         if self.W1 is None:
-            raise ValueError('the active subspace has not been evaluated.')
+            raise TypeError('the active subspace has not been evaluated.')
 
         # allow evaluation of active variables only
         if self.W2 is None:
@@ -125,12 +126,13 @@ class ActiveSubspaces(Subspaces):
             indices identify which rows of the previous matrix (the full
             parameters) map to which rows of the active variables matrix.
         :rtype: numpy.ndarray, numpy.ndarray
+        :raises: TypeError
 
         .. note:: The inverse map depends critically on the
             `self._sample_inactive` method.
         """
         if self.W1 is None:
-            raise ValueError('the active subspace has not been evaluated.')
+            raise TypeError('the active subspace has not been evaluated.')
 
         # the inactive eigenvectors are needed
         if self.W2 is None:

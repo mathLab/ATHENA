@@ -264,17 +264,17 @@ class Subspaces():
         :param tuple(int,int) figsize: tuple in inches defining the figure size.
             Default is (8, 8).
         :param str title: title of the plot.
-        :raises: ValueError
+        :raises: TypeError
 
         .. warning:: `self.fit` has to be called in advance.
         """
         if self.evals is None:
-            raise ValueError('The eigenvalues have not been computed.'
+            raise TypeError('The eigenvalues have not been computed.'
                              'You have to perform the fit method.')
         if n_evals is None:
             n_evals = self.evals.shape[0]
         if n_evals > self.evals.shape[0]:
-            raise ValueError('Invalid number of eigenvalues to plot.')
+            raise TypeError('Invalid number of eigenvalues to plot.')
 
         plt.figure(figsize=figsize)
         plt.title(title)
@@ -338,12 +338,12 @@ class Subspaces():
             Default is (8, 2 * n_evects).
         :param str labels: labels for the components of the eigenvectors.
         :param str title: title of the plot.
-        :raises: ValueError
+        :raises: ValueError, TypeError
 
         .. warning:: `self.fit` has to be called in advance.
         """
         if self.evects is None:
-            raise ValueError('The eigenvectors have not been computed.'
+            raise TypeError('The eigenvectors have not been computed.'
                              'You have to perform the fit method.')
         if n_evects is None:
             n_evects = self.dim
@@ -402,14 +402,14 @@ class Subspaces():
         :param tuple(int,int) figsize: tuple in inches defining the figure
             size. Defaults to (10, 8).
         :param str title: title of the plot.
-        :raises: ValueError
+        :raises: ValueError, TypeError
 
         .. warning:: `self.fit` has to be called in advance.
 
             Plot only available for partitions up to dimension 2.
         """
         if self.evects is None:
-            raise ValueError('The eigenvectors have not been computed.'
+            raise TypeError('The eigenvectors have not been computed.'
                              'You have to perform the fit method.')
 
         plt.figure(figsize=figsize)
