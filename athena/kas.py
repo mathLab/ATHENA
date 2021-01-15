@@ -119,8 +119,7 @@ class KernelActiveSubspaces(Subspaces):
         if self.feature_map is None:
             # default spectral measure is Gaussian
             self.feature_map = FeatureMap(distr='multivariate_normal',
-                                          bias=np.ones(
-                                              (1, self.n_features)),
+                                          bias=np.ones((1, self.n_features)),
                                           input_dim=inputs.shape[1],
                                           n_features=self.n_features,
                                           params=np.ones(inputs.shape[1]),
@@ -162,8 +161,19 @@ class KernelActiveSubspaces(Subspaces):
         :rtype: numpy.ndarray, numpy.ndarray
         """
         features = self.feature_map.compute_fmap(inputs)
-        active = np.dot(features, self.W1)
-        inactive = np.dot(features, self.W2)
+
+        if self.W1 is None:
+            raise ValueError(
+                'the kernel-based active subspace has not been evaluated.')
+
+        # allow evaluation of active variables only
+        if self.W2 is None:
+            active = np.dot(features, self.W1)
+            inactive = None
+        else:
+            active = np.dot(features, self.W1)
+            inactive = np.dot(features, self.W2)
+
         return active, inactive
 
     def inverse_transform(self, reduced_inputs, n_points):

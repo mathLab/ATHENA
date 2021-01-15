@@ -12,6 +12,8 @@ Active Subspaces module.
 """
 import numpy as np
 from .subspaces import Subspaces
+from scipy.linalg import null_space
+
 from .utils import (Normalizer, initialize_weights, linear_program_ineq,
                     local_linear_gradients)
 
@@ -94,8 +96,17 @@ class ActiveSubspaces(Subspaces):
             variables.
         :rtype: numpy.ndarray, numpy.ndarray
         """
-        active = np.dot(inputs, self.W1)
-        inactive = np.dot(inputs, self.W2)
+        if self.W1 is None:
+            raise ValueError('the active subspace has not been evaluated.')
+
+        # allow evaluation of active variables only
+        if self.W2 is None:
+            active = np.dot(inputs, self.W1)
+            inactive = None
+        else:
+            active = np.dot(inputs, self.W1)
+            inactive = np.dot(inputs, self.W2)
+
         return active, inactive
 
     def inverse_transform(self, reduced_inputs, n_points=1):
@@ -118,6 +129,13 @@ class ActiveSubspaces(Subspaces):
         .. note:: The inverse map depends critically on the
             `self._sample_inactive` method.
         """
+        if self.W1 is None:
+            raise ValueError('the active subspace has not been evaluated.')
+
+        # the inactive eigenvectors are needed
+        if self.W2 is None:
+            self.W2 = null_space(self.W1).T
+
         inactive_swap = np.array([
             self._sample_inactive(red_inp, n_points)
             for red_inp in reduced_inputs

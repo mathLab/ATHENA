@@ -127,8 +127,8 @@ class Subspaces():
 
         # randomized_svd is not implemented for vectorial as yet
         if len(gradients.shape) == 2:
-            if svd_complexity > rsvd_complexity and (
-                    n_samples > 10000 or n_pars > 10000):
+            if svd_complexity > rsvd_complexity and (n_samples > 10000
+                                                     or n_pars > 10000):
                 range_dim = self.dim
             else:
                 range_dim = min(n_pars, n_samples)
@@ -233,13 +233,22 @@ class Subspaces():
         if not isinstance(self.dim, int):
             raise TypeError('dim should be an integer.')
 
-        if self.dim < 1 or self.dim > self.evects.shape[0]:
+        if self.dim < 1 or self.dim > self.evects.shape[1]:
             raise ValueError(
                 'dim must be positive and less than the dimension of the '
                 ' eigenvectors: dim = {}.'.format(self.dim))
 
-        self.W1 = self.evects[:, :self.dim]
-        self.W2 = self.evects[:, self.dim:]
+        # allow evaluation of active eigenvectors only
+        if self.evects.shape[1] < self.evects.shape[0]:
+            self.W1 = self.evects[:, :self.dim]
+            self.W2 = None
+        elif self.evects.shape[1] == self.evects.shape[0]:
+            self.W1 = self.evects[:, :self.dim]
+            self.W2 = self.evects[:, self.dim:]
+        else:
+            raise ValueError(
+                'the eigenvectors cannot have dimension less than dim = {}.'.
+                format(self.dim))
 
     def plot_eigenvalues(self,
                          n_evals=None,

@@ -28,8 +28,11 @@ class NonlinearLevelSet():
     :param int epochs: number of ephocs.
     :param float dh: so-called time step of the RevNet. Default is 0.25.
     :param `torch.optim.Optimizer` optimizer: optimizer used in the training of
-        the RevNet. Its argument are passed as args and optim_args when
+        the RevNet. Its argument are passed in the dict optim_args when
         :py:meth:`train` is called.
+    :param `torch.optim.lr_scheduler._LRScheduler` scheduler: scheduler used in
+        the training of the RevNet. Its argument are passed in the dict
+        scheduler_args when :py:meth:`train` is called. Default is None.
 
     :cvar `BackwardNet` backward: backward net of the RevNet. See
         :class:`BackwardNet` class in :py:mod:`nll` module.
@@ -37,7 +40,14 @@ class NonlinearLevelSet():
         :class:`ForwardNet` class in :py:mod:`nll` module.
     :cvar list loss_vec: list containg the loss at every epoch.
     """
-    def __init__(self, n_layers, active_dim, lr, epochs, dh=0.25, optimizer=optim.Adam):
+    def __init__(self,
+                 n_layers,
+                 active_dim,
+                 lr,
+                 epochs,
+                 dh=0.25,
+                 optimizer=optim.Adam,
+                 scheduler=None):
         self.n_layers = n_layers
         self.active_dim = active_dim
         self.lr = lr
@@ -45,6 +55,12 @@ class NonlinearLevelSet():
         self.dh = dh
         if issubclass(optimizer, optim.Optimizer):
             self.optimizer = optimizer
+
+        if scheduler and issubclass(scheduler,
+                                    torch.optim.lr_scheduler._LRScheduler):
+            self.scheduler = scheduler
+        else:
+            self.scheduler = None
 
         self.backward = None
         self.forward = None
@@ -56,9 +72,8 @@ class NonlinearLevelSet():
               outputs=None,
               interactive=False,
               target_loss=0.0001,
-              scheduler=None,
-              scheduler_args={},
-              optim_args={}):
+              optim_args={},
+              scheduler_args={}):
         """
         Train the whole RevNet.
 
@@ -74,6 +89,7 @@ class NonlinearLevelSet():
             10 epochs, and at the last epoch. Default is False.
         :param float target_loss: loss threshold. Default is 0.0001.
         :param dict optim_args: dictionary passed to the optimizer.
+        :param dict scheduler_args: dictionary passed to the scheduler.
         :raises: ValueError: in interactive mode outputs must be provided for
             the sufficient summary plot.
         """
@@ -96,11 +112,12 @@ class NonlinearLevelSet():
                                   active_dim=self.active_dim)
         # Initialize the gradient
         self.forward.zero_grad()
-        optimizer = self.optimizer(self.forward.parameters(), self.lr, **optim_args)
+        optimizer = self.optimizer(self.forward.parameters(), self.lr,
+                                   **optim_args)
 
         # Initialize scheduler if present
-        if scheduler and issubclass(scheduler, torch.optim.lr_scheduler._LRScheduler):
-            sched = scheduler(optimizer, **scheduler_args)
+        if self.scheduler:
+            sched = self.scheduler(optimizer, **scheduler_args)
 
         # Training
         for i in range(self.epochs):
@@ -158,7 +175,9 @@ class NonlinearLevelSet():
 
             loss.backward()
             optimizer.step()
-            sched.step()
+
+            if self.scheduler:
+                sched.step()
 
         if interactive:
             plt.ioff()
@@ -433,11 +452,12 @@ class ForwardNet(nn.Module):
             for k in range(2 * self.n_params):
                 Jacob[:, j, k] = torch.add(dx[:, k], -1 * inputs[:, k])
 
-        JJ2 = torch.unsqueeze(torch.sqrt(torch.sum(torch.mul(Jacob, Jacob), 2)),
-                              2)
+        JJ2 = torch.unsqueeze(
+            torch.sqrt(torch.sum(torch.mul(Jacob, Jacob), 2)), 2)
         JJJ = torch.div(Jacob, JJ2.expand(-1, -1, 2 * self.n_params))
         ex_data = torch.unsqueeze(gradients, 2)
-        loss_weights = torch.clone(torch.squeeze(torch.matmul(JJJ, ex_data), 2))
+        loss_weights = torch.clone(torch.squeeze(torch.matmul(JJJ, ex_data),
+                                                 2))
         # anisotropy weigths
         loss_weights[:, self.omega] = 0.0
         loss_anisotropy = torch.sqrt(
