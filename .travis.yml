@@ -53,7 +53,7 @@ install:
     - pip install setuptools
     - pip install coveralls coverage
     - pip install torch GPy GPyOpt
-    - pip install scikit-learn
+    - pip install -U scikit-learn
     - python setup.py install
 
 script:
