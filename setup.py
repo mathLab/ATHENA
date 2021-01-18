@@ -16,7 +16,7 @@ KEYWORDS = 'parameter-space-reduction active-subspaces ' \
            'kernel-active-subspaces model-reduction sensitivity-analysis ' \
            'nonlinear-level-set-learning'
 
-REQUIRED = ['numpy', 'scipy', 'matplotlib', 'torch', 'GPy', 'GPyOpt']
+REQUIRED = ['numpy', 'scipy', 'matplotlib', 'torch', 'GPy', 'GPyOpt', 'scikit-learn']
 
 EXTRAS = {
     'docs': ['Sphinx>=1.4', 'sphinx_rtd_theme'],
