@@ -53,7 +53,7 @@ class ActiveSubspaces(Subspaces):
             eigenspaces define the active subspace.
         :param numpy.ndarray metric: metric matrix output_dim-by-output-dim for
             vectorial active subspaces.
-        :raises: ValueError, TypeError
+        :raises: TypeError
         """
         if self.method == 'exact':
             if gradients is None:
