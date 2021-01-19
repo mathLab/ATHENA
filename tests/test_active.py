@@ -47,7 +47,7 @@ class TestUtils(TestCase):
 
     def test_fit_01(self):
         ss = ActiveSubspaces(dim=1)
-        with self.assertRaises(ValueError):
+        with self.assertRaises(TypeError):
             ss.fit()
 
     def test_fit_02(self):
@@ -427,7 +427,7 @@ class TestUtils(TestCase):
 
     def test_plot_eigenvalues_01(self):
         ss = ActiveSubspaces(dim=1)
-        with self.assertRaises(ValueError):
+        with self.assertRaises(TypeError):
             ss.plot_eigenvalues(figsize=(7, 7), title='Eigenvalues')
 
     def test_plot_eigenvalues_02(self):
@@ -454,12 +454,12 @@ class TestUtils(TestCase):
         weights = np.ones((50, 1)) / 50
         ss = ActiveSubspaces(dim=1, n_boot=200)
         ss.fit(gradients=gradients, weights=weights)
-        with self.assertRaises(ValueError):
+        with self.assertRaises(TypeError):
             ss.plot_eigenvalues(n_evals=5, figsize=(7, 7))
 
     def test_plot_eigenvectors_01(self):
         ss = ActiveSubspaces(dim=1)
-        with self.assertRaises(ValueError):
+        with self.assertRaises(TypeError):
             ss.plot_eigenvectors(figsize=(7, 7), title='Eigenvalues')
 
     def test_plot_eigenvectors_02(self):
@@ -492,7 +492,7 @@ class TestUtils(TestCase):
 
     def test_plot_sufficient_summary_01(self):
         ss = ActiveSubspaces(dim=1)
-        with self.assertRaises(ValueError):
+        with self.assertRaises(TypeError):
             ss.plot_sufficient_summary(10, 10)
 
     def test_plot_sufficient_summary_02(self):

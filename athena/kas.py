@@ -53,7 +53,6 @@ class KernelActiveSubspaces(Subspaces):
     :cvar int n_boot: number of bootstrap samples.
     :cvar numpy.ndarray metric: metric matrix for vectorial active
         subspaces.
-    :raises: ValueError
     """
     def __init__(self,
                  dim,
@@ -90,16 +89,16 @@ class KernelActiveSubspaces(Subspaces):
             eigenspaces define the active subspace.
         :param numpy.ndarray metric: metric matrix output_dim-by-output-dim for
             vectorial active subspaces.
-        :raises: ValueError
+        :raises: TypeError, ValueError
         """
         if self.method == 'exact':
             if gradients is None or inputs is None:
-                raise ValueError('gradients or inputs argument is None.')
+                raise TypeError('gradients or inputs argument is None.')
 
         # estimate active subspace with local linear models.
         elif self.method == 'local':
             if inputs is None or outputs is None:
-                raise ValueError('inputs or outputs argument is None.')
+                raise TypeError('inputs or outputs argument is None.')
             gradients, inputs = local_linear_gradients(inputs=inputs,
                                                        outputs=outputs,
                                                        weights=weights)
@@ -119,8 +118,7 @@ class KernelActiveSubspaces(Subspaces):
         if self.feature_map is None:
             # default spectral measure is Gaussian
             self.feature_map = FeatureMap(distr='multivariate_normal',
-                                          bias=np.ones(
-                                              (1, self.n_features)),
+                                          bias=np.ones((1, self.n_features)),
                                           input_dim=inputs.shape[1],
                                           n_features=self.n_features,
                                           params=np.ones(inputs.shape[1]),
@@ -160,10 +158,22 @@ class KernelActiveSubspaces(Subspaces):
             array n_samples-by-inactive_dim containing the mapped inactive
             variables.
         :rtype: numpy.ndarray, numpy.ndarray
+        :raises: TypeError
         """
         features = self.feature_map.compute_fmap(inputs)
-        active = np.dot(features, self.W1)
-        inactive = np.dot(features, self.W2)
+
+        if self.W1 is None:
+            raise TypeError(
+                'the kernel-based active subspace has not been evaluated.')
+
+        # allow evaluation of active variables only
+        if self.W2 is None:
+            active = np.dot(features, self.W1)
+            inactive = None
+        else:
+            active = np.dot(features, self.W1)
+            inactive = np.dot(features, self.W2)
+
         return active, inactive
 
     def inverse_transform(self, reduced_inputs, n_points):

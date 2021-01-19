@@ -16,12 +16,12 @@ KEYWORDS = 'parameter-space-reduction active-subspaces ' \
            'kernel-active-subspaces model-reduction sensitivity-analysis ' \
            'nonlinear-level-set-learning'
 
-REQUIRED = ['numpy', 'scipy', 'matplotlib', 'torch']
+REQUIRED = ['numpy', 'scipy', 'matplotlib', 'torch', 'GPy', 'GPyOpt', 'scikit-learn']
 
 EXTRAS = {
     'docs': ['Sphinx>=1.4', 'sphinx_rtd_theme'],
     'formatting': ['yapf'],
-    'tutorials': ['pyro'],
+    'tutorials': ['pyro', 'pyhmc'],
 }
 
 LDESCRIPTION = ('ATHENA is a Python package for reduction in parameter spaces.')
@@ -31,7 +31,7 @@ setup(name=NAME,
       description=DESCRIPTION,
       long_description=LDESCRIPTION,
       classifiers=[
-          'Development Status ::  3 - Alpha',
+          'Development Status ::  5 - Production/Stable',
           'License :: OSI Approved :: MIT License',
           'Programming Language :: Python :: 3.6',
           'Intended Audience :: Science/Research',

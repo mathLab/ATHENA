@@ -8,12 +8,13 @@ Base module for Active Subspaces and Kernel-based Active Subspaces.
 
     - Francesco Romor, Marco Tezzele, Andrea Lario, Gianluigi Rozza.
       Kernel-based Active Subspaces with application to CFD problems using
-      Discontinuous Galerkin Method. 2020. 
+      Discontinuous Galerkin Method. 2020.
       arxiv: https://arxiv.org/abs/2008.12083
 
 """
 import numpy as np
 import matplotlib.pyplot as plt
+from sklearn.utils.extmath import randomized_svd
 from .utils import sort_eigpairs
 plt.rcParams.update({'font.size': 16})
 
@@ -70,8 +71,27 @@ class Subspaces():
                            axis=0))
                 evals, evects = sort_eigpairs(cov_matrix)
                 return np.squeeze(evals), evects
+
             X = np.squeeze(gradients * np.sqrt(weights).reshape(-1, 1))
-            singular, evects = np.linalg.svd(X, full_matrices=False)[1:]
+            n_samples, n_pars = X.shape
+
+            # computational complexity of svd and random svd
+            svd_complexity = n_samples * n_pars * self.dim
+            rsvd_complexity = n_samples * n_pars * np.log(
+                self.dim) + (n_samples + n_pars) * self.dim**2
+
+            if svd_complexity > rsvd_complexity and (n_samples > 10000
+                                                     or n_pars > 10000):
+                singular, evects = randomized_svd(
+                    M=X,
+                    n_components=self.dim,
+                    n_oversamples=10,
+                    n_iter='auto',
+                    power_iteration_normalizer='auto',
+                    transpose='auto')[1:]
+            else:
+                singular, evects = np.linalg.svd(X, full_matrices=False)[1:]
+
             evals = singular**2
             return evals, evects.T
 
@@ -99,28 +119,44 @@ class Subspaces():
         :rtype: numpy.ndarray, numpy.ndarray
         """
         n_pars = gradients.shape[-1]
-        e_boot = np.zeros((n_pars, self.n_boot))
-        sub_dist = np.zeros((n_pars - 1, self.n_boot))
+        n_samples = gradients.shape[0]
+
+        svd_complexity = n_samples * n_pars * self.dim
+        rsvd_complexity = n_samples * n_pars * np.log(
+            self.dim) + (n_samples + n_pars) * self.dim**2
+
+        # randomized_svd is not implemented for vectorial as yet
+        if len(gradients.shape) == 2:
+            if svd_complexity > rsvd_complexity and (n_samples > 10000
+                                                     or n_pars > 10000):
+                range_dim = self.dim
+            else:
+                range_dim = min(n_pars, n_samples)
+        else:
+            range_dim = n_pars
+
+        e_boot = np.zeros((range_dim, self.n_boot))
+        sub_dist = np.zeros((range_dim - 1, self.n_boot))
 
         for i in range(self.n_boot):
-            gradients0, weights0 = self._bootstrap_replicate(gradients, weights)
+            gradients0, weights0 = self._bootstrap_replicate(
+                gradients, weights)
             e0, W0 = self._build_decompose_cov_matrix(gradients=gradients0,
                                                       weights=weights0,
                                                       metric=metric)
-            e_boot[:, i] = e0.reshape((n_pars, ))
-            for j in range(n_pars - 1):
-                sub_dist[j, i] = np.linalg.norm(np.dot(self.evects[:, :j + 1].T,
-                                                       W0[:, j + 1:]),
-                                                ord=2)
+            e_boot[:, i] = e0
+            for j in range(range_dim - 1):
+                range_diff = np.dot(self.evects[:, :j + 1].T, W0[:, j + 1:])
+                sub_dist[j, i] = np.linalg.norm(range_diff, ord=2)
 
         # bootstrap ranges for the eigenvalues
         self.evals_br = np.hstack((np.amin(e_boot, axis=1).reshape(
-            (n_pars, 1)), np.amax(e_boot, axis=1).reshape((n_pars, 1))))
+            (range_dim, 1)), np.amax(e_boot, axis=1).reshape((range_dim, 1))))
         # bootstrap ranges and mean for subspace distance
         self.subs_br = np.hstack((np.amin(sub_dist, axis=1).reshape(
-            (n_pars - 1, 1)), np.mean(sub_dist, axis=1).reshape(
-                (n_pars - 1, 1)), np.amax(sub_dist, axis=1).reshape(
-                    (n_pars - 1, 1))))
+            (range_dim - 1, 1)), np.mean(sub_dist, axis=1).reshape(
+                (range_dim - 1, 1)), np.amax(sub_dist, axis=1).reshape(
+                    (range_dim - 1, 1))))
 
     @staticmethod
     def _bootstrap_replicate(matrix, weights):
@@ -197,13 +233,22 @@ class Subspaces():
         if not isinstance(self.dim, int):
             raise TypeError('dim should be an integer.')
 
-        if self.dim < 1 or self.dim > self.evects.shape[0]:
+        if self.dim < 1 or self.dim > self.evects.shape[1]:
             raise ValueError(
                 'dim must be positive and less than the dimension of the '
                 ' eigenvectors: dim = {}.'.format(self.dim))
 
-        self.W1 = self.evects[:, :self.dim]
-        self.W2 = self.evects[:, self.dim:]
+        # allow evaluation of active eigenvectors only
+        if self.evects.shape[1] < self.evects.shape[0]:
+            self.W1 = self.evects[:, :self.dim]
+            self.W2 = None
+        elif self.evects.shape[1] == self.evects.shape[0]:
+            self.W1 = self.evects[:, :self.dim]
+            self.W2 = self.evects[:, self.dim:]
+        else:
+            raise ValueError(
+                'the eigenvectors cannot have dimension less than dim = {}.'.
+                format(self.dim))
 
     def plot_eigenvalues(self,
                          n_evals=None,
@@ -219,17 +264,17 @@ class Subspaces():
         :param tuple(int,int) figsize: tuple in inches defining the figure size.
             Default is (8, 8).
         :param str title: title of the plot.
-        :raises: ValueError
+        :raises: TypeError
 
         .. warning:: `self.fit` has to be called in advance.
         """
         if self.evals is None:
-            raise ValueError('The eigenvalues have not been computed.'
+            raise TypeError('The eigenvalues have not been computed.'
                              'You have to perform the fit method.')
         if n_evals is None:
             n_evals = self.evals.shape[0]
         if n_evals > self.evals.shape[0]:
-            raise ValueError('Invalid number of eigenvalues to plot.')
+            raise TypeError('Invalid number of eigenvalues to plot.')
 
         plt.figure(figsize=figsize)
         plt.title(title)
@@ -293,12 +338,12 @@ class Subspaces():
             Default is (8, 2 * n_evects).
         :param str labels: labels for the components of the eigenvectors.
         :param str title: title of the plot.
-        :raises: ValueError
+        :raises: ValueError, TypeError
 
         .. warning:: `self.fit` has to be called in advance.
         """
         if self.evects is None:
-            raise ValueError('The eigenvectors have not been computed.'
+            raise TypeError('The eigenvectors have not been computed.'
                              'You have to perform the fit method.')
         if n_evects is None:
             n_evects = self.dim
@@ -357,14 +402,14 @@ class Subspaces():
         :param tuple(int,int) figsize: tuple in inches defining the figure
             size. Defaults to (10, 8).
         :param str title: title of the plot.
-        :raises: ValueError
+        :raises: ValueError, TypeError
 
         .. warning:: `self.fit` has to be called in advance.
 
             Plot only available for partitions up to dimension 2.
         """
         if self.evects is None:
-            raise ValueError('The eigenvectors have not been computed.'
+            raise TypeError('The eigenvectors have not been computed.'
                              'You have to perform the fit method.')
 
         plt.figure(figsize=figsize)
