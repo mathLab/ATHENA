@@ -125,7 +125,7 @@ To implement the numerical methods present in this package we followed these wor
 ### Recent works with ATHENA
 Here there is a list of the scientific works involving **ATHENA** you can consult and/or cite. If you want to add one, please open a PR.
 
-* Demo, Tezzele, Mola, Rozza. *Hull shape design optimization with parameter space and model reductions and self-learning mesh morphing*. 2021. [[arXiv](https://arxiv.org/abs/2101.03781)].
+* Demo, Tezzele, Mola, Rozza. *Hull shape design optimization with parameter space and model reductions and self-learning mesh morphing*. 2021. [[DOI](https://doi.org/10.3390/jmse9020185)], [[arXiv](https://arxiv.org/abs/2101.03781)].
 
 * Romor, Tezzele, Rozza. *Multi-fidelity data fusion for the approximation of scalar functions with low intrinsic dimensionality through active subspaces*. 2020. [[arXiv](https://arxiv.org/abs/2010.08349)].
 
