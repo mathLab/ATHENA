@@ -13,4 +13,5 @@ from .projection_factory import ProjectionFactory
 from .nll import NonlinearLevelSet, ForwardNet, BackwardNet
 from .subspaces import Subspaces
 from .utils import (Normalizer, initialize_weights, linear_program_ineq,
-                    local_linear_gradients, sort_eigpairs)
+                    local_linear_gradients, sort_eigpairs, CrossValidation,
+                    rrmse, average_rrmse)
