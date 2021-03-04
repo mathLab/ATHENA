@@ -58,9 +58,10 @@ class ActiveSubspaces(Subspaces):
             outputs=None,
             gradients=None,
             weights=None,
-            metric=None):
+            metric=None,
+            generator=None):
         """
-        Compute the active subspaces given the gradients of the model function
+	Compute the active subspaces given the gradients of the model function
         wrt the input parameters, or given the input/outputs couples. Only two
         methods are available: 'exact' and 'local'.
 
@@ -74,6 +75,7 @@ class ActiveSubspaces(Subspaces):
             eigenspaces define the active subspace.
         :param numpy.ndarray metric: metric matrix output_dim-by-output-dim for
             vectorial active subspaces.
+        :param generator:
         :raises: TypeError
         """
         if self.method == 'exact':
@@ -105,10 +107,9 @@ class ActiveSubspaces(Subspaces):
             self._compute_bootstrap_ranges(gradients, weights, metric=metric)
         self._partition()
 
-
     def transform(self, inputs):
         """
-        Map full variables to active and inactive variables.
+	Map full variables to active and inactive variables.
 
         Points in the original input space are mapped to the active and inactive
         subspace.
@@ -174,7 +175,7 @@ class ActiveSubspaces(Subspaces):
 
     def _sample_inactive(self, reduced_input, n_points):
         """
-        Sample inactive variables.
+	Sample inactive variables.
 
         Sample values of the inactive variables for a fixed value of the active
         variables when the original variables are bounded by a hypercube.
@@ -189,14 +190,14 @@ class ActiveSubspaces(Subspaces):
             -1 <= W1*y + W2*z <= 1, where y is the given value of the active
             variables. In other words, we need to sample z such that it respects
             the linear inequalities W2*z <= 1 - W1*y, -W2*z <= 1 + W1*y. These
-            inequalities define a polytope in R^(inactive_dim). We want to
+	    inequalities define a polytope in R^(inactive_dim). We want to
             sample N points uniformly from the polytope. This function first
             tries a simple rejection sampling scheme, which finds a bounding
             hyperbox for the polytope, draws points uniformly from the bounding
             hyperbox, and rejects points outside the polytope. If that method
             does not return enough samples, the method tries a "hit and run"
             method for sampling from the polytope. If that does not work, it
-            returns an array with `N` copies of a feasible point computed as the
+	    returns an array with `N` copies of a feasible point computed as the
             Chebyshev center of the polytope.
         """
         Z = self._rejection_sampling_inactive(reduced_input, n_points)
@@ -206,7 +207,7 @@ class ActiveSubspaces(Subspaces):
 
     def _compute_A_b(self, reduced_input):
         """
-        Compute the matrix A and the vector b to build a box around the inactive
+	Compute the matrix A and the vector b to build a box around the inactive
         subspace for uniform sampling.
 
         :param numpy.ndarray reduced_input: the value of the active variables.
@@ -282,7 +283,7 @@ class ActiveSubspaces(Subspaces):
 
         # tolerance
         eps0 = 1e-6 / 4.0
-
+        
         Z = np.zeros((n_points, inactive_dim))
         for i in range(n_points):
             # random direction
@@ -369,4 +370,3 @@ class ActiveSubspaces(Subspaces):
             s[:, -1] = grad
         evals = sigma ** 2 
         return evals, v
-

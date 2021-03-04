@@ -3,7 +3,7 @@ import numpy as np
 from athena.active import ActiveSubspaces
 from contextlib import contextmanager
 import matplotlib.pyplot as plt
-
+import torch
 
 @contextmanager
 def assert_plot_figures_added():
@@ -611,4 +611,3 @@ class TestUtils(TestCase):
         evals, v = ss._frequent_directions(gradients=gradients)
         self.assertEqual(v.shape, (500, 50))
         self.assertEqual(evals.shape, (50,))
-
