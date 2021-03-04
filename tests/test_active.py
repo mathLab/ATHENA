@@ -3,7 +3,7 @@ import numpy as np
 from athena.active import ActiveSubspaces
 from contextlib import contextmanager
 import matplotlib.pyplot as plt
-
+import torch
 
 @contextmanager
 def assert_plot_figures_added():
@@ -547,3 +547,26 @@ class TestUtils(TestCase):
             ss.plot_sufficient_summary(
                 np.random.uniform(-1, 1, 100).reshape(25, 4),
                 np.random.uniform(-1, 1, 25).reshape(-1, 1))
+
+    def test_frequent_directions_01(self):
+        np.random.seed(42)
+        inputs = torch.rand(500, 100)
+        generator = (inputs[:, i] for i in range(100))
+        ss = ActiveSubspaces(dim=50)
+        Sigma, V =ss._frequent_directions(generator, inputs)
+
+    def test_frequent_directions_02(self):
+        np.random.seed(42)
+        inputs = torch.rand(500, 100)
+        generator = (inputs[:, i] for i in range(100))
+        ss = ActiveSubspaces(dim=50)
+        Sigma, V =ss._frequent_directions(generator, inputs)
+        self.assertEqual(list(V.size()), [500, 50])
+        self.assertEqual(list(Sigma.size()), [50])
+
+    def test_fit_FD__01(self):
+        np.random.seed(42)
+        inputs = torch.rand(500, 100)
+        generator = (inputs[:, i] for i in range(100))
+        ss = ActiveSubspaces(dim=50, method='FD')
+        ss.fit(inputs=inputs, generator=generator)
