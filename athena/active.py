@@ -13,6 +13,7 @@ Active Subspaces module.
 import numpy as np
 from .subspaces import Subspaces
 from scipy.linalg import null_space
+import torch
 
 from .utils import (Normalizer, initialize_weights, linear_program_ineq,
                     local_linear_gradients)
@@ -38,9 +39,10 @@ class ActiveSubspaces(Subspaces):
             outputs=None,
             gradients=None,
             weights=None,
-            metric=None):
+            metric=None,
+            generator=None):
         """
-        Compute the active subspaces given the gradients of the model function
+	Compute the active subspaces given the gradients of the model function
         wrt the input parameters, or given the input/outputs couples. Only two
         methods are available: 'exact' and 'local'.
 
@@ -53,6 +55,7 @@ class ActiveSubspaces(Subspaces):
             eigenspaces define the active subspace.
         :param numpy.ndarray metric: metric matrix output_dim-by-output-dim for
             vectorial active subspaces.
+        :param generator:
         :raises: TypeError
         """
         if self.method == 'exact':
@@ -67,23 +70,27 @@ class ActiveSubspaces(Subspaces):
                                                outputs=outputs,
                                                weights=weights)[0]
 
-        if weights is None or self.method == 'local':
-            # use the new gradients to compute the weights, otherwise dimension
-            # mismatch accours.
-            weights = initialize_weights(gradients)
+        if generator is None:
+            if weights is None or self.method == 'local':
+                # use the new gradients to compute the weights, otherwise dimension
+                # mismatch accours.
+                weights = initialize_weights(gradients)
 
-        if len(gradients.shape) == 3 and metric is None:
-            metric = np.diag(np.ones(gradients.shape[1]))
+            if len(gradients.shape) == 3 and metric is None:
+                metric = np.diag(np.ones(gradients.shape[1]))
 
-        self.evals, self.evects = self._build_decompose_cov_matrix(
-            gradients=gradients, weights=weights, metric=metric)
-
-        self._compute_bootstrap_ranges(gradients, weights, metric=metric)
-        self._partition()
+            self.evals, self.evects = self._build_decompose_cov_matrix(
+                gradients=gradients, weights=weights, metric=metric)
+        
+            self._compute_bootstrap_ranges(gradients, weights, metric=metric)
+            self._partition()
+        else:
+            self.evals, self.evects = self._frequent_directions(generator, inputs)
+ 
 
     def transform(self, inputs):
         """
-        Map full variables to active and inactive variables.
+	Map full variables to active and inactive variables.
 
         Points in the original input space are mapped to the active and inactive
         subspace.
@@ -149,7 +156,7 @@ class ActiveSubspaces(Subspaces):
 
     def _sample_inactive(self, reduced_input, n_points):
         """
-        Sample inactive variables.
+	Sample inactive variables.
 
         Sample values of the inactive variables for a fixed value of the active
         variables when the original variables are bounded by a hypercube.
@@ -164,14 +171,14 @@ class ActiveSubspaces(Subspaces):
             -1 <= W1*y + W2*z <= 1, where y is the given value of the active
             variables. In other words, we need to sample z such that it respects
             the linear inequalities W2*z <= 1 - W1*y, -W2*z <= 1 + W1*y. These
-            inequalities define a polytope in R^(inactive_dim). We want to
+	    inequalities define a polytope in R^(inactive_dim). We want to
             sample N points uniformly from the polytope. This function first
             tries a simple rejection sampling scheme, which finds a bounding
             hyperbox for the polytope, draws points uniformly from the bounding
             hyperbox, and rejects points outside the polytope. If that method
             does not return enough samples, the method tries a "hit and run"
             method for sampling from the polytope. If that does not work, it
-            returns an array with `N` copies of a feasible point computed as the
+	    returns an array with `N` copies of a feasible point computed as the
             Chebyshev center of the polytope.
         """
         Z = self._rejection_sampling_inactive(reduced_input, n_points)
@@ -181,12 +188,12 @@ class ActiveSubspaces(Subspaces):
 
     def _compute_A_b(self, reduced_input):
         """
-        Compute the matrix A and the vector b to build a box around the inactive
+	Compute the matrix A and the vector b to build a box around the inactive
         subspace for uniform sampling.
 
         :param numpy.ndarray reduced_input: the value of the active variables.
-        :return: matrix A, and vector b. :rtype: numpy.ndarray, numpy.ndarray
-        """
+         :return: matrix A, and vector b. :rtype: numpy.ndarray, numpy.ndarray
+	"""
         s = np.dot(self.W1, reduced_input).reshape((-1, 1))
         A = np.vstack((self.W2, -1 * self.W2))
         b = np.vstack((-1 - s, -1 + s)).reshape((-1, 1))
@@ -256,7 +263,7 @@ class ActiveSubspaces(Subspaces):
 
         # tolerance
         eps0 = 1e-6 / 4.0
-
+        
         Z = np.zeros((n_points, inactive_dim))
         for i in range(n_points):
             # random direction
@@ -318,3 +325,23 @@ class ActiveSubspaces(Subspaces):
         inputs = np.dot(YZ, self.evects.T).reshape((N * NY, m))
         indices = np.kron(np.arange(NY), np.ones(N)).reshape((N * NY, 1))
         return inputs, indices
+
+    def _frequent_directions(self, generator, inputs):
+        """
+        Function that perform the frequent direction algorithm.
+        :param generator
+        :param tensor inputs: inputs for the active subspace
+        :return tensor V and Sigma: matrix of projection V and singular
+            values Sigma
+        """
+        S = torch.zeros(inputs.size()[0], self.dim)
+        for i in range(self.dim):
+            S[:, i] = next(generator)
+        
+        for t in range(self.dim, inputs.size()[1]):
+            V, Sigma, U = torch.svd(S)
+            if t == inputs.size()[1] -1:
+                break
+            S = torch.matmul(V, torch.sqrt(torch.diag(Sigma.pow(2)) - Sigma[-1].pow(2) * torch.eye(self.dim)))
+            S[:, -1] = next(generator)
+        return Sigma, V
