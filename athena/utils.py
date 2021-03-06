@@ -133,7 +133,7 @@ def local_linear_gradients(inputs, outputs, weights=None, n_neighbors=None):
     MM = min(int(np.ceil(10 * n_pars * np.log(n_pars))), n_samples - 1)
 
     # distinguish between scalar and vectorial outputs
-    if len(outputs.shape) == 1 or outputs.shape[1] == 0:
+    if len(outputs.shape) == 1 or outputs.shape[1] == 1:
         gradients = np.zeros((MM, n_pars))
     else:
         gradients = np.zeros((MM, outputs.shape[1], n_pars))
