@@ -13,7 +13,6 @@ Active Subspaces module.
 import numpy as np
 from .subspaces import Subspaces
 from scipy.linalg import null_space
-import torch
 
 from .utils import (Normalizer, initialize_weights, linear_program_ineq,
                     local_linear_gradients)
@@ -91,8 +90,8 @@ class ActiveSubspaces(Subspaces):
 
         if generator is None:
             if weights is None or self.method == 'local':
-                # use the new gradients to compute the weights, otherwise dimension
-                # mismatch accours.
+                # use the new gradients to compute the weights, otherwise
+                # dimension mismatch accours.
                 weights = initialize_weights(gradients)
 
             if len(gradients.shape) == 3 and metric is None:
@@ -100,12 +99,12 @@ class ActiveSubspaces(Subspaces):
 
             self.evals, self.evects = self._build_decompose_cov_matrix(
                 gradients=gradients, weights=weights, metric=metric)
-        
+
             self._compute_bootstrap_ranges(gradients, weights, metric=metric)
             self._partition()
         else:
-            self.evals, self.evects = self._frequent_directions(generator, inputs)
- 
+            self.evals, self.evects = self._frequent_directions(generator)
+
 
     def transform(self, inputs):
         """
@@ -283,7 +282,7 @@ class ActiveSubspaces(Subspaces):
 
         # tolerance
         eps0 = 1e-6 / 4.0
-        
+
         Z = np.zeros((n_points, inactive_dim))
         for i in range(n_points):
             # random direction
@@ -346,22 +345,26 @@ class ActiveSubspaces(Subspaces):
         indices = np.kron(np.arange(NY), np.ones(N)).reshape((N * NY, 1))
         return inputs, indices
 
-    def _frequent_directions(self, generator, inputs):
+    def _frequent_directions(self, gradients):
         """
         Function that perform the frequent direction algorithm.
+        :param numpy.ndarray inputs: input parameters oriented as columns
         :param generator
-        :param tensor inputs: inputs for the active subspace
-        :return tensor V and Sigma: matrix of projection V and singular
-            values Sigma
+        :return tensor V and sigma: matrix of projection V and singular
+            values sigma
         """
-        S = torch.zeros(inputs.size()[0], self.dim)
+        #s = np.zeros((inputs.shape[0], self.dim))
+        s = np.zeros((256 * 8 * 8, self.dim))
         for i in range(self.dim):
-            S[:, i] = next(generator)
-        
-        for t in range(self.dim, inputs.size()[1]):
-            V, Sigma, U = torch.svd(S)
-            if t == inputs.size()[1] -1:
+            s[:, i] = next(gradients)
+        print(s.size)
+        #print(s[0].size)
+        len_data = 50000
+        for t in range(self.dim, len_data):
+            v, sigma, uh = np.linalg.svd(s, full_matrices=False)
+            if t == len_data -1:
                 break
-            S = torch.matmul(V, torch.sqrt(torch.diag(Sigma.pow(2)) - Sigma[-1].pow(2) * torch.eye(self.dim)))
-            S[:, -1] = next(generator)
-        return Sigma, V
+            s = np.dot(v, np.sqrt(np.diag(sigma**2) - (sigma[-1]**2) * np.eye(self.dim)))
+            s[:, -1] = next(gradients)
+        return sigma, v
+
