@@ -283,7 +283,7 @@ class ActiveSubspaces(Subspaces):
 
         # tolerance
         eps0 = 1e-6 / 4.0
-        
+
         Z = np.zeros((n_points, inactive_dim))
         for i in range(n_points):
             # random direction

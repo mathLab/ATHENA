@@ -3,7 +3,6 @@ import numpy as np
 from athena.active import ActiveSubspaces
 from contextlib import contextmanager
 import matplotlib.pyplot as plt
-import torch
 
 @contextmanager
 def assert_plot_figures_added():
