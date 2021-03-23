@@ -354,12 +354,15 @@ class ActiveSubspaces(Subspaces):
             values sigma
         """
         #s = np.zeros((inputs.shape[0], self.dim))
-        s = np.zeros((256 * 8 * 8, self.dim))
+        #s = np.zeros((256 * 8 * 8, self.dim))
+        s = []
         for i in range(self.dim):
-            s[:, i] = next(gradients)
+            #s[:, i] = next(gradients)
+            s.append(next(gradients))
+        s = np.array(s).T
         print(s.size)
         #print(s[0].size)
-        len_data = 50000
+        len_data = 100#50000
         for t in range(self.dim, len_data):
             v, sigma, uh = np.linalg.svd(s, full_matrices=False)
             if t == len_data -1:
