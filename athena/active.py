@@ -342,12 +342,13 @@ class ActiveSubspaces(Subspaces):
         s = np.array(s).T
         print(s.size)
         #print(s[0].size)
-        len_data = 100#50000
-        for t in range(self.dim, len_data):
+#        len_data = 100#50000
+#        for t in range(self.dim, len_data):
+        for grad in gradients:
             v, sigma, uh = np.linalg.svd(s, full_matrices=False)
-            if t == len_data -1:
-                break
+#            if t == len_data -1:
+#                break
             s = np.dot(v, np.sqrt(np.diag(sigma**2) - (sigma[-1]**2) * np.eye(self.dim)))
-            s[:, -1] = next(gradients)
+            s[:, -1] = grad#next(gradients)
         return sigma, v
 
