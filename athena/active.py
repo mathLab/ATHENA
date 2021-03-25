@@ -338,9 +338,9 @@ class ActiveSubspaces(Subspaces):
         s = []
         for i in range(self.dim):
             #s[:, i] = next(gradients)
-            s.append(next(gradients))
+            s.extend([next(gradients)])
         s = np.array(s).T
-        print(s.size)
+        print(s.shape)
         #print(s[0].size)
 #        len_data = 100#50000
 #        for t in range(self.dim, len_data):
