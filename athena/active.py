@@ -333,21 +333,13 @@ class ActiveSubspaces(Subspaces):
         :return tensor V and sigma: matrix of projection V and singular
             values sigma
         """
-        #s = np.zeros((inputs.shape[0], self.dim))
-        #s = np.zeros((256 * 8 * 8, self.dim))
         s = []
         for i in range(self.dim):
             #s[:, i] = next(gradients)
             s.extend([next(gradients)])
         s = np.array(s).T
-        print(s.shape)
-        #print(s[0].size)
-#        len_data = 100#50000
-#        for t in range(self.dim, len_data):
         for grad in gradients:
             v, sigma, uh = np.linalg.svd(s, full_matrices=False)
-#            if t == len_data -1:
-#                break
             s = np.dot(v, np.sqrt(np.diag(sigma**2) - (sigma[-1]**2) * np.eye(self.dim)))
             s[:, -1] = grad#next(gradients)
         return sigma, v
