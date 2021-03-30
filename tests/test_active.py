@@ -4,6 +4,7 @@ from athena.active import ActiveSubspaces
 from contextlib import contextmanager
 import matplotlib.pyplot as plt
 
+
 @contextmanager
 def assert_plot_figures_added():
     """
