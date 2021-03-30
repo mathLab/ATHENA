@@ -13,6 +13,7 @@ Active Subspaces module.
 import numpy as np
 from .subspaces import Subspaces
 from scipy.linalg import null_space
+import types
 
 from .utils import (Normalizer, initialize_weights, linear_program_ineq,
                     local_linear_gradients)
@@ -38,23 +39,22 @@ class ActiveSubspaces(Subspaces):
             outputs=None,
             gradients=None,
             weights=None,
-            metric=None,
-            generator=None):
+            metric=None):
         """
-	Compute the active subspaces given the gradients of the model function
+        Compute the active subspaces given the gradients of the model function
         wrt the input parameters, or given the input/outputs couples. Only two
         methods are available: 'exact' and 'local'.
 
         :param numpy.ndarray inputs: input parameters oriented as rows.
         :param numpy.ndarray outputs: corresponding outputs oriented as rows.
         :param numpy.ndarray gradients: n_samples-by-n_params matrix containing
-            the gradient samples oriented as rows.
+            the gradient samples oriented as rows. If frequent directions needed
+            to be performed, gradients is an object of GenratorType.
         :param numpy.ndarray weights: n_samples-by-1 weight vector, corresponds
             to numerical quadrature rule used to estimate matrix whose
             eigenspaces define the active subspace.
         :param numpy.ndarray metric: metric matrix output_dim-by-output-dim for
             vectorial active subspaces.
-        :param generator:
         :raises: TypeError
         """
         if self.method == 'exact':
@@ -69,7 +69,9 @@ class ActiveSubspaces(Subspaces):
                                                outputs=outputs,
                                                weights=weights)[0]
 
-        if generator is None:
+        if isinstance(gradients, types.GeneratorType):
+            self.singvals, self.evects = self._frequent_directions(gradients)
+        else:
             if weights is None or self.method == 'local':
                 # use the new gradients to compute the weights, otherwise
                 # dimension mismatch accours.
@@ -83,13 +85,11 @@ class ActiveSubspaces(Subspaces):
 
             self._compute_bootstrap_ranges(gradients, weights, metric=metric)
             self._partition()
-        else:
-            self.evals, self.evects = self._frequent_directions(generator)
 
 
     def transform(self, inputs):
         """
-	Map full variables to active and inactive variables.
+        Map full variables to active and inactive variables.
 
         Points in the original input space are mapped to the active and inactive
         subspace.
@@ -155,7 +155,7 @@ class ActiveSubspaces(Subspaces):
 
     def _sample_inactive(self, reduced_input, n_points):
         """
-	Sample inactive variables.
+        Sample inactive variables.
 
         Sample values of the inactive variables for a fixed value of the active
         variables when the original variables are bounded by a hypercube.
@@ -170,14 +170,14 @@ class ActiveSubspaces(Subspaces):
             -1 <= W1*y + W2*z <= 1, where y is the given value of the active
             variables. In other words, we need to sample z such that it respects
             the linear inequalities W2*z <= 1 - W1*y, -W2*z <= 1 + W1*y. These
-	    inequalities define a polytope in R^(inactive_dim). We want to
+            inequalities define a polytope in R^(inactive_dim). We want to
             sample N points uniformly from the polytope. This function first
             tries a simple rejection sampling scheme, which finds a bounding
             hyperbox for the polytope, draws points uniformly from the bounding
             hyperbox, and rejects points outside the polytope. If that method
             does not return enough samples, the method tries a "hit and run"
             method for sampling from the polytope. If that does not work, it
-	    returns an array with `N` copies of a feasible point computed as the
+            returns an array with `N` copies of a feasible point computed as the
             Chebyshev center of the polytope.
         """
         Z = self._rejection_sampling_inactive(reduced_input, n_points)
@@ -187,12 +187,12 @@ class ActiveSubspaces(Subspaces):
 
     def _compute_A_b(self, reduced_input):
         """
-	Compute the matrix A and the vector b to build a box around the inactive
+        Compute the matrix A and the vector b to build a box around the inactive
         subspace for uniform sampling.
 
         :param numpy.ndarray reduced_input: the value of the active variables.
-         :return: matrix A, and vector b. :rtype: numpy.ndarray, numpy.ndarray
-	"""
+        :return: matrix A, and vector b. :rtype: numpy.ndarray, numpy.ndarray
+        """
         s = np.dot(self.W1, reduced_input).reshape((-1, 1))
         A = np.vstack((self.W2, -1 * self.W2))
         b = np.vstack((-1 - s, -1 + s)).reshape((-1, 1))
@@ -327,19 +327,22 @@ class ActiveSubspaces(Subspaces):
 
     def _frequent_directions(self, gradients):
         """
-        Function that perform the frequent direction algorithm.
-        :param numpy.ndarray inputs: input parameters oriented as columns
-        :param generator
-        :return tensor V and sigma: matrix of projection V and singular
-            values sigma
+        Function that perform the frequent directions algorithm for 
+        matrix sketching. For more details about the method, see
+        "Frequent directions: Simple and deterministic matrix
+        sketching." Ghashami, Mina, et al.
+        SIAM Journal on Computing 45.5 (2016): 1762-1792.
+       
+        :param iterable gradients: generator for spatial gradients
+        :return numpy.ndarray sigma and v: matrix of singular values
+            sigma and matrix of projection v
         """
         s = []
         for i in range(self.dim):
-            #s[:, i] = next(gradients)
             s.extend([next(gradients)])
         s = np.array(s).T
         for grad in gradients:
-            v, sigma, uh = np.linalg.svd(s, full_matrices=False)
+            v, sigma = np.linalg.svd(s, full_matrices=False)[:2]
             s = np.dot(v, np.sqrt(np.diag(sigma**2) - (sigma[-1]**2) * np.eye(self.dim)))
             s[:, -1] = grad#next(gradients)
         return sigma, v
