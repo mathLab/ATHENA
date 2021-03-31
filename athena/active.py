@@ -33,6 +33,25 @@ class ActiveSubspaces(Subspaces):
     def __init__(self, dim, method='exact', n_boot=100):
         super().__init__(dim, method, n_boot)
 
+    @property
+    def activity_scores(self):
+        """
+        Return the activity scores as defined in Constantine and Diaz, Global
+        sensitivity metrics from active subspaces, arxiv.org/abs/1510.04361
+        Equation (21).
+        
+        :return: array with the activity score of each parameter.
+        :rtype: numpy.ndarray
+        :raises: TypeError
+
+        .. warning:: `self.fit` has to be called in advance.
+        """
+        if self.W1 is None:
+            raise TypeError('The eigenvectors have not been computed and '
+                            'partitioned. You have to perform the fit method.')
+
+        return np.power(self.W1, 2).dot(self.evals[:self.dim])
+
     def fit(self,
             inputs=None,
             outputs=None,
@@ -185,7 +204,8 @@ class ActiveSubspaces(Subspaces):
         subspace for uniform sampling.
 
         :param numpy.ndarray reduced_input: the value of the active variables.
-        :return: matrix A, and vector b. :rtype: numpy.ndarray, numpy.ndarray
+        :return: matrix A, and vector b.
+        :rtype: numpy.ndarray, numpy.ndarray
         """
         s = np.dot(self.W1, reduced_input).reshape((-1, 1))
         A = np.vstack((self.W2, -1 * self.W2))

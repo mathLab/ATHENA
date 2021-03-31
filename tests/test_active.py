@@ -154,6 +154,29 @@ class TestUtils(TestCase):
              [0.34429445, 0.11938954, -0.8045017, 0.46902504]])
         np.testing.assert_array_almost_equal(true_evects, ss.evects)
 
+    def test_activity_scores_01(self):
+        np.random.seed(42)
+        gradients = np.random.uniform(-1, 1, 180).reshape(15, 3, 4)
+        ss = ActiveSubspaces(dim=1, method='exact', n_boot=150)
+        ss.fit(gradients=gradients)
+        true_scores = np.array([0.599489, 0.055179, 0.37102 , 0.300374])
+        np.testing.assert_array_almost_equal(true_scores, ss.activity_scores)
+
+    def test_activity_scores_02(self):
+        np.random.seed(42)
+        gradients = np.random.uniform(-1, 1, 180).reshape(15, 3, 4)
+        ss = ActiveSubspaces(dim=2, method='exact', n_boot=150)
+        ss.fit(gradients=gradients)
+        true_scores = np.array([0.89979047, 0.58309172, 0.38654072, 0.6618360])
+        np.testing.assert_array_almost_equal(true_scores, ss.activity_scores)
+
+    def test_activity_scores_03(self):
+        np.random.seed(42)
+        gradients = np.random.uniform(-1, 1, 180).reshape(15, 3, 4)
+        ss = ActiveSubspaces(dim=2, method='exact', n_boot=150)
+        with self.assertRaises(TypeError):
+            ss.activity_scores
+
     def test_transform_01(self):
         np.random.seed(42)
         inputs = np.random.uniform(-1, 1, 60).reshape(15, 4)
