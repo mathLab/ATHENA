@@ -18,6 +18,7 @@ Active Subspaces
 	ActiveSubspaces._rejection_sampling_inactive
 	ActiveSubspaces._rotate_x
 	ActiveSubspaces._sample_inactive
+	ActiveSubspaces.activity_scores
 	ActiveSubspaces.fit
 	ActiveSubspaces.inverse_transform
 	ActiveSubspaces.plot_eigenvalues
