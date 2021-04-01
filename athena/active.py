@@ -359,7 +359,7 @@ class ActiveSubspaces(Subspaces):
         :rtype: numpy.ndarray, numpy.ndarray
         """
         s = []
-        for i in range(self.dim):
+        for i in range(self.dim *4):
             s.extend([next(gradients)])
         s = np.array(s).T
         for grad in gradients:
