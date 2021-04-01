@@ -68,7 +68,7 @@ class ActiveSubspaces(Subspaces):
         :param numpy.ndarray outputs: corresponding outputs oriented as rows.
         :param numpy.ndarray gradients: n_samples-by-n_params matrix containing
             the gradient samples oriented as rows. If frequent directions needed
-            to be performed, gradients is an object of GenratorType.
+            to be performed, gradients is of Typo: GeneratorType.
         :param numpy.ndarray weights: n_samples-by-1 weight vector, corresponds
             to numerical quadrature rule used to estimate matrix whose
             eigenspaces define the active subspace.
@@ -89,7 +89,7 @@ class ActiveSubspaces(Subspaces):
                                                weights=weights)[0]
 
         if isinstance(gradients, types.GeneratorType):
-            self.singvals, self.evects = self._frequent_directions(gradients)
+            self.evals, self.evects = self._frequent_directions(gradients)
         else:
             if weights is None or self.method == 'local':
                 # use the new gradients to compute the weights, otherwise
@@ -354,16 +354,17 @@ class ActiveSubspaces(Subspaces):
         SIAM Journal on Computing 45.5 (2016): 1762-1792.
        
         :param iterable gradients: generator for spatial gradients
-        :return numpy.ndarray sigma and v: matrix of singular values
-            sigma and matrix of projection v
+        :return numpy.ndarray evals and v: matrix containing the eigenvalues
+            evals and matrix of projection v
         """
         s = []
-        for i in range(self.dim):
+        for i in range(self.dim *4):
             s.extend([next(gradients)])
         s = np.array(s).T
         for grad in gradients:
             v, sigma = np.linalg.svd(s, full_matrices=False)[:2]
-            s = np.dot(v, np.sqrt(np.diag(sigma**2) - (sigma[-1]**2) * np.eye(self.dim)))
-            s[:, -1] = grad#next(gradients)
-        return sigma, v
+            s = np.dot(v, np.sqrt(np.diag(sigma**2) - (sigma[-1]**2) * np.eye(self.dim*4)))
+            s[:, -1] = grad
+        evals = sigma ** 2 
+        return evals, v
 
