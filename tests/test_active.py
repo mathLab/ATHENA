@@ -606,9 +606,31 @@ class TestUtils(TestCase):
     def test_frequent_directions_01(self):
         np.random.seed(42)
         inputs = np.random.rand(100, 500)
+<<<<<<< HEAD
         gradients = (inputs[i, :] for i in range(100))
         ss = ActiveSubspaces(dim=50, method='exact')
         evals, v = ss._frequent_directions(gradients=gradients)
         self.assertEqual(v.shape, (500, 50))
         self.assertEqual(evals.shape, (50,))
 
+=======
+        generator = (inputs[i, :] for i in range(100))
+        ss = ActiveSubspaces(dim=50)
+        sigma, v = ss._frequent_directions(generator)
+
+    def test_frequent_directions_02(self):
+        np.random.seed(42)
+        inputs = np.random.rand(100, 500)
+        generator = (inputs[i, :] for i in range(100))
+        ss = ActiveSubspaces(dim=50)
+        sigma, v = ss._frequent_directions(generator)
+        self.assertEqual(v.shape, (500, 50))
+        self.assertEqual(sigma.shape, (50,))
+
+    def test_fit_FD__01(self):
+        np.random.seed(42)
+        inputs = np.random.rand(500, 100)
+        generator = (inputs[:, i] for i in range(100))
+        ss = ActiveSubspaces(dim=50, method='exact')
+        ss.fit(gradients=generator)
+>>>>>>> d6c66c69dba9600d8e5236f6aa7980998e59b91f
