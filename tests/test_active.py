@@ -154,6 +154,32 @@ class TestUtils(TestCase):
              [0.34429445, 0.11938954, -0.8045017, 0.46902504]])
         np.testing.assert_array_almost_equal(true_evects, ss.evects)
 
+    def test_fit_11(self):
+        np.random.seed(42)
+        inputs = np.random.uniform(-1, 1, 60).reshape(4, 15)
+        gradients = (inputs[i, :] for i in range(4))
+        ss = ActiveSubspaces(dim=2, method='exact', n_boot=150)
+        ss.fit(gradients=gradients)
+        true_evals = [7.317766, 2.849997]
+        np.testing.assert_array_almost_equal(true_evals, ss.evals)
+
+    def test_fit_12(self):
+        np.random.seed(42)
+        inputs = np.random.uniform(-1, 1, 60).reshape(4, 15)
+        gradients = (inputs[i, :] for i in range(4))
+        ss = ActiveSubspaces(dim=2, method='exact', n_boot=150)
+        ss.fit(gradients=gradients)
+        true_evects = np.array(
+            [[ 0.09139276, 0.01590518], [-0.32654025, -0.21681653],
+            [-0.34395421, 0.02836894], [0.27991908, -0.30031324],
+            [ 0.38410556, 0.02699885], [0.28666797, 0.13440149],
+            [-0.04537087, 0.40685452], [-0.35762976, -0.11629401],
+            [ 0.09873013, -0.18159307], [-0.08712574, -0.13981308],
+            [-0.14280701, 0.58827903], [-0.1142136, -0.39834724],
+            [-0.38691805, -0.03721504], [ 0.34202222, 0.03950987],
+            [-0.10594613, 0.32198557]])
+        np.testing.assert_array_almost_equal(true_evects, ss.evects)
+    
     def test_activity_scores_01(self):
         np.random.seed(42)
         gradients = np.random.uniform(-1, 1, 180).reshape(15, 3, 4)
@@ -176,6 +202,17 @@ class TestUtils(TestCase):
         ss = ActiveSubspaces(dim=2, method='exact', n_boot=150)
         with self.assertRaises(TypeError):
             ss.activity_scores
+
+    def test_activity_scores_04(self):
+        np.random.seed(42)
+        inputs = np.random.uniform(-1, 1, 60).reshape(4, 15)
+        gradients = (inputs[i, :] for i in range(4))
+        ss = ActiveSubspaces(dim=2, method='exact', n_boot=150)
+        ss.fit(gradients=gradients)
+        true_scores = np.array([0.061844, 0.914259, 0.868018, 0.830417, 1.081719, 0.652845,
+        0.486826, 0.974479, 0.165313, 0.111259, 1.135542, 0.547697,
+        1.099458, 0.860475, 0.377612])
+        np.testing.assert_array_almost_equal(true_scores, ss.activity_scores)
 
     def test_transform_01(self):
         np.random.seed(42)
@@ -480,6 +517,15 @@ class TestUtils(TestCase):
         with self.assertRaises(TypeError):
             ss.plot_eigenvalues(n_evals=5, figsize=(7, 7))
 
+    def test_plot_eigenvalues_05(self):
+        np.random.seed(42)
+        inputs = np.random.uniform(-1, 1, 500).reshape(10, 50)
+        gradients = (inputs[i, :] for i in range(10))
+        ss = ActiveSubspaces(dim=4, n_boot=200)
+        ss.fit(gradients=gradients)
+        with assert_plot_figures_added():
+            ss.plot_eigenvalues(figsize=(7, 7), title='Eigenvalues')
+
     def test_plot_eigenvectors_01(self):
         ss = ActiveSubspaces(dim=1)
         with self.assertRaises(TypeError):
@@ -512,6 +558,15 @@ class TestUtils(TestCase):
         ss.fit(gradients=gradients, weights=weights)
         with self.assertRaises(ValueError):
             ss.plot_eigenvectors(n_evects=10, figsize=(7, 7))
+
+    def test_plot_eigenvectors_05(self):
+        np.random.seed(42)
+        inputs = np.random.uniform(-1, 1, 50).reshape(5, 10)
+        gradients = (inputs[i, :] for i in range(5))
+        ss = ActiveSubspaces(dim=4, n_boot=200)
+        ss.fit(gradients=gradients)
+        with assert_plot_figures_added():
+            ss.plot_eigenvectors(figsize=(7, 7), title='Eigenvectors')
 
     def test_plot_sufficient_summary_01(self):
         ss = ActiveSubspaces(dim=1)
@@ -551,22 +606,9 @@ class TestUtils(TestCase):
     def test_frequent_directions_01(self):
         np.random.seed(42)
         inputs = np.random.rand(100, 500)
-        generator = (inputs[i, :] for i in range(100))
-        ss = ActiveSubspaces(dim=50)
-        sigma, v = ss._frequent_directions(generator)
-
-    def test_frequent_directions_02(self):
-        np.random.seed(42)
-        inputs = np.random.rand(100, 500)
-        generator = (inputs[i, :] for i in range(100))
-        ss = ActiveSubspaces(dim=50)
-        sigma, v = ss._frequent_directions(generator)
-        self.assertEqual(v.shape, (500, 50))
-        self.assertEqual(sigma.shape, (50,))
-
-    def test_fit_FD__01(self):
-        np.random.seed(42)
-        inputs = np.random.rand(500, 100)
-        generator = (inputs[:, i] for i in range(100))
+        gradients = (inputs[i, :] for i in range(100))
         ss = ActiveSubspaces(dim=50, method='exact')
-        ss.fit(gradients=generator)
+        evals, v = ss._frequent_directions(gradients=gradients)
+        self.assertEqual(v.shape, (500, 50))
+        self.assertEqual(evals.shape, (50,))
+

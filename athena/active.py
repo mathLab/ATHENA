@@ -103,7 +103,7 @@ class ActiveSubspaces(Subspaces):
                 gradients=gradients, weights=weights, metric=metric)
 
             self._compute_bootstrap_ranges(gradients, weights, metric=metric)
-            self._partition()
+        self._partition()
 
 
     def transform(self, inputs):
@@ -352,18 +352,20 @@ class ActiveSubspaces(Subspaces):
         "Frequent directions: Simple and deterministic matrix
         sketching." Ghashami, Mina, et al.
         SIAM Journal on Computing 45.5 (2016): 1762-1792.
-       
+        doi: https://doi.org/10.1137/15M1009718
+
         :param iterable gradients: generator for spatial gradients
-        :return numpy.ndarray evals and v: matrix containing the eigenvalues
-            evals and matrix of projection v
+        :return the sorted eigenvalues and the corresponding
+            eigenvectors for the reduced matrix
+        :rtype: numpy.ndarray, numpy.ndarray
         """
         s = []
-        for i in range(self.dim *4):
+        for i in range(self.dim):
             s.extend([next(gradients)])
         s = np.array(s).T
         for grad in gradients:
             v, sigma = np.linalg.svd(s, full_matrices=False)[:2]
-            s = np.dot(v, np.sqrt(np.diag(sigma**2) - (sigma[-1]**2) * np.eye(self.dim*4)))
+            s = np.dot(v, np.sqrt(np.diag(sigma**2) - (sigma[-1]**2) * np.eye(self.dim)))
             s[:, -1] = grad
         evals = sigma ** 2 
         return evals, v
