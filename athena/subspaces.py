@@ -293,7 +293,7 @@ class Subspaces():
         plt.xticks(range(1, n_evals + 1))
         plt.xlabel('Index')
         plt.ylabel('Eigenvalues')
-        plt.grid(linestyle='dotted')
+
         if self.evals_br is None:
             plt.axis([
                 0, n_evals + 1, 0.1 * np.amin(self.evals[:n_evals]),
@@ -318,6 +318,9 @@ class Subspaces():
                 10 * np.amax(self.evals_br[:n_evals, 1])
             ])
 
+        plt.grid(linestyle='dotted')
+        plt.tight_layout()
+        
         if filename:
             plt.savefig(filename)
         else:
@@ -448,6 +451,7 @@ class Subspaces():
                 'dimensions.')
 
         plt.grid(linestyle='dotted')
+        plt.tight_layout()
 
         if filename:
             plt.savefig(filename)
