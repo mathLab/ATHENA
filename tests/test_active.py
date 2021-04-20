@@ -3,7 +3,7 @@ import numpy as np
 from athena.active import ActiveSubspaces
 from contextlib import contextmanager
 import matplotlib.pyplot as plt
-
+from autograd import grad
 
 @contextmanager
 def assert_plot_figures_added():
@@ -15,6 +15,8 @@ def assert_plot_figures_added():
     num_figures_after = plt.gcf().number
     assert num_figures_before < num_figures_after
 
+def f(x):
+    return x[0] * x[0]
 
 class TestUtils(TestCase):
     def test_init_W1(self):
@@ -157,27 +159,23 @@ class TestUtils(TestCase):
     def test_fit_11(self):
         np.random.seed(42)
         inputs = np.random.uniform(-1, 1, 60).reshape(4, 15)
-        gradients = (inputs[i, :] for i in range(4))
+        gradients = (grad(f)(inputs[i, :]) for i in range(4))
         ss = ActiveSubspaces(dim=2, method='exact', n_boot=150)
         ss.fit(gradients=gradients)
-        true_evals = [7.317766, 2.849997]
+        true_evals = [2.040621, 0.]
         np.testing.assert_array_almost_equal(true_evals, ss.evals)
 
     def test_fit_12(self):
         np.random.seed(42)
         inputs = np.random.uniform(-1, 1, 60).reshape(4, 15)
-        gradients = (inputs[i, :] for i in range(4))
+        gradients = (grad(f)(inputs[i, :]) for i in range(4))
         ss = ActiveSubspaces(dim=2, method='exact', n_boot=150)
         ss.fit(gradients=gradients)
+        print(ss.evects)
         true_evects = np.array(
-            [[ 0.09139276, 0.01590518], [-0.32654025, -0.21681653],
-            [-0.34395421, 0.02836894], [0.27991908, -0.30031324],
-            [ 0.38410556, 0.02699885], [0.28666797, 0.13440149],
-            [-0.04537087, 0.40685452], [-0.35762976, -0.11629401],
-            [ 0.09873013, -0.18159307], [-0.08712574, -0.13981308],
-            [-0.14280701, 0.58827903], [-0.1142136, -0.39834724],
-            [-0.38691805, -0.03721504], [ 0.34202222, 0.03950987],
-            [-0.10594613, 0.32198557]])
+            [[1., 0.], [0., 1.], [0., 0.], [0., 0.], [0., 0.], [0., 0.],
+             [0., 0.], [0., 0.], [0., 0.], [0., 0.], [0., 0.], [0., 0.],
+             [0., 0.], [0., 0.], [0., 0.]])
         np.testing.assert_array_almost_equal(true_evects, ss.evects)
     
     def test_activity_scores_01(self):
@@ -520,7 +518,7 @@ class TestUtils(TestCase):
     def test_plot_eigenvalues_05(self):
         np.random.seed(42)
         inputs = np.random.uniform(-1, 1, 500).reshape(10, 50)
-        gradients = (inputs[i, :] for i in range(10))
+        gradients = (grad(f)(inputs[i, :]) for i in range(10))
         ss = ActiveSubspaces(dim=4, n_boot=200)
         ss.fit(gradients=gradients)
         with assert_plot_figures_added():
@@ -562,7 +560,7 @@ class TestUtils(TestCase):
     def test_plot_eigenvectors_05(self):
         np.random.seed(42)
         inputs = np.random.uniform(-1, 1, 50).reshape(5, 10)
-        gradients = (inputs[i, :] for i in range(5))
+        gradients = (grad(f)(inputs[i, :]) for i in range(5))
         ss = ActiveSubspaces(dim=4, n_boot=200)
         ss.fit(gradients=gradients)
         with assert_plot_figures_added():
@@ -606,7 +604,7 @@ class TestUtils(TestCase):
     def test_frequent_directions_01(self):
         np.random.seed(42)
         inputs = np.random.rand(100, 500)
-        gradients = (inputs[i, :] for i in range(100))
+        gradients = (grad(f)(inputs[i, :]) for i in range(100))
         ss = ActiveSubspaces(dim=50, method='exact')
         evals, v = ss._frequent_directions(gradients=gradients)
         self.assertEqual(v.shape, (500, 50))
