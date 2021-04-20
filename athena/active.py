@@ -76,11 +76,12 @@ class ActiveSubspaces(Subspaces):
             vectorial active subspaces.
         :raises: TypeError
 
-        Correct Implementation for the generator:
+        :Example:
 
-        >>> gradients = (grad(f)(inputs[i, :]) for i in range(10))
-        >>> ss =  ActiveSubspaces(dim=2, method='exact', n_boot=150)
-        >>> ss.fit(gradients=gradients)
+            >>> # gradients shape is n_samples-by-n_params
+            >>> gradients_gen = (grad for grad in gradients)
+            >>> ss =  ActiveSubspaces(dim=2, method='exact', n_boot=150)
+            >>> ss.fit(gradients=gradients_gen)
         """
         if self.method == 'exact':
             if gradients is None:

@@ -3,7 +3,6 @@ import numpy as np
 from athena.active import ActiveSubspaces
 from contextlib import contextmanager
 import matplotlib.pyplot as plt
-from autograd import grad
 
 @contextmanager
 def assert_plot_figures_added():
@@ -15,8 +14,6 @@ def assert_plot_figures_added():
     num_figures_after = plt.gcf().number
     assert num_figures_before < num_figures_after
 
-def f(x):
-    return x[0] * x[0]
 
 class TestUtils(TestCase):
     def test_init_W1(self):
@@ -158,8 +155,12 @@ class TestUtils(TestCase):
 
     def test_fit_11(self):
         np.random.seed(42)
-        inputs = np.random.uniform(-1, 1, 60).reshape(4, 15)
-        gradients = (grad(f)(inputs[i, :]) for i in range(4))
+        grad = np.array(
+            [[-0.50183952, 0, 0, 0, 0, 0 ,0, 0, 0, 0, 0, 0, 0, 0, 0],
+             [-1.26638196, 0, 0, 0, 0, 0 ,0, 0, 0, 0, 0, 0, 0, 0, 0],
+             [ 0.43017941, 0, 0, 0, 0, 0 ,0, 0, 0, 0, 0, 0, 0, 0, 0],
+             [ 0.65008914, 0, 0, 0, 0, 0 ,0, 0, 0, 0, 0, 0, 0, 0, 0]])
+        gradients = (grad[i, :] for i in range(4))
         ss = ActiveSubspaces(dim=2, method='exact', n_boot=150)
         ss.fit(gradients=gradients)
         true_evals = [2.040621, 0.]
@@ -167,11 +168,14 @@ class TestUtils(TestCase):
 
     def test_fit_12(self):
         np.random.seed(42)
-        inputs = np.random.uniform(-1, 1, 60).reshape(4, 15)
-        gradients = (grad(f)(inputs[i, :]) for i in range(4))
+        grad = np.array(
+            [[-0.50183952, 0, 0, 0, 0, 0 ,0, 0, 0, 0, 0, 0, 0, 0, 0],
+             [-1.26638196, 0, 0, 0, 0, 0 ,0, 0, 0, 0, 0, 0, 0, 0, 0],
+             [ 0.43017941, 0, 0, 0, 0, 0 ,0, 0, 0, 0, 0, 0, 0, 0, 0],
+             [ 0.65008914, 0, 0, 0, 0, 0 ,0, 0, 0, 0, 0, 0, 0, 0, 0]])
+        gradients = (grad[i, :] for i in range(4))
         ss = ActiveSubspaces(dim=2, method='exact', n_boot=150)
         ss.fit(gradients=gradients)
-        print(ss.evects)
         true_evects = np.array(
             [[1., 0.], [0., 1.], [0., 0.], [0., 0.], [0., 0.], [0., 0.],
              [0., 0.], [0., 0.], [0., 0.], [0., 0.], [0., 0.], [0., 0.],
@@ -517,9 +521,13 @@ class TestUtils(TestCase):
 
     def test_plot_eigenvalues_05(self):
         np.random.seed(42)
-        inputs = np.random.uniform(-1, 1, 500).reshape(10, 50)
-        gradients = (grad(f)(inputs[i, :]) for i in range(10))
-        ss = ActiveSubspaces(dim=4, n_boot=200)
+        grad = np.array(
+            [[-0.50183952, 0, 0, 0, 0, 0 ,0, 0, 0, 0, 0, 0, 0, 0, 0],
+             [-1.26638196, 0, 0, 0, 0, 0 ,0, 0, 0, 0, 0, 0, 0, 0, 0],
+             [ 0.43017941, 0, 0, 0, 0, 0 ,0, 0, 0, 0, 0, 0, 0, 0, 0],
+             [ 0.65008914, 0, 0, 0, 0, 0 ,0, 0, 0, 0, 0, 0, 0, 0, 0]])
+        gradients = (grad[i, :] for i in range(4))
+        ss = ActiveSubspaces(dim=2, method='exact', n_boot=200)
         ss.fit(gradients=gradients)
         with assert_plot_figures_added():
             ss.plot_eigenvalues(figsize=(7, 7), title='Eigenvalues')
@@ -559,9 +567,13 @@ class TestUtils(TestCase):
 
     def test_plot_eigenvectors_05(self):
         np.random.seed(42)
-        inputs = np.random.uniform(-1, 1, 50).reshape(5, 10)
-        gradients = (grad(f)(inputs[i, :]) for i in range(5))
-        ss = ActiveSubspaces(dim=4, n_boot=200)
+        grad = np.array(
+            [[-0.50183952, 0, 0, 0, 0, 0 ,0, 0, 0, 0, 0, 0, 0, 0, 0],
+             [-1.26638196, 0, 0, 0, 0, 0 ,0, 0, 0, 0, 0, 0, 0, 0, 0],
+             [ 0.43017941, 0, 0, 0, 0, 0 ,0, 0, 0, 0, 0, 0, 0, 0, 0],
+             [ 0.65008914, 0, 0, 0, 0, 0 ,0, 0, 0, 0, 0, 0, 0, 0, 0]])
+        gradients = (grad[i, :] for i in range(4))
+        ss = ActiveSubspaces(dim=2, method='exact', n_boot=200)
         ss.fit(gradients=gradients)
         with assert_plot_figures_added():
             ss.plot_eigenvectors(figsize=(7, 7), title='Eigenvectors')
@@ -603,9 +615,13 @@ class TestUtils(TestCase):
 
     def test_frequent_directions_01(self):
         np.random.seed(42)
-        inputs = np.random.rand(100, 500)
-        gradients = (grad(f)(inputs[i, :]) for i in range(100))
-        ss = ActiveSubspaces(dim=50, method='exact')
+        grad = np.array(
+            [[-0.50183952, 0, 0, 0, 0, 0 ,0, 0, 0, 0, 0, 0, 0, 0, 0],
+             [-1.26638196, 0, 0, 0, 0, 0 ,0, 0, 0, 0, 0, 0, 0, 0, 0],
+             [ 0.43017941, 0, 0, 0, 0, 0 ,0, 0, 0, 0, 0, 0, 0, 0, 0],
+             [ 0.65008914, 0, 0, 0, 0, 0 ,0, 0, 0, 0, 0, 0, 0, 0, 0]])
+        gradients = (grad[i, :] for i in range(4))
+        ss = ActiveSubspaces(dim=2, method='exact', n_boot=150)
         evals, v = ss._frequent_directions(gradients=gradients)
-        self.assertEqual(v.shape, (500, 50))
-        self.assertEqual(evals.shape, (50,))
+        self.assertEqual(v.shape, (15, 2))
+        self.assertEqual(evals.shape, (2,))
