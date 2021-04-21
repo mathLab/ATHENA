@@ -78,10 +78,23 @@ class ActiveSubspaces(Subspaces):
 
         :Example:
 
+            >>> # inputs shape is n_samples-by-n_params
+            >>> # outputs shape is n_samples-by-1
             >>> # gradients shape is n_samples-by-n_params
+
+            >>> # if gradients are available use the 'exact' method:
+            >>> ss1 =  ActiveSubspaces(dim=1, method='exact', n_boot=150)
+            >>> ss1.fit(gradients=gradients)
+
+            >>> # for the frequent direction method to compute the eigenpairs
+            >>> # you need to pass a generator to gradients:
             >>> gradients_gen = (grad for grad in gradients)
-            >>> ss =  ActiveSubspaces(dim=2, method='exact', n_boot=150)
-            >>> ss.fit(gradients=gradients_gen)
+            >>> ss2 =  ActiveSubspaces(dim=2, method='exact')
+            >>> ss2.fit(gradients=gradients_gen)
+
+            >>> # if no gradients are available use the 'local' method:
+            >>> ss3 =  ActiveSubspaces(dim=1, method='local', n_boot=150)
+            >>> ss3.fit(inputs=inputs, outputs=outputs)
         """
         if self.method == 'exact':
             if gradients is None:
@@ -212,8 +225,8 @@ class ActiveSubspaces(Subspaces):
 
     def _compute_A_b(self, reduced_input):
         """
-        Compute the matrix A and the vector b to build a box around the inactive
-        subspace for uniform sampling.
+        Compute the matrix A and the vector b to build a box around the
+        inactive subspace for uniform sampling.
 
         :param numpy.ndarray reduced_input: the value of the active variables.
         :return: matrix A, and vector b.
@@ -229,7 +242,7 @@ class ActiveSubspaces(Subspaces):
         A rejection sampling method for sampling the from a polytope.
 
         :param numpy.ndarray reduced_input: the value of the active variables.
-        :param int n_points: the number of inactive variable samples,
+        :param int n_points: the number of inactive variable samples.
         :return: n_points-by-inactive_dim matrix that contains values of the
             inactive variable that correspond to the given `reduced_input`.
         :rtype: numpy.ndarray
@@ -262,7 +275,7 @@ class ActiveSubspaces(Subspaces):
         polytope.
 
         :param numpy.ndarray reduced_input: the value of the active variables.
-        :param int n_points: the number of inactive variable samples,
+        :param int n_points: the number of inactive variable samples.
         :return: n_points-by-(inactive_dim) matrix that contains values of the
             inactive variable that correspond to the given `reduced_input`.
         :rtype: numpy.ndarray
@@ -332,7 +345,8 @@ class ActiveSubspaces(Subspaces):
         A convenience function for rotating subspace coordinates to x space.
 
         :param numpy.ndarray reduced_input: the value of the active variables.
-        :param int n_points: the number of inactive variable samples,
+        :param numpy.ndarray inactive_inputs: the value of the inactive
+            variables.
         :return: (n_samples * n_points)-by-n_params matrix that contains points
             in the original parameter space, (n_samples * n_points)-by-n_params
             matrix that contains integer indices. These indices identify which
@@ -353,25 +367,24 @@ class ActiveSubspaces(Subspaces):
 
     def _frequent_directions(self, gradients):
         """
-        Function that perform the frequent directions algorithm for 
+        Function that performs the frequent directions algorithm for 
         matrix sketching. For more details about the method, see
         "Frequent directions: Simple and deterministic matrix
         sketching." Ghashami, Mina, et al.
         SIAM Journal on Computing 45.5 (2016): 1762-1792.
         doi: https://doi.org/10.1137/15M1009718
 
-        :param iterable gradients: generator for spatial gradients
-        :return the sorted eigenvalues and the corresponding
-            eigenvectors for the reduced matrix
+        :param iterable gradients: generator for spatial gradients.
+        :return the sorted eigenvalues and the corresponding eigenvectors for
+            the reduced matrix.
         :rtype: numpy.ndarray, numpy.ndarray
         """
-        s = []
-        for i in range(self.dim):
-            s.extend([next(gradients)])
-        s = np.array(s).T
+        s = np.array([next(gradients) for i in range(self.dim)]).T
         for grad in gradients:
-            v, sigma = np.linalg.svd(s, full_matrices=False)[:2]
-            s = np.dot(v, np.sqrt(np.diag(sigma**2) - (sigma[-1]**2) * np.eye(self.dim)))
+            evects, sigma = np.linalg.svd(s, full_matrices=False)[:2]
+            s = np.dot(
+                evects,
+                np.sqrt(np.diag(sigma**2) - (sigma[-1]**2) * np.eye(self.dim)))
             s[:, -1] = grad
-        evals = sigma ** 2 
-        return evals, v
+        evals = sigma**2
+        return evals, evects
