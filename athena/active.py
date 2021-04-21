@@ -75,6 +75,13 @@ class ActiveSubspaces(Subspaces):
         :param numpy.ndarray metric: metric matrix output_dim-by-output-dim for
             vectorial active subspaces.
         :raises: TypeError
+
+        :Example:
+
+            >>> # gradients shape is n_samples-by-n_params
+            >>> gradients_gen = (grad for grad in gradients)
+            >>> ss =  ActiveSubspaces(dim=2, method='exact', n_boot=150)
+            >>> ss.fit(gradients=gradients_gen)
         """
         if self.method == 'exact':
             if gradients is None:
