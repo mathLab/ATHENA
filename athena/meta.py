@@ -10,7 +10,8 @@ __all__ = [
     '__version__',
     '__mail__',
     '__maintainer__',
-    '__status__']
+    '__status__',
+    '__packagename__']
 
 __project__ = 'ATHENA'
 __title__ = "athena"
@@ -21,3 +22,4 @@ __version__ = "0.1.1"
 __mail__ = 'marcotez@gmail.com, francesco.romor@gmail.com'
 __maintainer__ = __author__
 __status__ = "Stable"
+__packagename__ = "athena-mathlab"
