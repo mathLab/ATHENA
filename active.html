@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Active Subspaces &mdash; ATHENA 0.0.2 documentation</title>
+  <title>Active Subspaces &mdash; ATHENA 0.1.1 documentation</title>
   
 
   
@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                0.0.2
+                0.1.1
               </div>
             
           
@@ -103,6 +103,7 @@
 <li class="toctree-l3"><a class="reference internal" href="_summaries/athena.active.ActiveSubspaces._rejection_sampling_inactive.html">athena.active.ActiveSubspaces._rejection_sampling_inactive</a></li>
 <li class="toctree-l3"><a class="reference internal" href="_summaries/athena.active.ActiveSubspaces._rotate_x.html">athena.active.ActiveSubspaces._rotate_x</a></li>
 <li class="toctree-l3"><a class="reference internal" href="_summaries/athena.active.ActiveSubspaces._sample_inactive.html">athena.active.ActiveSubspaces._sample_inactive</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_summaries/athena.active.ActiveSubspaces.activity_scores.html">athena.active.ActiveSubspaces.activity_scores</a></li>
 <li class="toctree-l3"><a class="reference internal" href="_summaries/athena.active.ActiveSubspaces.fit.html">athena.active.ActiveSubspaces.fit</a></li>
 <li class="toctree-l3"><a class="reference internal" href="_summaries/athena.active.ActiveSubspaces.inverse_transform.html">athena.active.ActiveSubspaces.inverse_transform</a></li>
 <li class="toctree-l3"><a class="reference internal" href="_summaries/athena.active.ActiveSubspaces.plot_eigenvalues.html">athena.active.ActiveSubspaces.plot_eigenvalues</a></li>
@@ -237,22 +238,25 @@ Journal of Open Source Software, 1(5), 79, 2016.</p></li>
 <tr class="row-odd"><td><p><a class="reference internal" href="_summaries/athena.active.ActiveSubspaces._sample_inactive.html#athena.active.ActiveSubspaces._sample_inactive" title="athena.active.ActiveSubspaces._sample_inactive"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ActiveSubspaces._sample_inactive</span></code></a></p></td>
 <td><p>Sample inactive variables.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="_summaries/athena.active.ActiveSubspaces.fit.html#athena.active.ActiveSubspaces.fit" title="athena.active.ActiveSubspaces.fit"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ActiveSubspaces.fit</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="_summaries/athena.active.ActiveSubspaces.activity_scores.html#athena.active.ActiveSubspaces.activity_scores" title="athena.active.ActiveSubspaces.activity_scores"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ActiveSubspaces.activity_scores</span></code></a></p></td>
+<td><p>Return the activity scores as defined in Constantine and Diaz, Global sensitivity metrics from active subspaces, arxiv.org/abs/1510.04361 Equation (21).</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="_summaries/athena.active.ActiveSubspaces.fit.html#athena.active.ActiveSubspaces.fit" title="athena.active.ActiveSubspaces.fit"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ActiveSubspaces.fit</span></code></a></p></td>
 <td><p>Compute the active subspaces given the gradients of the model function wrt the input parameters, or given the input/outputs couples.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="_summaries/athena.active.ActiveSubspaces.inverse_transform.html#athena.active.ActiveSubspaces.inverse_transform" title="athena.active.ActiveSubspaces.inverse_transform"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ActiveSubspaces.inverse_transform</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="_summaries/athena.active.ActiveSubspaces.inverse_transform.html#athena.active.ActiveSubspaces.inverse_transform" title="athena.active.ActiveSubspaces.inverse_transform"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ActiveSubspaces.inverse_transform</span></code></a></p></td>
 <td><p>Map the points in the active variable space to the original parameter space.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="_summaries/athena.active.ActiveSubspaces.plot_eigenvalues.html#athena.active.ActiveSubspaces.plot_eigenvalues" title="athena.active.ActiveSubspaces.plot_eigenvalues"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ActiveSubspaces.plot_eigenvalues</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="_summaries/athena.active.ActiveSubspaces.plot_eigenvalues.html#athena.active.ActiveSubspaces.plot_eigenvalues" title="athena.active.ActiveSubspaces.plot_eigenvalues"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ActiveSubspaces.plot_eigenvalues</span></code></a></p></td>
 <td><p>Plot the eigenvalues.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="_summaries/athena.active.ActiveSubspaces.plot_eigenvectors.html#athena.active.ActiveSubspaces.plot_eigenvectors" title="athena.active.ActiveSubspaces.plot_eigenvectors"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ActiveSubspaces.plot_eigenvectors</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="_summaries/athena.active.ActiveSubspaces.plot_eigenvectors.html#athena.active.ActiveSubspaces.plot_eigenvectors" title="athena.active.ActiveSubspaces.plot_eigenvectors"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ActiveSubspaces.plot_eigenvectors</span></code></a></p></td>
 <td><p>Plot the eigenvectors.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="_summaries/athena.active.ActiveSubspaces.plot_sufficient_summary.html#athena.active.ActiveSubspaces.plot_sufficient_summary" title="athena.active.ActiveSubspaces.plot_sufficient_summary"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ActiveSubspaces.plot_sufficient_summary</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="_summaries/athena.active.ActiveSubspaces.plot_sufficient_summary.html#athena.active.ActiveSubspaces.plot_sufficient_summary" title="athena.active.ActiveSubspaces.plot_sufficient_summary"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ActiveSubspaces.plot_sufficient_summary</span></code></a></p></td>
 <td><p>Plot the sufficient summary.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="_summaries/athena.active.ActiveSubspaces.transform.html#athena.active.ActiveSubspaces.transform" title="athena.active.ActiveSubspaces.transform"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ActiveSubspaces.transform</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="_summaries/athena.active.ActiveSubspaces.transform.html#athena.active.ActiveSubspaces.transform" title="athena.active.ActiveSubspaces.transform"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ActiveSubspaces.transform</span></code></a></p></td>
 <td><p>Map full variables to active and inactive variables.</p></td>
 </tr>
 </tbody>
@@ -279,14 +283,42 @@ Hristache, et al.</p></li>
 <dl class="method">
 <dt>
 <code class="sig-name descname">_compute_A_b</code><span class="sig-paren">(</span><em class="sig-param">reduced_input</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/athena/active.html#ActiveSubspaces._compute_A_b"><span class="viewcode-link">[source]</span></a></dt>
-<dd><p>Compute the matrix A and the vector b to build a box around the inactive
-subspace for uniform sampling.</p>
+<dd><p>Compute the matrix A and the vector b to build a box around the
+inactive subspace for uniform sampling.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>reduced_input</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><em>numpy.ndarray</em></a>) – the value of the active variables.</p>
+<dd class="field-odd"><p><strong>reduced_input</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)"><em>numpy.ndarray</em></a>) – the value of the active variables.</p>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>matrix A, and vector b. :rtype: numpy.ndarray, numpy.ndarray</p>
+<dd class="field-even"><p>matrix A, and vector b.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)">numpy.ndarray</a>, <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)">numpy.ndarray</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<code class="sig-name descname">_frequent_directions</code><span class="sig-paren">(</span><em class="sig-param">gradients</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/athena/active.html#ActiveSubspaces._frequent_directions"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Function that performs the frequent directions algorithm for 
+matrix sketching. For more details about the method, see
+“Frequent directions: Simple and deterministic matrix
+sketching.” Ghashami, Mina, et al.
+SIAM Journal on Computing 45.5 (2016): 1762-1792.
+doi: <a class="reference external" href="https://doi.org/10.1137/15M1009718">https://doi.org/10.1137/15M1009718</a></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>gradients</strong> (<em>iterable</em>) – generator for spatial gradients.</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>:return the sorted eigenvalues and the corresponding eigenvectors for</dt><dd><p>the reduced matrix.</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)">numpy.ndarray</a>, <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)">numpy.ndarray</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -299,8 +331,8 @@ polytope.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>reduced_input</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><em>numpy.ndarray</em></a>) – the value of the active variables.</p></li>
-<li><p><strong>n_points</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – the number of inactive variable samples,</p></li>
+<li><p><strong>reduced_input</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)"><em>numpy.ndarray</em></a>) – the value of the active variables.</p></li>
+<li><p><strong>n_points</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – the number of inactive variable samples.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -308,7 +340,7 @@ polytope.</p>
 inactive variable that correspond to the given <cite>reduced_input</cite>.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)">numpy.ndarray</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)">numpy.ndarray</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -320,8 +352,8 @@ inactive variable that correspond to the given <cite>reduced_input</cite>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>reduced_input</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><em>numpy.ndarray</em></a>) – the value of the active variables.</p></li>
-<li><p><strong>n_points</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – the number of inactive variable samples,</p></li>
+<li><p><strong>reduced_input</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)"><em>numpy.ndarray</em></a>) – the value of the active variables.</p></li>
+<li><p><strong>n_points</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – the number of inactive variable samples.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -329,7 +361,7 @@ inactive variable that correspond to the given <cite>reduced_input</cite>.</p>
 inactive variable that correspond to the given <cite>reduced_input</cite>.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)">numpy.ndarray</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)">numpy.ndarray</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -341,8 +373,9 @@ inactive variable that correspond to the given <cite>reduced_input</cite>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>reduced_input</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><em>numpy.ndarray</em></a>) – the value of the active variables.</p></li>
-<li><p><strong>n_points</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – the number of inactive variable samples,</p></li>
+<li><p><strong>reduced_input</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)"><em>numpy.ndarray</em></a>) – the value of the active variables.</p></li>
+<li><p><strong>inactive_inputs</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)"><em>numpy.ndarray</em></a>) – the value of the inactive
+variables.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -353,7 +386,7 @@ rows of the previous matrix (the full parameters) map to which rows
 of the active variables matrix.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)">numpy.ndarray</a>, <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)">numpy.ndarray</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)">numpy.ndarray</a>, <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)">numpy.ndarray</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -367,7 +400,7 @@ variables when the original variables are bounded by a hypercube.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>reduced_input</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><em>numpy.ndarray</em></a>) – the value of the active variables.</p></li>
+<li><p><strong>reduced_input</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)"><em>numpy.ndarray</em></a>) – the value of the active variables.</p></li>
 <li><p><strong>n_points</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – the number of inactive variable samples,</p></li>
 </ul>
 </dd>
@@ -376,7 +409,7 @@ variables when the original variables are bounded by a hypercube.</p>
 inactive variable that correspond to the given <cite>reduced_input</cite>.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)">numpy.ndarray</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)">numpy.ndarray</a></p>
 </dd>
 </dl>
 <div class="admonition note">
@@ -399,26 +432,74 @@ Chebyshev center of the polytope.</p>
 
 <dl class="method">
 <dt>
+<em class="property">property </em><code class="sig-name descname">activity_scores</code></dt>
+<dd><p>Return the activity scores as defined in Constantine and Diaz, Global
+sensitivity metrics from active subspaces, arxiv.org/abs/1510.04361
+Equation (21).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>array with the activity score of each parameter.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)">numpy.ndarray</a></p>
+</dd>
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><p>TypeError</p>
+</dd>
+</dl>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p><cite>self.fit</cite> has to be called in advance.</p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt>
 <code class="sig-name descname">fit</code><span class="sig-paren">(</span><em class="sig-param">inputs=None</em>, <em class="sig-param">outputs=None</em>, <em class="sig-param">gradients=None</em>, <em class="sig-param">weights=None</em>, <em class="sig-param">metric=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/athena/active.html#ActiveSubspaces.fit"><span class="viewcode-link">[source]</span></a></dt>
 <dd><p>Compute the active subspaces given the gradients of the model function
 wrt the input parameters, or given the input/outputs couples. Only two
 methods are available: ‘exact’ and ‘local’.</p>
-<dl class="field-list simple">
+<dl class="field-list">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>inputs</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><em>numpy.ndarray</em></a>) – input parameters oriented as rows.</p></li>
-<li><p><strong>outputs</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><em>numpy.ndarray</em></a>) – corresponding outputs oriented as rows.</p></li>
-<li><p><strong>gradients</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><em>numpy.ndarray</em></a>) – n_samples-by-n_params matrix containing
-the gradient samples oriented as rows.</p></li>
-<li><p><strong>weights</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><em>numpy.ndarray</em></a>) – n_samples-by-1 weight vector, corresponds
+<li><p><strong>inputs</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)"><em>numpy.ndarray</em></a>) – input parameters oriented as rows.</p></li>
+<li><p><strong>outputs</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)"><em>numpy.ndarray</em></a>) – corresponding outputs oriented as rows.</p></li>
+<li><p><strong>gradients</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)"><em>numpy.ndarray</em></a>) – n_samples-by-n_params matrix containing
+the gradient samples oriented as rows. If frequent directions needed
+to be performed, gradients is an object of GeneratorType.</p></li>
+<li><p><strong>weights</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)"><em>numpy.ndarray</em></a>) – n_samples-by-1 weight vector, corresponds
 to numerical quadrature rule used to estimate matrix whose
 eigenspaces define the active subspace.</p></li>
-<li><p><strong>metric</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><em>numpy.ndarray</em></a>) – metric matrix output_dim-by-output-dim for
+<li><p><strong>metric</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)"><em>numpy.ndarray</em></a>) – metric matrix output_dim-by-output-dim for
 vectorial active subspaces.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Raises</dt>
-<dd class="field-even"><p>ValueError</p>
+<dd class="field-even"><p>TypeError</p>
+</dd>
+<dt class="field-odd">Example</dt>
+<dd class="field-odd"><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># inputs shape is n_samples-by-n_params</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># outputs shape is n_samples-by-1</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># gradients shape is n_samples-by-n_params</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># if gradients are available use the &#39;exact&#39; method:</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ss1</span> <span class="o">=</span>  <span class="n">ActiveSubspaces</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;exact&#39;</span><span class="p">,</span> <span class="n">n_boot</span><span class="o">=</span><span class="mi">150</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ss1</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">gradients</span><span class="o">=</span><span class="n">gradients</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># for the frequent direction method to compute the eigenpairs</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># you need to pass a generator to gradients:</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">gradients_gen</span> <span class="o">=</span> <span class="p">(</span><span class="n">grad</span> <span class="k">for</span> <span class="n">grad</span> <span class="ow">in</span> <span class="n">gradients</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ss2</span> <span class="o">=</span>  <span class="n">ActiveSubspaces</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;exact&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ss2</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">gradients</span><span class="o">=</span><span class="n">gradients_gen</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># if no gradients are available use the &#39;local&#39; method:</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ss3</span> <span class="o">=</span>  <span class="n">ActiveSubspaces</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;local&#39;</span><span class="p">,</span> <span class="n">n_boot</span><span class="o">=</span><span class="mi">150</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ss3</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">inputs</span><span class="o">=</span><span class="n">inputs</span><span class="p">,</span> <span class="n">outputs</span><span class="o">=</span><span class="n">outputs</span><span class="p">)</span>
+</pre></div>
+</div>
 </dd>
 </dl>
 </dd></dl>
@@ -431,7 +512,7 @@ space.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>reduced_inputs</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><em>numpy.ndarray</em></a>) – n_samples-by-dim matrix that
+<li><p><strong>reduced_inputs</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)"><em>numpy.ndarray</em></a>) – n_samples-by-dim matrix that
 contains points in the space of active variables.</p></li>
 <li><p><strong>n_points</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – the number of points in the original parameter
 space that are returned that map to the given active variables.
@@ -446,7 +527,10 @@ indices identify which rows of the previous matrix (the full
 parameters) map to which rows of the active variables matrix.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)">numpy.ndarray</a>, <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)">numpy.ndarray</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)">numpy.ndarray</a>, <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)">numpy.ndarray</a></p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p>TypeError</p>
 </dd>
 </dl>
 <div class="admonition note">
@@ -464,7 +548,7 @@ parameters) map to which rows of the active variables matrix.</p>
 subspace.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>inputs</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><em>numpy.ndarray</em></a>) – array n_samples-by-n_params containing the
+<dd class="field-odd"><p><strong>inputs</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)"><em>numpy.ndarray</em></a>) – array n_samples-by-n_params containing the
 points in the original parameter space.</p>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -474,7 +558,10 @@ array n_samples-by-inactive_dim containing the mapped inactive
 variables.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)">numpy.ndarray</a>, <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)">numpy.ndarray</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)">numpy.ndarray</a>, <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)">numpy.ndarray</a></p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p>TypeError</p>
 </dd>
 </dl>
 </dd></dl>
@@ -497,9 +584,9 @@ variables.</p>
 
   <div role="contentinfo">
     <p>
-        &#169; Copyright Copyright 2019-2020, Athena contributors.
+        &#169; Copyright Copyright 2019-2021, Athena contributors.
       <span class="lastupdated">
-        Last updated on Jan 10, 2021.
+        Last updated on May 03, 2021.
       </span>
 
     </p>

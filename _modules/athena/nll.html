@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>athena.nll &mdash; ATHENA 0.0.2 documentation</title>
+  <title>athena.nll &mdash; ATHENA 0.1.1 documentation</title>
   
 
   
@@ -63,7 +63,7 @@
             
             
               <div class="version">
-                0.0.2
+                0.1.1
               </div>
             
           
@@ -190,8 +190,11 @@
 <span class="sd">    :param int epochs: number of ephocs.</span>
 <span class="sd">    :param float dh: so-called time step of the RevNet. Default is 0.25.</span>
 <span class="sd">    :param `torch.optim.Optimizer` optimizer: optimizer used in the training of</span>
-<span class="sd">        the RevNet. Its argument are passed as args and optim_args when</span>
+<span class="sd">        the RevNet. Its argument are passed in the dict optim_args when</span>
 <span class="sd">        :py:meth:`train` is called.</span>
+<span class="sd">    :param `torch.optim.lr_scheduler._LRScheduler` scheduler: scheduler used in</span>
+<span class="sd">        the training of the RevNet. Its argument are passed in the dict</span>
+<span class="sd">        scheduler_args when :py:meth:`train` is called. Default is None.</span>
 
 <span class="sd">    :cvar `BackwardNet` backward: backward net of the RevNet. See</span>
 <span class="sd">        :class:`BackwardNet` class in :py:mod:`nll` module.</span>
@@ -199,7 +202,14 @@
 <span class="sd">        :class:`ForwardNet` class in :py:mod:`nll` module.</span>
 <span class="sd">    :cvar list loss_vec: list containg the loss at every epoch.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_layers</span><span class="p">,</span> <span class="n">active_dim</span><span class="p">,</span> <span class="n">lr</span><span class="p">,</span> <span class="n">epochs</span><span class="p">,</span> <span class="n">dh</span><span class="o">=</span><span class="mf">0.25</span><span class="p">,</span> <span class="n">optimizer</span><span class="o">=</span><span class="n">optim</span><span class="o">.</span><span class="n">Adam</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                 <span class="n">n_layers</span><span class="p">,</span>
+                 <span class="n">active_dim</span><span class="p">,</span>
+                 <span class="n">lr</span><span class="p">,</span>
+                 <span class="n">epochs</span><span class="p">,</span>
+                 <span class="n">dh</span><span class="o">=</span><span class="mf">0.25</span><span class="p">,</span>
+                 <span class="n">optimizer</span><span class="o">=</span><span class="n">optim</span><span class="o">.</span><span class="n">Adam</span><span class="p">,</span>
+                 <span class="n">scheduler</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">n_layers</span> <span class="o">=</span> <span class="n">n_layers</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">active_dim</span> <span class="o">=</span> <span class="n">active_dim</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">lr</span> <span class="o">=</span> <span class="n">lr</span>
@@ -207,6 +217,12 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">dh</span> <span class="o">=</span> <span class="n">dh</span>
         <span class="k">if</span> <span class="nb">issubclass</span><span class="p">(</span><span class="n">optimizer</span><span class="p">,</span> <span class="n">optim</span><span class="o">.</span><span class="n">Optimizer</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span> <span class="o">=</span> <span class="n">optimizer</span>
+
+        <span class="k">if</span> <span class="n">scheduler</span> <span class="ow">and</span> <span class="nb">issubclass</span><span class="p">(</span><span class="n">scheduler</span><span class="p">,</span>
+                                    <span class="n">torch</span><span class="o">.</span><span class="n">optim</span><span class="o">.</span><span class="n">lr_scheduler</span><span class="o">.</span><span class="n">_LRScheduler</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">scheduler</span> <span class="o">=</span> <span class="n">scheduler</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">scheduler</span> <span class="o">=</span> <span class="kc">None</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">backward</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">forward</span> <span class="o">=</span> <span class="kc">None</span>
@@ -218,7 +234,8 @@
               <span class="n">outputs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
               <span class="n">interactive</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
               <span class="n">target_loss</span><span class="o">=</span><span class="mf">0.0001</span><span class="p">,</span>
-              <span class="n">optim_args</span><span class="o">=</span><span class="p">{}):</span>
+              <span class="n">optim_args</span><span class="o">=</span><span class="p">{},</span>
+              <span class="n">scheduler_args</span><span class="o">=</span><span class="p">{}):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Train the whole RevNet.</span>
 
@@ -234,6 +251,7 @@
 <span class="sd">            10 epochs, and at the last epoch. Default is False.</span>
 <span class="sd">        :param float target_loss: loss threshold. Default is 0.0001.</span>
 <span class="sd">        :param dict optim_args: dictionary passed to the optimizer.</span>
+<span class="sd">        :param dict scheduler_args: dictionary passed to the scheduler.</span>
 <span class="sd">        :raises: ValueError: in interactive mode outputs must be provided for</span>
 <span class="sd">            the sufficient summary plot.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -256,7 +274,12 @@
                                   <span class="n">active_dim</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">active_dim</span><span class="p">)</span>
         <span class="c1"># Initialize the gradient</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">forward</span><span class="o">.</span><span class="n">zero_grad</span><span class="p">()</span>
-        <span class="n">optimizer</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">forward</span><span class="o">.</span><span class="n">parameters</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">lr</span><span class="p">,</span> <span class="o">**</span><span class="n">optim_args</span><span class="p">)</span>
+        <span class="n">optimizer</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">optimizer</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">forward</span><span class="o">.</span><span class="n">parameters</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">lr</span><span class="p">,</span>
+                                   <span class="o">**</span><span class="n">optim_args</span><span class="p">)</span>
+
+        <span class="c1"># Initialize scheduler if present</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">scheduler</span><span class="p">:</span>
+            <span class="n">sched</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">scheduler</span><span class="p">(</span><span class="n">optimizer</span><span class="p">,</span> <span class="o">**</span><span class="n">scheduler_args</span><span class="p">)</span>
 
         <span class="c1"># Training</span>
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">epochs</span><span class="p">):</span>
@@ -314,6 +337,9 @@
 
             <span class="n">loss</span><span class="o">.</span><span class="n">backward</span><span class="p">()</span>
             <span class="n">optimizer</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
+
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">scheduler</span><span class="p">:</span>
+                <span class="n">sched</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
 
         <span class="k">if</span> <span class="n">interactive</span><span class="p">:</span>
             <span class="n">plt</span><span class="o">.</span><span class="n">ioff</span><span class="p">()</span>
@@ -588,11 +614,12 @@
             <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_params</span><span class="p">):</span>
                 <span class="n">Jacob</span><span class="p">[:,</span> <span class="n">j</span><span class="p">,</span> <span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">dx</span><span class="p">[:,</span> <span class="n">k</span><span class="p">],</span> <span class="o">-</span><span class="mi">1</span> <span class="o">*</span> <span class="n">inputs</span><span class="p">[:,</span> <span class="n">k</span><span class="p">])</span>
 
-        <span class="n">JJ2</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">mul</span><span class="p">(</span><span class="n">Jacob</span><span class="p">,</span> <span class="n">Jacob</span><span class="p">),</span> <span class="mi">2</span><span class="p">)),</span>
-                              <span class="mi">2</span><span class="p">)</span>
+        <span class="n">JJ2</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span>
+            <span class="n">torch</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">mul</span><span class="p">(</span><span class="n">Jacob</span><span class="p">,</span> <span class="n">Jacob</span><span class="p">),</span> <span class="mi">2</span><span class="p">)),</span> <span class="mi">2</span><span class="p">)</span>
         <span class="n">JJJ</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">div</span><span class="p">(</span><span class="n">Jacob</span><span class="p">,</span> <span class="n">JJ2</span><span class="o">.</span><span class="n">expand</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_params</span><span class="p">))</span>
         <span class="n">ex_data</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="n">gradients</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
-        <span class="n">loss_weights</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">clone</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">squeeze</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">JJJ</span><span class="p">,</span> <span class="n">ex_data</span><span class="p">),</span> <span class="mi">2</span><span class="p">))</span>
+        <span class="n">loss_weights</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">clone</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">squeeze</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">JJJ</span><span class="p">,</span> <span class="n">ex_data</span><span class="p">),</span>
+                                                 <span class="mi">2</span><span class="p">))</span>
         <span class="c1"># anisotropy weigths</span>
         <span class="n">loss_weights</span><span class="p">[:,</span> <span class="bp">self</span><span class="o">.</span><span class="n">omega</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.0</span>
         <span class="n">loss_anisotropy</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span>
@@ -663,9 +690,9 @@
 
   <div role="contentinfo">
     <p>
-        &#169; Copyright Copyright 2019-2020, Athena contributors.
+        &#169; Copyright Copyright 2019-2021, Athena contributors.
       <span class="lastupdated">
-        Last updated on Jan 10, 2021.
+        Last updated on May 03, 2021.
       </span>
 
     </p>

@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>athena.active.ActiveSubspaces.fit &mdash; ATHENA 0.0.2 documentation</title>
+  <title>athena.active.ActiveSubspaces.fit &mdash; ATHENA 0.1.1 documentation</title>
   
 
   
@@ -41,7 +41,7 @@
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="athena.active.ActiveSubspaces.inverse_transform" href="athena.active.ActiveSubspaces.inverse_transform.html" />
-    <link rel="prev" title="athena.active.ActiveSubspaces._sample_inactive" href="athena.active.ActiveSubspaces._sample_inactive.html" /> 
+    <link rel="prev" title="athena.active.ActiveSubspaces.activity_scores" href="athena.active.ActiveSubspaces.activity_scores.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                0.0.2
+                0.1.1
               </div>
             
           
@@ -103,6 +103,7 @@
 <li class="toctree-l3"><a class="reference internal" href="athena.active.ActiveSubspaces._rejection_sampling_inactive.html">athena.active.ActiveSubspaces._rejection_sampling_inactive</a></li>
 <li class="toctree-l3"><a class="reference internal" href="athena.active.ActiveSubspaces._rotate_x.html">athena.active.ActiveSubspaces._rotate_x</a></li>
 <li class="toctree-l3"><a class="reference internal" href="athena.active.ActiveSubspaces._sample_inactive.html">athena.active.ActiveSubspaces._sample_inactive</a></li>
+<li class="toctree-l3"><a class="reference internal" href="athena.active.ActiveSubspaces.activity_scores.html">athena.active.ActiveSubspaces.activity_scores</a></li>
 <li class="toctree-l3 current"><a class="current reference internal" href="#">athena.active.ActiveSubspaces.fit</a></li>
 <li class="toctree-l3"><a class="reference internal" href="athena.active.ActiveSubspaces.inverse_transform.html">athena.active.ActiveSubspaces.inverse_transform</a></li>
 <li class="toctree-l3"><a class="reference internal" href="athena.active.ActiveSubspaces.plot_eigenvalues.html">athena.active.ActiveSubspaces.plot_eigenvalues</a></li>
@@ -201,22 +202,47 @@
 <dd><p>Compute the active subspaces given the gradients of the model function
 wrt the input parameters, or given the input/outputs couples. Only two
 methods are available: ‘exact’ and ‘local’.</p>
-<dl class="field-list simple">
+<dl class="field-list">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>inputs</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><em>numpy.ndarray</em></a>) – input parameters oriented as rows.</p></li>
-<li><p><strong>outputs</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><em>numpy.ndarray</em></a>) – corresponding outputs oriented as rows.</p></li>
-<li><p><strong>gradients</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><em>numpy.ndarray</em></a>) – n_samples-by-n_params matrix containing
-the gradient samples oriented as rows.</p></li>
-<li><p><strong>weights</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><em>numpy.ndarray</em></a>) – n_samples-by-1 weight vector, corresponds
+<li><p><strong>inputs</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)"><em>numpy.ndarray</em></a>) – input parameters oriented as rows.</p></li>
+<li><p><strong>outputs</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)"><em>numpy.ndarray</em></a>) – corresponding outputs oriented as rows.</p></li>
+<li><p><strong>gradients</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)"><em>numpy.ndarray</em></a>) – n_samples-by-n_params matrix containing
+the gradient samples oriented as rows. If frequent directions needed
+to be performed, gradients is an object of GeneratorType.</p></li>
+<li><p><strong>weights</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)"><em>numpy.ndarray</em></a>) – n_samples-by-1 weight vector, corresponds
 to numerical quadrature rule used to estimate matrix whose
 eigenspaces define the active subspace.</p></li>
-<li><p><strong>metric</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><em>numpy.ndarray</em></a>) – metric matrix output_dim-by-output-dim for
+<li><p><strong>metric</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)"><em>numpy.ndarray</em></a>) – metric matrix output_dim-by-output-dim for
 vectorial active subspaces.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Raises</dt>
-<dd class="field-even"><p>ValueError</p>
+<dd class="field-even"><p>TypeError</p>
+</dd>
+<dt class="field-odd">Example</dt>
+<dd class="field-odd"><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># inputs shape is n_samples-by-n_params</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># outputs shape is n_samples-by-1</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># gradients shape is n_samples-by-n_params</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># if gradients are available use the &#39;exact&#39; method:</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ss1</span> <span class="o">=</span>  <span class="n">ActiveSubspaces</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;exact&#39;</span><span class="p">,</span> <span class="n">n_boot</span><span class="o">=</span><span class="mi">150</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ss1</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">gradients</span><span class="o">=</span><span class="n">gradients</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># for the frequent direction method to compute the eigenpairs</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># you need to pass a generator to gradients:</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">gradients_gen</span> <span class="o">=</span> <span class="p">(</span><span class="n">grad</span> <span class="k">for</span> <span class="n">grad</span> <span class="ow">in</span> <span class="n">gradients</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ss2</span> <span class="o">=</span>  <span class="n">ActiveSubspaces</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;exact&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ss2</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">gradients</span><span class="o">=</span><span class="n">gradients_gen</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># if no gradients are available use the &#39;local&#39; method:</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ss3</span> <span class="o">=</span>  <span class="n">ActiveSubspaces</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;local&#39;</span><span class="p">,</span> <span class="n">n_boot</span><span class="o">=</span><span class="mi">150</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ss3</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">inputs</span><span class="o">=</span><span class="n">inputs</span><span class="p">,</span> <span class="n">outputs</span><span class="o">=</span><span class="n">outputs</span><span class="p">)</span>
+</pre></div>
+</div>
 </dd>
 </dl>
 </dd></dl>
@@ -230,16 +256,16 @@ vectorial active subspaces.</p></li>
           <footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
         <a href="athena.active.ActiveSubspaces.inverse_transform.html" class="btn btn-neutral float-right" title="athena.active.ActiveSubspaces.inverse_transform" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
-        <a href="athena.active.ActiveSubspaces._sample_inactive.html" class="btn btn-neutral float-left" title="athena.active.ActiveSubspaces._sample_inactive" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="athena.active.ActiveSubspaces.activity_scores.html" class="btn btn-neutral float-left" title="athena.active.ActiveSubspaces.activity_scores" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
 
   <hr/>
 
   <div role="contentinfo">
     <p>
-        &#169; Copyright Copyright 2019-2020, Athena contributors.
+        &#169; Copyright Copyright 2019-2021, Athena contributors.
       <span class="lastupdated">
-        Last updated on Jan 10, 2021.
+        Last updated on May 03, 2021.
       </span>
 
     </p>

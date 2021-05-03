@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Nonlinear Level Set Learning &mdash; ATHENA 0.0.2 documentation</title>
+  <title>Nonlinear Level Set Learning &mdash; ATHENA 0.1.1 documentation</title>
   
 
   
@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                0.0.2
+                0.1.1
               </div>
             
           
@@ -239,7 +239,7 @@ arxiv: <a class="reference external" href="https://arxiv.org/abs/1902.10652">htt
 </table>
 <dl class="class">
 <dt>
-<em class="property">class </em><code class="sig-name descname">NonlinearLevelSet</code><span class="sig-paren">(</span><em class="sig-param">n_layers</em>, <em class="sig-param">active_dim</em>, <em class="sig-param">lr</em>, <em class="sig-param">epochs</em>, <em class="sig-param">dh=0.25</em>, <em class="sig-param">optimizer=&lt;class 'torch.optim.adam.Adam'&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/athena/nll.html#NonlinearLevelSet"><span class="viewcode-link">[source]</span></a></dt>
+<em class="property">class </em><code class="sig-name descname">NonlinearLevelSet</code><span class="sig-paren">(</span><em class="sig-param">n_layers</em>, <em class="sig-param">active_dim</em>, <em class="sig-param">lr</em>, <em class="sig-param">epochs</em>, <em class="sig-param">dh=0.25</em>, <em class="sig-param">optimizer=&lt;class 'torch.optim.adam.Adam'&gt;</em>, <em class="sig-param">scheduler=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/athena/nll.html#NonlinearLevelSet"><span class="viewcode-link">[source]</span></a></dt>
 <dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
 <p>Nonlinear Level Set class. It is implemented as a Reversible neural
 networks (RevNet).</p>
@@ -251,9 +251,12 @@ networks (RevNet).</p>
 <li><p><strong>lr</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a>) – learning rate.</p></li>
 <li><p><strong>epochs</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – number of ephocs.</p></li>
 <li><p><strong>dh</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a>) – so-called time step of the RevNet. Default is 0.25.</p></li>
-<li><p><strong>optimizer</strong> (<a class="reference external" href="https://pytorch.org/docs/master/optim.html#torch.optim.Optimizer" title="(in PyTorch vmaster (1.8.0a0+5f767b4 ))"><em>torch.optim.Optimizer</em></a>) – optimizer used in the training of
-the RevNet. Its argument are passed as args and optim_args when
+<li><p><strong>optimizer</strong> (<a class="reference external" href="https://pytorch.org/docs/master/optim.html#torch.optim.Optimizer" title="(in PyTorch vmaster (1.9.0a0+git2bd4ead ))"><em>torch.optim.Optimizer</em></a>) – optimizer used in the training of
+the RevNet. Its argument are passed in the dict optim_args when
 <a class="reference internal" href="_summaries/athena.nll.NonlinearLevelSet.train.html#athena.nll.NonlinearLevelSet.train" title="athena.nll.NonlinearLevelSet.train"><code class="xref py py-meth docutils literal notranslate"><span class="pre">train()</span></code></a> is called.</p></li>
+<li><p><strong>scheduler</strong> (<em>torch.optim.lr_scheduler._LRScheduler</em>) – scheduler used in
+the training of the RevNet. Its argument are passed in the dict
+scheduler_args when <a class="reference internal" href="_summaries/athena.nll.NonlinearLevelSet.train.html#athena.nll.NonlinearLevelSet.train" title="athena.nll.NonlinearLevelSet.train"><code class="xref py py-meth docutils literal notranslate"><span class="pre">train()</span></code></a> is called. Default is None.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Variables</dt>
@@ -327,9 +330,9 @@ size. Defaults to (10, 8).</p></li>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>inputs</strong> (<a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.8.0a0+5f767b4 ))"><em>torch.Tensor</em></a>) – DoubleTensor n_samples-by-n_params
+<li><p><strong>inputs</strong> (<a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.9.0a0+git2bd4ead ))"><em>torch.Tensor</em></a>) – DoubleTensor n_samples-by-n_params
 containing the points in the full input space.</p></li>
-<li><p><strong>outputs</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><em>numpy.ndarray</em></a>) – array n_samples-by-1 containing the
+<li><p><strong>outputs</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)"><em>numpy.ndarray</em></a>) – array n_samples-by-1 containing the
 corresponding function evaluations.</p></li>
 <li><p><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – if specified, the plot is saved at <cite>filename</cite>.</p></li>
 <li><p><strong>figsize</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.9)"><em>tuple</em></a><em>(</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em>,</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em>)</em>) – tuple in inches defining the figure
@@ -383,16 +386,16 @@ Use either .pt or .pth. See notes below.</p>
 
 <dl class="method">
 <dt>
-<code class="sig-name descname">train</code><span class="sig-paren">(</span><em class="sig-param">inputs</em>, <em class="sig-param">gradients</em>, <em class="sig-param">outputs=None</em>, <em class="sig-param">interactive=False</em>, <em class="sig-param">target_loss=0.0001</em>, <em class="sig-param">optim_args={}</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/athena/nll.html#NonlinearLevelSet.train"><span class="viewcode-link">[source]</span></a></dt>
+<code class="sig-name descname">train</code><span class="sig-paren">(</span><em class="sig-param">inputs</em>, <em class="sig-param">gradients</em>, <em class="sig-param">outputs=None</em>, <em class="sig-param">interactive=False</em>, <em class="sig-param">target_loss=0.0001</em>, <em class="sig-param">optim_args={}</em>, <em class="sig-param">scheduler_args={}</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/athena/nll.html#NonlinearLevelSet.train"><span class="viewcode-link">[source]</span></a></dt>
 <dd><p>Train the whole RevNet.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>inputs</strong> (<a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.8.0a0+5f767b4 ))"><em>torch.Tensor</em></a>) – DoubleTensor n_samples-by-n_params
+<li><p><strong>inputs</strong> (<a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.9.0a0+git2bd4ead ))"><em>torch.Tensor</em></a>) – DoubleTensor n_samples-by-n_params
 containing the points in the full input space.</p></li>
-<li><p><strong>gradients</strong> (<a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.8.0a0+5f767b4 ))"><em>torch.Tensor</em></a>) – DoubleTensor n_samples-by-n_params
+<li><p><strong>gradients</strong> (<a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.9.0a0+git2bd4ead ))"><em>torch.Tensor</em></a>) – DoubleTensor n_samples-by-n_params
 containing the gradient samples wrt the input parameters.</p></li>
-<li><p><strong>outputs</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><em>numpy.ndarray</em></a>) – array n_samples-by-1 containing the
+<li><p><strong>outputs</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)"><em>numpy.ndarray</em></a>) – array n_samples-by-1 containing the
 corresponding function evaluations. Needed only for the interactive
 mode. Default is None.</p></li>
 <li><p><strong>interactive</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a>) – if True a plot with the loss function decay,
@@ -400,6 +403,7 @@ and the sufficient summary plot will be showed and updated every
 10 epochs, and at the last epoch. Default is False.</p></li>
 <li><p><strong>target_loss</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a>) – loss threshold. Default is 0.0001.</p></li>
 <li><p><strong>optim_args</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.9)"><em>dict</em></a>) – dictionary passed to the optimizer.</p></li>
+<li><p><strong>scheduler_args</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.9)"><em>dict</em></a>) – dictionary passed to the scheduler.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Raises</dt>
@@ -432,6 +436,11 @@ automatically set with <cite>active_dim</cite>.</p>
 </dd>
 </dl>
 <p>Initializes internal Module state, shared by both nn.Module and ScriptModule.</p>
+<dl class="attribute">
+<dt>
+<code class="sig-name descname">_is_full_backward_hook</code><em class="property"> = None</em></dt>
+<dd></dd></dl>
+
 <dl class="method">
 <dt>
 <code class="sig-name descname">customized_loss</code><span class="sig-paren">(</span><em class="sig-param">inputs</em>, <em class="sig-param">mapped_inputs</em>, <em class="sig-param">gradients</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/athena/nll.html#ForwardNet.customized_loss"><span class="viewcode-link">[source]</span></a></dt>
@@ -439,12 +448,12 @@ automatically set with <cite>active_dim</cite>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>inputs</strong> (<a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.8.0a0+5f767b4 ))"><em>torch.Tensor</em></a>) – DoubleTensor n_samples-by-n_params
+<li><p><strong>inputs</strong> (<a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.9.0a0+git2bd4ead ))"><em>torch.Tensor</em></a>) – DoubleTensor n_samples-by-n_params
 containing the points in the full input space.</p></li>
-<li><p><strong>mapped_inputs</strong> (<a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.8.0a0+5f767b4 ))"><em>torch.Tensor</em></a>) – DoubleTensor
+<li><p><strong>mapped_inputs</strong> (<a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.9.0a0+git2bd4ead ))"><em>torch.Tensor</em></a>) – DoubleTensor
 n_samples-by-n_params containing the mapped points in the
 full input space. They are the result of the forward application.</p></li>
-<li><p><strong>gradients</strong> (<a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.8.0a0+5f767b4 ))"><em>torch.Tensor</em></a>) – DoubleTensor n_samples-by-n_params
+<li><p><strong>gradients</strong> (<a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.9.0a0+git2bd4ead ))"><em>torch.Tensor</em></a>) – DoubleTensor n_samples-by-n_params
 containing the gradient samples wrt the input parameters.</p></li>
 </ul>
 </dd>
@@ -457,7 +466,7 @@ containing the gradient samples wrt the input parameters.</p></li>
 <dd><p>Maps original inputs to transformed inputs.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>inputs</strong> (<a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.8.0a0+5f767b4 ))"><em>torch.Tensor</em></a>) – DoubleTensor n_samples-by-n_params
+<dd class="field-odd"><p><strong>inputs</strong> (<a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.9.0a0+git2bd4ead ))"><em>torch.Tensor</em></a>) – DoubleTensor n_samples-by-n_params
 containing the points in the original full input space.</p>
 </dd>
 <dt class="field-even">Return mapped_inputs</dt>
@@ -465,7 +474,7 @@ containing the points in the original full input space.</p>
 the nonlinear transformed inputs.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.8.0a0+5f767b4 ))">torch.Tensor</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.9.0a0+git2bd4ead ))">torch.Tensor</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -492,13 +501,18 @@ the nonlinear transformed inputs.</p>
 </dd>
 </dl>
 <p>Initializes internal Module state, shared by both nn.Module and ScriptModule.</p>
+<dl class="attribute">
+<dt>
+<code class="sig-name descname">_is_full_backward_hook</code><em class="property"> = None</em></dt>
+<dd></dd></dl>
+
 <dl class="method">
 <dt>
 <code class="sig-name descname">forward</code><span class="sig-paren">(</span><em class="sig-param">mapped_inputs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/athena/nll.html#BackwardNet.forward"><span class="viewcode-link">[source]</span></a></dt>
 <dd><p>Maps transformed inputs to original inputs.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>mapped_inputs</strong> (<a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.8.0a0+5f767b4 ))"><em>torch.Tensor</em></a>) – DoubleTensor n_samples-by-n_params
+<dd class="field-odd"><p><strong>mapped_inputs</strong> (<a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.9.0a0+git2bd4ead ))"><em>torch.Tensor</em></a>) – DoubleTensor n_samples-by-n_params
 containing the nonlinear transformed inputs.</p>
 </dd>
 <dt class="field-even">Return inputs</dt>
@@ -506,7 +520,7 @@ containing the nonlinear transformed inputs.</p>
 the points in the original full input space.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.8.0a0+5f767b4 ))">torch.Tensor</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.9.0a0+git2bd4ead ))">torch.Tensor</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -534,9 +548,9 @@ the points in the original full input space.</p>
 
   <div role="contentinfo">
     <p>
-        &#169; Copyright Copyright 2019-2020, Athena contributors.
+        &#169; Copyright Copyright 2019-2021, Athena contributors.
       <span class="lastupdated">
-        Last updated on Jan 10, 2021.
+        Last updated on May 03, 2021.
       </span>
 
     </p>

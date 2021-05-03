@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>athena.kas &mdash; ATHENA 0.0.2 documentation</title>
+  <title>athena.kas &mdash; ATHENA 0.1.1 documentation</title>
   
 
   
@@ -63,7 +63,7 @@
             
             
               <div class="version">
-                0.0.2
+                0.1.1
               </div>
             
           
@@ -215,7 +215,6 @@
 <span class="sd">    :cvar int n_boot: number of bootstrap samples.</span>
 <span class="sd">    :cvar numpy.ndarray metric: metric matrix for vectorial active</span>
 <span class="sd">        subspaces.</span>
-<span class="sd">    :raises: ValueError</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
                  <span class="n">dim</span><span class="p">,</span>
@@ -252,16 +251,16 @@
 <span class="sd">            eigenspaces define the active subspace.</span>
 <span class="sd">        :param numpy.ndarray metric: metric matrix output_dim-by-output-dim for</span>
 <span class="sd">            vectorial active subspaces.</span>
-<span class="sd">        :raises: ValueError</span>
+<span class="sd">        :raises: TypeError, ValueError</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">method</span> <span class="o">==</span> <span class="s1">&#39;exact&#39;</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">gradients</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">inputs</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;gradients or inputs argument is None.&#39;</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;gradients or inputs argument is None.&#39;</span><span class="p">)</span>
 
         <span class="c1"># estimate active subspace with local linear models.</span>
         <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">method</span> <span class="o">==</span> <span class="s1">&#39;local&#39;</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">inputs</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">outputs</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;inputs or outputs argument is None.&#39;</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;inputs or outputs argument is None.&#39;</span><span class="p">)</span>
             <span class="n">gradients</span><span class="p">,</span> <span class="n">inputs</span> <span class="o">=</span> <span class="n">local_linear_gradients</span><span class="p">(</span><span class="n">inputs</span><span class="o">=</span><span class="n">inputs</span><span class="p">,</span>
                                                        <span class="n">outputs</span><span class="o">=</span><span class="n">outputs</span><span class="p">,</span>
                                                        <span class="n">weights</span><span class="o">=</span><span class="n">weights</span><span class="p">)</span>
@@ -281,8 +280,7 @@
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">feature_map</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="c1"># default spectral measure is Gaussian</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">feature_map</span> <span class="o">=</span> <span class="n">FeatureMap</span><span class="p">(</span><span class="n">distr</span><span class="o">=</span><span class="s1">&#39;multivariate_normal&#39;</span><span class="p">,</span>
-                                          <span class="n">bias</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span>
-                                              <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_features</span><span class="p">)),</span>
+                                          <span class="n">bias</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_features</span><span class="p">)),</span>
                                           <span class="n">input_dim</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
                                           <span class="n">n_features</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">n_features</span><span class="p">,</span>
                                           <span class="n">params</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">inputs</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span>
@@ -322,10 +320,22 @@
 <span class="sd">            array n_samples-by-inactive_dim containing the mapped inactive</span>
 <span class="sd">            variables.</span>
 <span class="sd">        :rtype: numpy.ndarray, numpy.ndarray</span>
+<span class="sd">        :raises: TypeError</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">features</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">feature_map</span><span class="o">.</span><span class="n">compute_fmap</span><span class="p">(</span><span class="n">inputs</span><span class="p">)</span>
-        <span class="n">active</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">features</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">W1</span><span class="p">)</span>
-        <span class="n">inactive</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">features</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">W2</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">W1</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+                <span class="s1">&#39;the kernel-based active subspace has not been evaluated.&#39;</span><span class="p">)</span>
+
+        <span class="c1"># allow evaluation of active variables only</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">W2</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">active</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">features</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">W1</span><span class="p">)</span>
+            <span class="n">inactive</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">active</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">features</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">W1</span><span class="p">)</span>
+            <span class="n">inactive</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">features</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">W2</span><span class="p">)</span>
+
         <span class="k">return</span> <span class="n">active</span><span class="p">,</span> <span class="n">inactive</span></div>
 
 <div class="viewcode-block" id="KernelActiveSubspaces.inverse_transform"><a class="viewcode-back" href="../../kas.html#athena.kas.KernelActiveSubspaces.inverse_transform">[docs]</a>    <span class="k">def</span> <span class="nf">inverse_transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reduced_inputs</span><span class="p">,</span> <span class="n">n_points</span><span class="p">):</span>
@@ -372,9 +382,9 @@
 
   <div role="contentinfo">
     <p>
-        &#169; Copyright Copyright 2019-2020, Athena contributors.
+        &#169; Copyright Copyright 2019-2021, Athena contributors.
       <span class="lastupdated">
-        Last updated on Jan 10, 2021.
+        Last updated on May 03, 2021.
       </span>
 
     </p>
