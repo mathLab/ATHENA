@@ -31,7 +31,7 @@ setup(name=NAME,
       description=DESCRIPTION,
       long_description=LDESCRIPTION,
       classifiers=[
-          'Development Status ::  5 - Production/Stable',
+          'Development Status :: 5 - Production/Stable',
           'License :: OSI Approved :: MIT License',
           'Programming Language :: Python :: 3.6',
           'Intended Audience :: Science/Research',
