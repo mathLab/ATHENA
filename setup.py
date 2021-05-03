@@ -5,7 +5,8 @@ with open("athena/meta.py") as fp:
     exec(fp.read(), meta)
 
 # Package meta-data.
-NAME = meta['__title__']
+IMPORTNAME = meta['__title__']
+PIPNAME = meta['__packagename__']
 DESCRIPTION = 'Advanced Techniques for High dimensional parameter spaces to ' \
               'Enhance Numerical Analysis'
 URL = 'https://github.com/mathLab/ATHENA'
@@ -26,7 +27,7 @@ EXTRAS = {
 
 LDESCRIPTION = ('ATHENA is a Python package for reduction in parameter spaces.')
 
-setup(name=NAME,
+setup(name=PIPNAME,
       version=VERSION,
       description=DESCRIPTION,
       long_description=LDESCRIPTION,
@@ -42,7 +43,7 @@ setup(name=NAME,
       author=AUTHOR,
       author_email=MAIL,
       license='MIT',
-      packages=[NAME],
+      packages=[IMPORTNAME],
       install_requires=REQUIRED,
       extras_require=EXTRAS,
       test_suite='nose.collector',
