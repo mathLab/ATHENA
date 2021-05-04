@@ -375,7 +375,7 @@ class ActiveSubspaces(Subspaces):
         doi: https://doi.org/10.1137/15M1009718
 
         :param iterable gradients: generator for spatial gradients.
-        :return the sorted eigenvalues and the corresponding eigenvectors for
+        :return: the sorted eigenvalues and the corresponding eigenvectors for
             the reduced matrix.
         :rtype: numpy.ndarray, numpy.ndarray
         """
