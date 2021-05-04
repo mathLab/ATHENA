@@ -25,7 +25,19 @@ EXTRAS = {
     'tutorials': ['pyro', 'pyhmc'],
 }
 
-LDESCRIPTION = ('ATHENA is a Python package for reduction in parameter spaces.')
+LDESCRIPTION = (
+  'ATHENA is a Python package for reduction of high dimensional '
+  'parameter spaces in the context of numerical analysis. It allows '
+  'the use of several dimensionality reduction techniques such as '
+  'Active Subspaces (AS), Kernel-based Active Subspaces (KAS), and '
+  'Nonlinear Level-set Learning (NLL).\n'
+  '\n'
+  'It is particularly suited for the study of parametric PDEs, for '
+  'sensitivity analysis, and for the approximation of engineering '
+  'quantities of interest. It can handle both scalar and vectorial '
+  'high dimensional functions, making it a useful tool also to reduce '
+  'the burden of computational intensive optimization tasks.'
+)
 
 setup(name=PIPNAME,
       version=VERSION,
