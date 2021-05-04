@@ -7,6 +7,9 @@
     <a href="https://github.com/mathLab/ATHENA/blob/master/LICENSE" target="_blank">
         <img alt="Software License" src="https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square">
     </a>
+    <a href="https://badge.fury.io/py/athena-mathlab" target="_blank">
+      <img alt="PyPI version" src="https://badge.fury.io/py/athena-mathlab.svg">
+    </a>
     <a href="https://travis-ci.org/mathLab/ATHENA" target="_blank">
         <img alt="Build Status" src="https://travis-ci.org/mathLab/ATHENA.svg">
     </a>
