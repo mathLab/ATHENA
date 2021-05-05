@@ -251,7 +251,7 @@ networks (RevNet).</p>
 <li><p><strong>lr</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a>) – learning rate.</p></li>
 <li><p><strong>epochs</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – number of ephocs.</p></li>
 <li><p><strong>dh</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a>) – so-called time step of the RevNet. Default is 0.25.</p></li>
-<li><p><strong>optimizer</strong> (<a class="reference external" href="https://pytorch.org/docs/master/optim.html#torch.optim.Optimizer" title="(in PyTorch vmaster (1.9.0a0+git2bd4ead ))"><em>torch.optim.Optimizer</em></a>) – optimizer used in the training of
+<li><p><strong>optimizer</strong> (<a class="reference external" href="https://pytorch.org/docs/master/optim.html#torch.optim.Optimizer" title="(in PyTorch vmaster (1.9.0a0+git513f2a2 ))"><em>torch.optim.Optimizer</em></a>) – optimizer used in the training of
 the RevNet. Its argument are passed in the dict optim_args when
 <a class="reference internal" href="_summaries/athena.nll.NonlinearLevelSet.train.html#athena.nll.NonlinearLevelSet.train" title="athena.nll.NonlinearLevelSet.train"><code class="xref py py-meth docutils literal notranslate"><span class="pre">train()</span></code></a> is called.</p></li>
 <li><p><strong>scheduler</strong> (<em>torch.optim.lr_scheduler._LRScheduler</em>) – scheduler used in
@@ -330,7 +330,7 @@ size. Defaults to (10, 8).</p></li>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>inputs</strong> (<a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.9.0a0+git2bd4ead ))"><em>torch.Tensor</em></a>) – DoubleTensor n_samples-by-n_params
+<li><p><strong>inputs</strong> (<a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.9.0a0+git513f2a2 ))"><em>torch.Tensor</em></a>) – DoubleTensor n_samples-by-n_params
 containing the points in the full input space.</p></li>
 <li><p><strong>outputs</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)"><em>numpy.ndarray</em></a>) – array n_samples-by-1 containing the
 corresponding function evaluations.</p></li>
@@ -391,9 +391,9 @@ Use either .pt or .pth. See notes below.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>inputs</strong> (<a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.9.0a0+git2bd4ead ))"><em>torch.Tensor</em></a>) – DoubleTensor n_samples-by-n_params
+<li><p><strong>inputs</strong> (<a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.9.0a0+git513f2a2 ))"><em>torch.Tensor</em></a>) – DoubleTensor n_samples-by-n_params
 containing the points in the full input space.</p></li>
-<li><p><strong>gradients</strong> (<a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.9.0a0+git2bd4ead ))"><em>torch.Tensor</em></a>) – DoubleTensor n_samples-by-n_params
+<li><p><strong>gradients</strong> (<a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.9.0a0+git513f2a2 ))"><em>torch.Tensor</em></a>) – DoubleTensor n_samples-by-n_params
 containing the gradient samples wrt the input parameters.</p></li>
 <li><p><strong>outputs</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)"><em>numpy.ndarray</em></a>) – array n_samples-by-1 containing the
 corresponding function evaluations. Needed only for the interactive
@@ -448,12 +448,12 @@ automatically set with <cite>active_dim</cite>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>inputs</strong> (<a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.9.0a0+git2bd4ead ))"><em>torch.Tensor</em></a>) – DoubleTensor n_samples-by-n_params
+<li><p><strong>inputs</strong> (<a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.9.0a0+git513f2a2 ))"><em>torch.Tensor</em></a>) – DoubleTensor n_samples-by-n_params
 containing the points in the full input space.</p></li>
-<li><p><strong>mapped_inputs</strong> (<a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.9.0a0+git2bd4ead ))"><em>torch.Tensor</em></a>) – DoubleTensor
+<li><p><strong>mapped_inputs</strong> (<a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.9.0a0+git513f2a2 ))"><em>torch.Tensor</em></a>) – DoubleTensor
 n_samples-by-n_params containing the mapped points in the
 full input space. They are the result of the forward application.</p></li>
-<li><p><strong>gradients</strong> (<a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.9.0a0+git2bd4ead ))"><em>torch.Tensor</em></a>) – DoubleTensor n_samples-by-n_params
+<li><p><strong>gradients</strong> (<a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.9.0a0+git513f2a2 ))"><em>torch.Tensor</em></a>) – DoubleTensor n_samples-by-n_params
 containing the gradient samples wrt the input parameters.</p></li>
 </ul>
 </dd>
@@ -466,7 +466,7 @@ containing the gradient samples wrt the input parameters.</p></li>
 <dd><p>Maps original inputs to transformed inputs.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>inputs</strong> (<a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.9.0a0+git2bd4ead ))"><em>torch.Tensor</em></a>) – DoubleTensor n_samples-by-n_params
+<dd class="field-odd"><p><strong>inputs</strong> (<a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.9.0a0+git513f2a2 ))"><em>torch.Tensor</em></a>) – DoubleTensor n_samples-by-n_params
 containing the points in the original full input space.</p>
 </dd>
 <dt class="field-even">Return mapped_inputs</dt>
@@ -474,7 +474,7 @@ containing the points in the original full input space.</p>
 the nonlinear transformed inputs.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.9.0a0+git2bd4ead ))">torch.Tensor</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.9.0a0+git513f2a2 ))">torch.Tensor</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -512,7 +512,7 @@ the nonlinear transformed inputs.</p>
 <dd><p>Maps transformed inputs to original inputs.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>mapped_inputs</strong> (<a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.9.0a0+git2bd4ead ))"><em>torch.Tensor</em></a>) – DoubleTensor n_samples-by-n_params
+<dd class="field-odd"><p><strong>mapped_inputs</strong> (<a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.9.0a0+git513f2a2 ))"><em>torch.Tensor</em></a>) – DoubleTensor n_samples-by-n_params
 containing the nonlinear transformed inputs.</p>
 </dd>
 <dt class="field-even">Return inputs</dt>
@@ -520,7 +520,7 @@ containing the nonlinear transformed inputs.</p>
 the points in the original full input space.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.9.0a0+git2bd4ead ))">torch.Tensor</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.9.0a0+git513f2a2 ))">torch.Tensor</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -550,7 +550,7 @@ the points in the original full input space.</p>
     <p>
         &#169; Copyright Copyright 2019-2021, Athena contributors.
       <span class="lastupdated">
-        Last updated on May 03, 2021.
+        Last updated on May 05, 2021.
       </span>
 
     </p>
