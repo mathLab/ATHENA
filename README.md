@@ -26,7 +26,8 @@
 ## Table of contents
 * [Description](#description)
 * [Dependencies and installation](#dependencies-and-installation)
-	* [Installing from source](#installing-from-source)
+	* [Installing from pip](#installing-from-pip)
+  * [Installing from source](#installing-from-source)
 * [Documentation](#documentation)
 * [Testing](#testing)
 * [Examples and tutorials](#examples-and-tutorials)
@@ -40,15 +41,20 @@
 ## Description
 **ATHENA** is a Python package for reduction of high dimensional parameter spaces in the context of numerical analysis. It allows the use of several dimensionality reduction techniques such as Active Subspaces (AS), Kernel-based Active Subspaces (KAS), and Nonlinear Level-set Learning (NLL). It is particularly suited for the study of parametric PDEs, for sensitivity analysis, and for the approximation of engineering quantities of interest. It can handle both scalar and vectorial high dimensional functions, making it a useful tool also to reduce the burden of computational intensive optimization tasks.
 
-See the [**Examples and Tutorials**](#examples-and-tutorials) section below and the [**tutorials folder**](tutorials/README.md) to have an idea of the potential of this package.
+See the [**Examples and Tutorials**](#examples-and-tutorials) section below and the [**tutorials folder**](tutorials/README.md) to have an idea of the potential of this package. Check also out the SISSA mathLab [medium publication](https://medium.com/sissa-mathlab) where you can find stories about ATHENA (search within the publication page).
 
 
 ## Dependencies and installation
 **ATHENA** requires `numpy`, `matplotlib`, `scipy`, `torch`, `GPy`, `GPyOpt`,
 `scikit-learn`, `sphinx` (for the documentation) and `nose` (for local test).
 The code is compatible with Python 3.6 and above. It can be installed directly
-from the source code.
+from the source code or via pip.
 
+### Installing from pip
+To install the latest release of the package, which corresponds to the online documentation, just type:
+```bash
+> pip install athena-mathlab
+```
 
 ### Installing from source
 To install the latest version of the package just type:
