@@ -16,8 +16,8 @@
     <a href="https://coveralls.io/github/mathLab/ATHENA" target="_blank">
         <img alt="Coverage Status" src="https://coveralls.io/repos/github/mathLab/ATHENA/badge.svg">
     </a>
-    <a href="https://www.codacy.com/manual/mathLab/ATHENA?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=mathLab/ATHENA&amp;utm_campaign=Badge_Grade" target="_blank">
-        <img alt="Codacy Badge" src="https://api.codacy.com/project/badge/Grade/da9bf8c772a74a038f3b44a91748c91b">
+    <a href="https://www.codacy.com/gh/mathLab/ATHENA/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=mathLab/ATHENA&amp;utm_campaign=Badge_Grade" target="_blank">
+        <img alt="Codacy Badge" src="https://app.codacy.com/project/badge/Grade/309f5667ded04daab0acf392974a8029">
     </a>
 </p>
 
