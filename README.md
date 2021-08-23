@@ -31,7 +31,8 @@
 * [Documentation](#documentation)
 * [Testing](#testing)
 * [Examples and tutorials](#examples-and-tutorials)
-* [References](#references)
+* [How to cite](#how-to-cite)
+    * [References](#references)
 	* [Recent works with ATHENA](#recent-works-with-athena)
 * [Authors and contributors](#authors-and-contributors)
 * [How to contribute](#how-to-contribute)
@@ -119,7 +120,21 @@ In the following some illustrative examples of what you can do with this package
 <em>Parameter space deformation using the nonlinear level-set learning technique for a 2-dimensional cubic function.</em>
 </p>
 
-## References
+## How to cite
+If you use this package in your publications please cite the package as follows:
+
+F. Romor, M. Tezzele, and G. Rozza (2021). ATHENA: Advanced Techniques for High dimensional parameter spaces to Enhance Numerical Analysis. arXiv preprint arXiv:2105.06713. https://arxiv.org/abs/2105.06713
+
+Or if you use LaTeX:
+```tex
+@article{romor2020athena,
+    author = {Romor, Francesco and Tezzele, Marco and Rozza, Gianluigi},
+    journal = {arXiv preprint arXiv:2105.06713},
+    title = {{ATHENA: Advanced Techniques for High dimensional parameter spaces to Enhance Numerical Analysis}},
+    year = {Submitted, 2021}}
+```
+
+### References
 To implement the numerical methods present in this package we followed these works:
 
 * Constantine. *Active subspaces: Emerging ideas for dimension reduction in parameter studies*. Volume 2 SIAM Spotlights, 2015. [[DOI](https://doi.org/10.1137/1.9781611973860)].
@@ -134,13 +149,15 @@ To implement the numerical methods present in this package we followed these wor
 ### Recent works with ATHENA
 Here there is a list of the scientific works involving **ATHENA** you can consult and/or cite. If you want to add one, please open a PR.
 
+* Romor, Tezzele, Rozza. *A local approach to parameter space reduction for regression and classification tasks*. 2021. [[arXiv](https://arxiv.org/abs/2107.10867)].
+
 * Demo, Tezzele, Mola, Rozza. *Hull shape design optimization with parameter space and model reductions and self-learning mesh morphing*. 2021. [[DOI](https://doi.org/10.3390/jmse9020185)], [[arXiv](https://arxiv.org/abs/2101.03781)].
 
-* Romor, Tezzele, Rozza. *Multi-fidelity data fusion for the approximation of scalar functions with low intrinsic dimensionality through active subspaces*. 2020. [[arXiv](https://arxiv.org/abs/2010.08349)].
+* Romor, Tezzele, Rozza. *Multi-fidelity data fusion for the approximation of scalar functions with low intrinsic dimensionality through active subspaces*. 2020. [[DOI](https://doi.org/10.1002/pamm.202000349)], [[arXiv](https://arxiv.org/abs/2010.08349)].
 
 * Romor, Tezzele, Lario, Rozza. *Kernel-based Active Subspaces with application to CFD parametric problems using Discontinuous Galerkin method*. 2020. [[arXiv](https://arxiv.org/abs/2008.12083)].
 
-* Demo, Tezzele, Rozza. *A supervised learning approach involving active subspaces for an efficient genetic algorithm in high-dimensional optimization problems*. 2020. [[arXiv](https://arxiv.org/abs/2006.07282)].
+* Demo, Tezzele, Rozza. *A supervised learning approach involving active subspaces for an efficient genetic algorithm in high-dimensional optimization problems*. 2020. [[DOI](https://doi.org/10.1137/20M1345219)], [[arXiv](https://arxiv.org/abs/2006.07282)].
 
 * Tezzele, Demo, Stabile, Mola, Rozza. *Enhancing CFD predictions in shape design problems by model and parameter space reduction*. 2020. [[DOI](https://doi.org/10.1186/s40323-020-00177-y)], [[arXiv](https://arxiv.org/abs/2001.05237)].
 
