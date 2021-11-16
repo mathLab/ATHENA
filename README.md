@@ -47,7 +47,7 @@ See the [**Examples and Tutorials**](#examples-and-tutorials) section below and 
 
 ## Dependencies and installation
 **ATHENA** requires `numpy`, `matplotlib`, `scipy`, `torch`, `GPy`, `GPyOpt`,
-`scikit-learn`, `sphinx` (for the documentation) and `nose` (for local test).
+`scikit-learn`, `sphinx` (for the documentation) and `pytest` (for local test).
 The code is compatible with Python 3.6 and above. It can be installed directly
 from the source code or via pip.
 
@@ -70,14 +70,13 @@ The official distribution is on GitHub, and you can clone the repository using
 
 To install your own local branch you can use the `setup.py` file
 ```bash
-> python setup.py install
+> pip install -e .
 ```
 
 To uninstall the package you have to rerun the installation and record the installed files in order to remove them:
 
 ```bash
-> python setup.py install --record installed_files.txt
-> cat installed_files.txt | xargs rm -rf
+> pip uninstall athena-mathlab
 ```
 
 ## Documentation
@@ -93,12 +92,12 @@ The generated html can be found in `docs/build/html`. Open up the `index.html` y
 
 ## Testing
 
-We are using Travis CI for continuous intergration testing. You can check out the current status [here](https://travis-ci.org/mathLab/ATHENA).
+We are using Github Actions for continuous intergration testing. You can check out the current status [here](https://github.com/mathLab/ATHENA/actions/workflows/testing_pr.yml).
 
-To run tests locally (`nose` is required):
+To run tests locally (`pytest` is required):
 
 ```bash
-> python test.py
+> pytest
 ```
 
 ## Examples and tutorials
