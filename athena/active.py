@@ -144,12 +144,11 @@ class ActiveSubspaces(Subspaces):
         if self.W1 is None:
             raise TypeError('the active subspace has not been evaluated.')
 
+        active = np.dot(inputs, self.W1)
         # allow evaluation of active variables only
         if self.W2 is None:
-            active = np.dot(inputs, self.W1)
             inactive = None
         else:
-            active = np.dot(inputs, self.W1)
             inactive = np.dot(inputs, self.W2)
 
         return active, inactive
