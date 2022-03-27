@@ -21,17 +21,17 @@ from sklearn.cluster import KMeans
 from sklearn_extra.cluster import KMedoids
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.utils.validation import check_is_fitted
+from sklearn.utils import check_array
 from sklearn.metrics import r2_score, mean_absolute_error, silhouette_score
 from sklearn.metrics.pairwise import pairwise_distances_argmin
+from sklearn.manifold import TSNE
 
 import GPy
 from athena import Normalizer, ActiveSubspaces
 
 import logging
-# ! add in the script: logging.basicConfig(filename='divisive.log',
-# level=logging.DEBUG)
 
-_log = logging.getLogger('divisive')
+_log = logging.getLogger('hierarchical')
 mpl_logger = logging.getLogger('matplotlib')
 mpl_logger.setLevel(logging.WARNING)
 
@@ -54,7 +54,7 @@ class ClusterBase():
         self.gradients = config['gradients'] if config.get(
             'gradients', None) is not None else None
 
-        self.as_dim = config['as_dim']
+        self.as_dim = min(config['as_dim'], self.inputs[1])
         self.method = 'exact' if config.get('gradients',
                                             None) is not None else 'local'
 
@@ -62,7 +62,7 @@ class ClusterBase():
         self.random_state = config['random_state']
 
         self.clustering = None
-        self.labels = None  # labels start from 0
+        self.labels = None  # cluster labels start from 0
         self.unique_labels = None
 
         self.full_as = None
@@ -96,10 +96,11 @@ class ClusterBase():
     def _fit_clustering(self):
         """Init unique_labels, labels, method predict"""
         raise NotImplementedError(
-            'Subclass must implement abstract method {}._fit_clustering'.format(
-                self.__class__.__name__))
+            'Subclass must implement abstract method {}._fit_clustering'.
+            format(self.__class__.__name__))
 
     def _fit_global(self, plot=False):
+        """Compute global Active Subspace"""
         self.full_as = ActiveSubspaces(dim=self.as_dim, method=self.method)
         self.full_as.fit(inputs=self.inputs,
                          outputs=self.outputs,
@@ -117,7 +118,7 @@ class ClusterBase():
             ass = ActiveSubspaces(dim=self.as_dim, method=self.method)
             if self.gradients is None:
                 ass.fit(inputs=self.inputs[class_member_mask],
-                       outputs=self.outputs[class_member_mask])
+                        outputs=self.outputs[class_member_mask])
             else:
                 ass.fit(gradients=self.gradients[class_member_mask])
 
@@ -171,45 +172,52 @@ class ClusterBase():
         scores = np.array([r2_full, r2_local, mae_full, mae_local])
         return scores
 
-    # TODO plot utilities for dimenions greater than 2
-    def plot_clusters(self, save=False, title='2d_clusters'):
-        assert self.inputs.shape[1] == 2
-        plt.scatter(self.inputs[:, 0], self.inputs[:, 1], c=self.labels)
-        plt.grid(linestyle='dotted')
-        plt.tight_layout()
-        if save: plt.savefig('{}.pdf'.format(title))
-        plt.show()
+    @staticmethod
+    def cluster_metric(x, y):
+        if x[-1] == y[-1]:
+            return np.norm(x - y)
+        else:
+            return 1000
 
+    def plot_clusters(self, save=False, title='2d_clusters', plot=True):
+        """Plot clusters of 2d data or data with dimension between 2 and 50 with
+        TSNE."""
+        # normalize inputs
+        mins = np.min(np.vstack(
+            (self.inputs, self.inputs_val, self.inputs_test)),
+                      axis=0).reshape(1, -1)
+        maxs = np.max(np.vstack(
+            (self.inputs, self.inputs_val, self.inputs_test)),
+                      axis=0).reshape(1, -1)
+        X = (self.inputs - mins) / (maxs - mins)
 
-class DecisionTreeAS(ClusterBase):
-    def __init__(self, inputs, outputs, gradients, config):
-        super().__init__(inputs, outputs, gradients, config)
+        if 2 <= self.inputs.shape[1] <= 50:
+            if 50 >= self.inputs.shape[2] > 2:
+                X_embedded = TSNE(n_components=2,
+                                  learning_rate='auto',
+                                  metric=self.cluster_metric,
+                                  init='random').fit_transform(
+                                      np.hstack((X, self.labels)))
+                x1, x2 = X_embedded[:, 0], X_embedded[:, 1]
+            elif self.inputs.shape[2] == 2:
+                x1, x2 = X[:, 0], X[:, 1]
+            else:
+                raise ValueError(
+                    'The input dimension must be lower of 50 to be plotted in 2d.'
+                )
 
-    def _fit_clustering(self):
-        # bins = np.linspace(np.amin(self.outputs), np.amax(self.outputs),
-        # self.n_clusters+1) self.labels = np.digitize(self.outputs, bins)
-        # # include the maximum in the last bin
-        # self.labels[self.labels == self.n_clusters+1] = self.n_clusters
-        # # shift classes starting from 0
-        # self.labels -= 1
-
-        clsuters_output = KMeans(n_clusters=self.n_clusters,
-                                 random_state=self.random_state)
-        clsuters_output.fit(self.outputs.reshape(-1, 1))
-
-        self.labels = clsuters_output.labels_
-
-        self.unique_labels = list(set(self.labels))
-
-        self.clustering = DecisionTreeClassifier().fit(self.inputs,
-                                                       self.labels)
-        # r = export_text(self.clustering) print(r)
+            plt.scatter(x1, x2, c=self.labels)
+            plt.grid(linestyle='dotted')
+            plt.tight_layout()
+            if save: plt.savefig('{}.pdf'.format(title))
+            if plot: plt.show()
 
 
 class KMeansAS(ClusterBase):
-    """"""
+    """Clustering with k-means"""
     def __init__(self, config):
-        super(KMeansAS).__init__(config)
+        super().__init__(config)
+        self.centers = None
 
     def _fit_clustering(self):
         self.clustering = KMeans(n_clusters=self.n_clusters,
@@ -218,16 +226,19 @@ class KMeansAS(ClusterBase):
 
         self.labels = self.clustering.labels_
         self.unique_labels = list(set(self.labels))
-        # self.centers = self.clustering.cluster_centers_
+        self.centers = self.clustering.cluster_centers_
+        _log.debug("Number of clusters k-means: {}".format(self.n_clusters))
 
-        print('Number of clusters: %d' % self.n_clusters)
         silhouette_ = silhouette_score(self.inputs, self.labels)
-        print('Silhouette Coefficient: %0.3f' % silhouette_)
+        _log.debug(
+            "Silhouette Coefficient k-means: {:0.3f}".format(silhouette_))
 
 
 class KMedoidsAS(ClusterBase):
+    """Clustering with k-medoids"""
     def __init__(self, config):
-        super(KMedoidsAS).__init__(config)
+        super().__init__(config)
+        self.centers = None
 
     def _fit_clustering(self):
         self.clustering = KMedoids(metric=self.as_metric,
@@ -237,90 +248,54 @@ class KMedoidsAS(ClusterBase):
 
         self.labels = self.clustering.labels_
         self.unique_labels = list(set(self.labels))
-        # self.centers = self.clustering.cluster_centers_
+        self.centers = self.clustering.cluster_centers_
+        _log.debug("Number of clusters k-means: {}".format(self.n_clusters))
 
         silhouette_ = silhouette_score(self.inputs, self.labels)
-        print('Number of clusters: %d' % self.n_clusters)
-        # print('Silhouette Coefficient: %0.3f' % silhouette_)
+        _log.debug(
+            "Silhouette Coefficient k-means: {:0.3f}".format(silhouette_))
 
     def as_metric(self, X, Y):
+        "AS weighted Euclidean metric"
         return np.linalg.norm(
             self.full_as.evects.T.dot(X - Y) * self.full_as.evals)
 
 
-class KmedoidsCustom(KMedoids):
-    """Custom overloaded predict method from scikit. It is needed when the
-    training metric is supervised (depending on input, output and gradients
-    information) but the classification metric it is not (depending only on
-    inputs)."""
-    def __init__(self, *args, predict_metric=None, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.predict_metric = predict_metric
-
-    def predict(self, X):
-        """Predict the closest cluster for each sample in X.
-
-        Parameters
-        ----------
-        X : {array-like, sparse matrix}, shape (n_query, n_features), \
-                or (n_query, n_indexed) if metric == 'precomputed' New data to
-            predict.
-
-        Returns
-        -------
-        labels : array, shape = (n_query,) Index of the cluster each sample
-            belongs to.
-        """
-        X = check_array(X, accept_sparse=["csr", "csc"])
-
-        if self.metric == "precomputed":
-            check_is_fitted(self, "medoid_indices_")
-            return np.argmin(X[:, self.medoid_indices_], axis=1)
-        else:
-            check_is_fitted(self, "cluster_centers_")
-
-            # Return data points to clusters based on which cluster assignment
-            # yields the smallest distance
-            input_dim = X.shape[1]
-
-            return pairwise_distances_argmin(
-                X,
-                Y=self.cluster_centers_[:, :input_dim],
-                metric=self.predict_metric)
-
-
-class Divisive(ClusterBase):
-    def __init__(self, inputs, outputs, config, gradients=None):
+class TopDownHierarchical(ClusterBase):
+    def __init__(self, config):
         """TODO check states logic.
-        1. 2 and 4 are exlusives
+        1. 2 and 4 are exclusives
         2. 0 and 4 have the same role
         3. if 4 and 1 are present, 4 has priority over 1
 
-        :param dict config: 'normalization': uniform, gaussian, root 'metric':
-            as, CI, euclidean, kmeans 'refinement_criterion': global, mean,
-            force 'as_dim_criterion': spectral_gap, residual
+        :param dict config: 'normalization': uniform, gaussian, root 'metric': as, CI, euclidean, kmeans
+        'refinement_criterion': global, mean, force
+        'as_dim_criterion': spectral_gap, residual
         """
-        super().__init__(inputs, outputs, config, gradients)
+        super().__init__(config)
+        # clustering parameters
         self.max_clusters = config['max_clusters']
         self.max_red_dim = config['max_red_dim']
         self.max_children = config['max_children']
         self.min_children = config['min_children']
-        self.min_local = config['min_local']
+        self.min_local = config['min_local']  # minimum number of elements
         self.score_tolerance = config['score_tolerance']
+        self.dim_cut = config['dim_cut']
+
         self.normalization = config['normalization']  # uniform, gaussian, root
         self.metric = config['metric']  # as, CI, euclidean
-        self.dim_cut = config['dim_cut']
         self.refinement_criterion = config[
             'refinement_criterion']  #global, mean, force
         self.as_dim_criterion = config[
             'as_dim_criterion']  # spectral_gap, residual
+
         self.minimum_score = config['minimum_score'] if 1 > config[
             'minimum_score'] > 0 else None  # it increases the cluster dimension until the score threshold is reached
         self.max_dim_refine_further = config[
             'max_dim_refine_further'] if config[
                 'max_dim_refine_further'] is not None else self.inputs.shape[1]
-        self.total_clusters = 0
 
+        self.total_clusters = 0
         self.state_d = {
             '0': "running",
             '1': "minimum number of elements violated",
@@ -339,8 +314,8 @@ class Divisive(ClusterBase):
         scores, leaves_dimensions_list = self._fit_clustering()
         return scores, leaves_dimensions_list
 
-    def _fit_clustering(self):
-        self.root = DivisiveNode(None, np.arange(self.inputs.shape[0]),
+    def _fit_clustering(self, print_states=False, plot=False):
+        self.root = TopDownNode(None, np.arange(self.inputs.shape[0]),
                                  np.arange(self.inputs_val.shape[0]), self)
 
         self.total_clusters += 1
@@ -348,52 +323,56 @@ class Divisive(ClusterBase):
         # check if without clustering the tolerance is achieved
         if self.root.score > self.score_tolerance:
             self.root.state = 2
-            state = {6}
+            state = {6}  # init states set
             _log.debug("No clustering")
         else:
             self.root.state = 4
             children_fifo = [self.root]
             _log.debug("Add root")
 
-            # continue until state 3 is reached or children_fifo is empty TODO
-            # fix logical mistakes in the use states
+            # continue until children_fifo is empty
             while (children_fifo != []):
-                _log.debug("Befor pop total queue length is: " +
-                           str(len(children_fifo)) + " total clusters: " +
-                           str(self.total_clusters))
+                _log.debug(
+                    "Befor pop total queue length is: {},\n total clusters: {}"
+                    .format(str(len(children_fifo)), str(self.total_clusters)))
 
                 node = children_fifo.pop(0)
                 state, children = node.refine_cluster()
 
-                _log.debug("After pop " + str(state) +
-                           " and len children list added is " +
-                           str(len(children)) + " total clusters: " +
-                           str(self.total_clusters))
+                _log.debug(
+                    "After pop {} and len children list added is {} total clusters: {}"
+                    .format(str(state), str(len(children)),
+                            str(self.total_clusters)))
 
                 if 3 in state:
                     break
                 elif 7 in state:
                     continue
-                elif 4 in state:
+                elif 4 in state:  # refine further the present node
                     self.total_clusters += len(children) - 1
                     for child in children:
                         if child.state == 4:
                             children_fifo.append(child)
-                elif 2 in state:
+                elif 2 in state:  # tolerance reached, continue
                     self.total_clusters += len(children) - 1
-                elif any(x in state for x in [1, 5]):
+                elif any(x in state for x in
+                         [1, 5]):  # abort further clustering conditions
                     continue
 
-        print(
-            "Hierarchical divisive clustering completed with state {}".format(
-                state))
-        print("Max clusters: ", self.max_clusters)
-        # self._print_state()
+        print("Hierarchical top-down clustering completed with states")
+        for sta in state:
+            print(sta, " : ", self.state_d[str(sta)])
+
         n_leaves, leaves_dim, _ = self._print_leaves_score()
-        print("n_leaves: ", n_leaves)
-        # self.plot_clusters()
+        print("n_leaves: {:d}", n_leaves)
+
         res = self.compute_scores(self.inputs_test, self.outputs_test)
-        print("Test score: ", res)
+        print("Test score: {:.2f}", res)
+
+        if print_states:
+            self._print_state()
+        if plot:
+            self.plot_clusters()
 
         if self.minimum_score is not None:
             self.refine_further(self.minimum_score)
@@ -401,6 +380,7 @@ class Divisive(ClusterBase):
         return res, leaves_dim
 
     def refine_one_step(self):
+        """Increase the dimension of the Active Subspace once, when possible."""
         class LeafUpdate(object):
             def __init__(self):
                 self.score = 0
@@ -410,11 +390,8 @@ class Divisive(ClusterBase):
                 self.score = max(self.score, node.score)
                 self.leaves_list.append(node)
 
-        def void_func(*args, **kwargs):
-            pass
-
         leaf_update = LeafUpdate()
-        self.breadth_first_search(leaf_update, void_func)
+        self.breadth_first_search(leaf_update, self.void_func)
         leaf_update.leaves_list.sort(key=lambda leaf: leaf.score)
 
         index = 0
@@ -433,30 +410,10 @@ class Divisive(ClusterBase):
             # change as dimension node_to_update.ss.dim += 1
             node_to_update.r_dim += 1
 
-            # ActiveSubspaces clas returns throws ValueError when the dimension
-            # of the active subspace is equal to the dimension of the whole
-            # domain try: node_to_update.ss._partition() except ValueError:
-            # node_to_update.ss.W1 = node_to_update.ss.evects
-            # node_to_update.ss.W2 = None
-
-            # _log.debug("reduced dim inside refine_further loop is: " +
-            #            str(node_to_update.r_dim))
-
-            # t_inp_normalized = node_to_update.normalizer(node_to_update.t_ind,
-            #     node_to_update.divisive.inputs_val,
-            #     node_to_update.divisive.outputs_val)[0]
-            # # re-optimize gpr
-            # node_to_update._gpr = None
-
-            # # property decorator on node_to_update.gpr is called
-            # local_pred =
-            #     node_to_update.gpr.predict(node_to_update.ss.transform(t_inp_normalized)[0])[0]
-            #     node_to_update.score =
-            #     r2_score(node_to_update.divisive.outputs_val[node_to_update.t_ind],
-            #     local_pred, multioutput='uniform_average')
-
-    def refine_further(self, minimum_score):
-        print("Increasing the as dimension when possible.")
+    def refine_further(self, minimum_score, plot=False):
+        """Increase the dimension of the local AS until the tolerance on the
+        prediction error is reached."""
+        print("Start refining: increasing the as dimension when possible.")
 
         class CallRefine(object):
             def __init__(self, minimum_core):
@@ -465,53 +422,57 @@ class Divisive(ClusterBase):
             def __call__(self, node):
                 node.refine_further(self.min)
 
-        def void_func(*args, **kwargs):
-            pass
-
         call_refine = CallRefine(minimum_score)
-        self.breadth_first_search(call_refine, void_func)
+        self.breadth_first_search(call_refine, self.void_func)
         print("Finished increasing as dimension when possible.")
 
-        n_leaves, leaves_dim, _ = self._print_leaves_score()
+        n_leaves = self._print_leaves_score()[0]
         print("n_leaves: ", n_leaves)
-
-        # self.plot_clusters()
 
         res = self.compute_scores(self.inputs_test, self.outputs_test)
         print("Test score: ", res)
 
+        if plot: self.plot_clusters()
+
     def _print_state(self):
+        """Print the states of every node."""
         children_fifo = [self.root]
         while (children_fifo != []):
             node = children_fifo.pop(0)
             print(node.state, " : ", self.state_d[str(node.state)])
             children_fifo.extend(node.children)
 
-    def _print_leaves_score(self):
-        children_fifo = [self.root]
-        n_leaves = 0
-        leaves_dim = []
-        n_elems = []
-        while (children_fifo != []):
-            node = children_fifo.pop(0)
-            if node.children == []:
-                n_leaves += 1
-                print("score is: {:.2f}".format(node.score), " r_dim is: ",
-                      node.r_dim, " state is: ", node.state, " n_elem : ",
-                      node.ind.shape[0])
-                leaves_dim.append(node.r_dim)
-                n_elems.append(node.ind.shape[0])
-            children_fifo.extend(node.children)
-        return n_leaves, leaves_dim, n_elems
-
     def _print_state_debug(self):
+        "Save in the logger debug info from every node."
         children_fifo = [self.root]
         while (children_fifo != []):
             node = children_fifo.pop(0)
             _log.debug(str(node.state) + " : " + self.state_d[str(node.state)])
             children_fifo.extend(node.children)
 
+    def _print_leaves_score(self):
+        """Print the information of every leaf."""
+        class ComputeScore(object):
+            def __init__(self):
+                self.n_leaves = 0
+                self.leaves_dim = []
+                self.n_elems = []
+
+            def __call__(self, node):
+                self.n_leaves += 1
+                print("score is: {:.2f}".format(node.score), " r_dim is: ",
+                      node.r_dim, " state is: ", node.state, " n_elem : ",
+                      node.ind.shape[0])
+                self.leaves_dim.append(node.r_dim)
+                self.n_elems.append(node.ind.shape[0])
+
+        compute_score = ComputeScore()
+        self.breadth_first_search(compute_score, self.void_func)
+
+        return compute_score.n_leaves, compute_score.leaves_dim, compute_score.n_elems
+
     def assign_leaf_labels(self):
+        """Assign integer labels to the leaves."""
         class LeafLabels(object):
             def __init__(self):
                 self.labels_counter = 0
@@ -520,94 +481,90 @@ class Divisive(ClusterBase):
                 node.leaf_label = self.labels_counter
                 self.labels_counter += 1
 
-        def void_func(*args, **kwargs):
-            pass
-
         leaf_labels = LeafLabels()
-        self.breadth_first_search(leaf_labels, void_func)
+        self.breadth_first_search(leaf_labels, self.void_func)
 
     def reset_gprs(self):
+        """Reset the GPRs of every leaf and root."""
         def reset_gpr(node):
             node.gpr = None
             node.ss = None
-            pass
 
-        def void_func(*args, **kwargs):
-            pass
+        self.breadth_first_search(reset_gpr, self.void_func, reset_gpr)
 
-        self.breadth_first_search(reset_gpr, void_func, reset_gpr)
+    def plot_clusters(self, with_test=False, save_data=True, plot=True, save=True):
+        class SaveLeafInfo(object):
+            def __init__(self, save_fl=True):
+                self.n_leaves = 0
+                self.n_elems = []
+                self.scores = []
+                self.r_dims = []
+                self.leaf_labels = []
 
-    def plot_clusters(self, with_test=False, save_data=True):
-        children_fifo = [self.root]
-        # it = -1
+                self.save_fl = save_fl
+                self.saved_data = []
+
+            def __call__(self, node):
+                self.n_leaves += 1
+                self.n_elems.append(node.ind.shape[0])
+                self.scores.append(node.score)
+                self.r_dims.append(node.r_dim)
+                self.leaf_labels.append(node.leaf_label)
+
+                if self.save_fl:
+                    self.saved_data.append(node.ind)
+
+        self.assign_leaf_labels()
+        leaves_info = SaveLeafInfo(save_data)
+        self.breadth_first_search(leaves_info, self.void_func)
+
+        if save_data:
+            to_be_saved = []
+            for i in range(len(leaves_info)):
+                col_ones = np.ones((self.inputs[leaves_info.saved_data[i]].shape[0], 1))
+                to_be_saved.append(
+                    np.hstack((self.inputs[leaves_info.saved_data[i]],
+                               leaves_info.scores[i] * col_ones,
+                               leaves_info.r_dims[i] * col_ones,
+                               leaves_info.leaf_labels[i] * col_ones)))
+            arr = np.array(to_be_saved)
+            print("Saved data with shape: ", arr.shape)
+            np.save("clusters_r2_asdim_labels.npy", to_be_saved)
+
+
         fig = plt.figure(figsize=(12, 10))
         ax1 = fig.add_subplot(111)
         colors = cm.rainbow(np.linspace(0, 1, self.max_clusters))
 
-        self.assign_leaf_labels()
-        if save_data: save_dat = None
-
-        while (children_fifo != []):
-            node = children_fifo.pop(0)
-            if node.children == []:
-                # it += 1
-                data = self.inputs[node.ind]
-                ax1.scatter(data[:, 0],
-                            data[:, 1],
-                            c=colors[node.leaf_label],
-                            label="r2={:.2f}, as_dim={}".format(
-                                node.score, node.r_dim))
-                if save_data:
-                    col_ones = np.ones((data.shape[0], 1))
-                    dats = np.hstack(
-                        (data, node.score * col_ones, node.r_dim * col_ones,
-                         node.leaf_label * col_ones))
-                    if save_dat is None:
-                        save_dat = dats
-                    else:
-                        save_dat = np.vstack((save_dat, dats))
-
-            children_fifo.extend(node.children)
-
-        print("Saved data with shape: ", save_dat.shape)
-        np.save("clusters_r2_asdim_labels.npy", save_dat)
+        for i in range(len(leaves_info)):
+            ax1.scatter(self.inputs[leaves_info.saved_data[i]][:, 0],
+                        self.inputs[leaves_info.saved_data[i]][:, 1],
+                        c=colors[leaves_info.leaf_labels[i]],
+                        label="r2={:.2f}, as_dim={}".format(
+                            leaves_info.scores[i], leaves_info.r_dims[i]))
 
         if with_test:
-            predictions = np.zeros(
-                (self.inputs_test.shape[0], self.inputs_test.shape[1] + 1))
-            for i_test in range(self.inputs_test.shape[0]):
-                children_fifo = [self.root]
-                while (children_fifo != []):
-                    node = children_fifo.pop(0)
-                    if node.children == []:
-                        predictions[i_test, :-1] = self.inputs_test[i_test]
-                        predictions[i_test, -1] = node.leaf_label
-                    else:
-                        test_normalized = node.normalizer(
-                            inputs=self.inputs_test[i_test])[0]
-                        idx = node.cluster.predict(
-                            np.atleast_2d(test_normalized))[0]
-                        children_fifo.extend([node.children[idx]])
-            ax1.scatter(predictions[:, 0],
-                        predictions[:, 1],
-                        c=[
-                            colors[int(predictions[i, -1])]
-                            for i in range(self.inputs_test.shape[0])
-                        ],
+            predictions, labels = self.predict(self.inputs_test)
+            ax1.scatter(predictions[:, 0], predictions[:, 1],
+                        c=colors[labels],
                         alpha=0.5)
 
         plt.legend()
-        plt.title("Divisive clustering, total clusters= {} ".format(
+        plt.title("Hierarchical top-down clustering, total clusters= {} ".format(
             self.total_clusters))
         plt.tight_layout()
-        # TODO pretty plot + specific image name
-        plt.savefig("clusters_divisive.png")
+
+        if save: plt.savefig("clusters_top_down.png")
+        if plot: plt.show()
         plt.close()
 
     # overload
-    def compute_scores(self, test_inputs, test_outputs, custom_score=None):
+    def compute_scores(self, test_inputs, test_outputs, custom_score=None, classification_criterion='default'):
+        """Compute the r2 scores associated to the predictions of the
+        test_inputs variable. The classification on the local cluster is
+        performed with the default cluster method (option 'default') or the
+        minimum distance (option 'min_dist')."""
         if custom_score is None:
-
             def score(x, y):
                 return np.mean(
                     np.clip(r2_score(x, y, multioutput='raw_values'), 0, 1))
@@ -629,11 +586,15 @@ class Divisive(ClusterBase):
                 else:
                     test_normalized = node.normalizer(
                         inputs=test_inputs[i_test])[0]
-                    idx = node.cluster.predict(
-                        np.atleast_2d(test_normalized))[0]
 
-                    # TODO custom alternatives for classification idx =
-                    # self._cluster_min_dist(test_inputs[i_test], node.children)
+                    if classification_criterion=='default':
+                        idx = node.cluster.predict(
+                        np.atleast_2d(test_normalized))[0]
+                    elif classification_criterion=='min_dist':
+                        idx = self._cluster_min_dist(test_inputs[i_test], node.children)
+                    else:
+                        raise ValueError("Pass 'default' or 'min_dist' as classification criterions.")
+
                     children_fifo.extend([node.children[idx]])
 
         r2_full = custom_score_(test_outputs, full_pred)
@@ -645,36 +606,24 @@ class Divisive(ClusterBase):
         return scores
 
     def predict(self, test_inputs):
-        predictions = np.zeros(test_inputs.shape[0])
+        predictions = np.zeros((test_inputs.shape[0], test_inputs.shape[1]))
+        labels = np.zeros(test_inputs.shape[0])
         for i_test in range(test_inputs.shape[0]):
             children_fifo = [self.root]
             while (children_fifo != []):
                 node = children_fifo.pop(0)
                 if node.children == []:
                     predictions[i_test] = node.predict(test_inputs[i_test])
+                    labels[i_test] = node.leaf_label
                 else:
                     test_normalized = node.normalizer(
                         inputs=test_inputs[i_test])[0]
                     idx = node.cluster.predict(
                         np.atleast_2d(test_normalized))[0]
 
-                    # TODO custom alternatives for classification idx =
-                    # self._cluster_min_dist(test_inputs[i_test], node.children)
-
-                    # DEBUG fig = plt.figure() ax1 = fig.add_subplot(111) colors
-                    # = cm.rainbow(np.linspace(0, 1, len(node.children) + 1))
-                    # ax1.scatter(test_inputs[i_test][0],
-                    # test_inputs[i_test][1], c=colors[0], label="test")
-
-                    # for i, node in enumerate(node.children):
-                    #     ax1.scatter(self.inputs[node.ind][:, 0],
-                    #     self.inputs[node.ind][:, 1], c=colors[i + 1],
-                    #     label=str(i)) plt.title(str(idx)) plt.legend()
-                    #     plt.show()
-
                     children_fifo.extend([node.children[idx]])
 
-        return predictions
+        return predictions, labels
 
     def _cluster_min_dist(self, test, clusters: List):
         group_list = []
@@ -703,10 +652,14 @@ class Divisive(ClusterBase):
                 to_do_inside(node.children)
                 children_fifo.extend(node.children)
 
+    @staticmethod
+    def void_func(*args, **kwargs):
+        pass
 
-class DivisiveNode():
-    def __init__(self, parent, node_indexes, val_indexes, divisive_obj):
-        """A DivisiveNode is defined by the indexes of the triplets (inputs,
+
+class TopDownNode():
+    def __init__(self, parent, node_indexes, val_indexes, tree_obj):
+        """A TopDownNode is defined by the indexes of the triplets (inputs,
         outputs, gradients) of the training data and the parent node. The root
         has None parent. The invariants are:
         1. r_dim is between 1 and max_red_dim
@@ -724,27 +677,32 @@ class DivisiveNode():
 
         """
         self.parent = parent
+        self.children = []
+        self.cluster = None
+
         self.ind = node_indexes
         self.t_ind = val_indexes
+
         self.r_dim = None
         self.score = None
-        self.children = []
-        self.divisive = divisive_obj
+
+        self._gpr = None # GPR object
+        self._ss = None # AS object
+
+        self.hierarchical = tree_obj
         self.state = None
-        self._gpr = None
-        self._ss = None
-        self.cluster = None
-        self.type = "root" if self.parent is None else self.divisive.normalization
+
+        self.type = "root" if self.parent is None else self.hierarchical.normalization
         _log.debug("Validation set length: {}".format(
-            self.divisive.inputs_val[self.t_ind].shape))
+            self.hierarchical.inputs_val[self.t_ind].shape))
 
         ####### Estabilish invariants r_dim and score
         self.normalizer = self.NormalizeDivisive(self.type, self.ind,
-                                                 self.divisive.inputs)
+                                                 self.hierarchical.inputs)
 
         inp_normalized, out, grad_normalized = self.normalizer(
-            self.ind, self.divisive.inputs, self.divisive.outputs,
-            self.divisive.gradients)
+            self.ind, self.hierarchical.inputs, self.hierarchical.outputs,
+            self.hierarchical.gradients)
 
         # 1. r_dim is between 1 and max_red_dim
         ass = self.compute_as(inp_normalized, out, grad_normalized)
@@ -752,21 +710,17 @@ class DivisiveNode():
         self.evects = ass.evects
         self.evals = ass.evals / np.sum(ass.evals)
 
-        # sufficiency summary for debug if out.shape[0] == 1:
-        # ass.plot_sufficient_summary(inp_normalized, out) else:
-        # ass.plot_sufficient_summary(inp_normalized, out[:, 10])
-
         self.cum_evals = np.array(
             [np.sum(self.evals[:i + 1]) for i in range(self.evals.shape[0])])
 
-        if self.divisive.as_dim_criterion == "residual":
-            self.r_dim = self.as_dim(self.divisive.max_red_dim,
-                                     threshold=self.divisive.dim_cut)
-        elif self.divisive.as_dim_criterion == "spectral_gap":
-            self.r_dim = self.as_dim_gap(self.divisive.max_red_dim)
+        if self.hierarchical.as_dim_criterion == "residual":
+            self.r_dim = self.as_dim(self.hierarchical.max_red_dim,
+                                     threshold=self.hierarchical.dim_cut)
+        elif self.hierarchical.as_dim_criterion == "spectral_gap":
+            self.r_dim = self.as_dim_gap(self.hierarchical.max_red_dim)
         else:
             raise ValueError(
-                "The criterion for active subspace dimension criterion must be among: residual, spectral_gap."
+                "The criterion for active subspace dimension evaluation must be among: residual, spectral_gap."
             )
 
         # change as dimension
@@ -782,13 +736,13 @@ class DivisiveNode():
         gpr.optimize_restarts(10, verbose=False)
 
         t_inp_normalized = self.normalizer(self.t_ind,
-                                           self.divisive.inputs_val,
-                                           self.divisive.outputs_val)[0]
+                                           self.hierarchical.inputs_val,
+                                           self.hierarchical.outputs_val)[0]
 
         local_pred = gpr.predict(ass.transform(t_inp_normalized)[0])[0]
         self.score = np.mean(
             np.clip(
-                r2_score(self.divisive.outputs_val[self.t_ind],
+                r2_score(self.hierarchical.outputs_val[self.t_ind],
                          local_pred,
                          multioutput='raw_values'), 0, 1))
 
@@ -797,14 +751,14 @@ class DivisiveNode():
     def refine_further(self, minimum_score):
         _log.debug("r2 score inside refine_further is: " + str(self.score))
 
-        # create self.ss if it does not exist, thanks to property decorator
+        # create self.ss if it does not exist, through property decorator
         while (self.score < minimum_score
-               and self.ss.dim + 1 <= self.divisive.max_dim_refine_further):
+               and self.ss.dim + 1 <= self.hierarchical.max_dim_refine_further):
             # change as dimension
             self.ss.dim += 1
             self.r_dim += 1
 
-            # ActiveSubspaces clas returns throws ValueError when the dimension
+            # ActiveSubspaces class returns throws ValueError when the dimension
             # of the active subspace is equal to the dimension of the whole
             # domain
             try:
@@ -817,15 +771,15 @@ class DivisiveNode():
                        str(self.r_dim))
 
             t_inp_normalized = self.normalizer(self.t_ind,
-                                               self.divisive.inputs_val,
-                                               self.divisive.outputs_val)[0]
+                                               self.hierarchical.inputs_val,
+                                               self.hierarchical.outputs_val)[0]
             # re-optimize gpr
             self._gpr = None
 
             # property decorator on self.gpr is called
             local_pred = self.gpr.predict(
                 self.ss.transform(t_inp_normalized)[0])[0]
-            self.score = r2_score(self.divisive.outputs_val[self.t_ind],
+            self.score = r2_score(self.hierarchical.outputs_val[self.t_ind],
                                   local_pred,
                                   multioutput='uniform_average')
 
@@ -907,8 +861,8 @@ class DivisiveNode():
         # TODO check type and behaviour e.g. return only if state is 2 or 4
         if self._gpr is None:
             inp_normalized, out, _ = self.normalizer(self.ind,
-                                                     self.divisive.inputs,
-                                                     self.divisive.outputs)
+                                                     self.hierarchical.inputs,
+                                                     self.hierarchical.outputs)
 
             gpr = GPy.models.GPRegression(self.ss.transform(inp_normalized)[0],
                                           out.reshape(inp_normalized.shape[0],
@@ -933,8 +887,8 @@ class DivisiveNode():
         # TODO check type and behaviour e.g. return only if state is 2 or 4
         if self._ss is None:
             inp_normalized, out, grad_normalized = self.normalizer(
-                self.ind, self.divisive.inputs, self.divisive.outputs,
-                self.divisive.gradients)
+                self.ind, self.hierarchical.inputs, self.hierarchical.outputs,
+                self.hierarchical.gradients)
 
             if grad_normalized is not None:
                 ss = ActiveSubspaces(dim=self.r_dim)
@@ -962,12 +916,12 @@ class DivisiveNode():
         or 3 (max clusters used) or 5 (clustering cannot be performed) or 1 (too
         ephimeral clusters)."""
 
-        max_total_clusters = self.divisive.max_clusters
-        min_clusters = self.divisive.min_children
-        max_clusters = self.divisive.max_children
-        min_local = self.divisive.min_local
-        score_thre = self.divisive.score_tolerance
-        priority = self.divisive.refinement_criterion
+        max_total_clusters = self.hierarchical.max_clusters
+        min_clusters = self.hierarchical.min_children
+        max_clusters = self.hierarchical.max_children
+        min_local = self.hierarchical.min_local
+        score_thre = self.hierarchical.score_tolerance
+        priority = self.hierarchical.refinement_criterion
 
         state = {0}
         res_max = self.score  # best score among choice of n_clusters
@@ -979,15 +933,15 @@ class DivisiveNode():
 
             _log.debug("Refine cluster with " + str(n_clusters) +
                        " clusters. Total would be: " +
-                       str(self.divisive.total_clusters + n_clusters - 1) +
+                       str(self.hierarchical.total_clusters + n_clusters - 1) +
                        " \nRes max: {:.3f}".format(res_max) + " N_children: " +
                        str(len(self.children)))
 
             # check if max_clusters would be reached
-            if max_total_clusters < self.divisive.total_clusters + n_clusters - 1:
+            if max_total_clusters < self.hierarchical.total_clusters + n_clusters - 1:
                 # state contains 3 only if during the for loop no refinement is
                 # chosen
-                if max_total_clusters == self.divisive.total_clusters + len(
+                if max_total_clusters == self.hierarchical.total_clusters + len(
                         self.children) - 1:
                     state.add(3)
                 elif self.children == []:
@@ -998,50 +952,50 @@ class DivisiveNode():
                 return state, self.children
 
             # check if clustering is possible
-            if self.ind.shape[0] < self.divisive.total_clusters + n_clusters:
+            if self.ind.shape[0] < self.hierarchical.total_clusters + n_clusters:
                 state.add(5)
                 _log.debug("Refine returns 5 : " + str(state) +
                            " and list length " + str(len(self.children)))
                 return state, self.children
 
             # cluster with metric of choice
-            if self.divisive.metric == 'as':
+            if self.hierarchical.metric == 'as':
                 _log.debug("AS metric")
                 cluster_ = KMedoids(metric=self.as_metric,
                                     n_clusters=n_clusters,
-                                    random_state=self.divisive.random_state)
+                                    random_state=self.hierarchical.random_state)
 
-                local_inp = self.normalizer(self.ind, self.divisive.inputs,
-                                            self.divisive.outputs)[0]
-            elif self.divisive.metric == 'kmeans':
+                local_inp = self.normalizer(self.ind, self.hierarchical.inputs,
+                                            self.hierarchical.outputs)[0]
+            elif self.hierarchical.metric == 'kmeans':
                 _log.debug("kmeans")
                 cluster_ = KMeans(n_clusters=n_clusters,
-                                  random_state=self.divisive.random_state)
+                                  random_state=self.hierarchical.random_state)
 
-                local_inp = self.normalizer(self.ind, self.divisive.inputs,
-                                            self.divisive.outputs)[0]
+                local_inp = self.normalizer(self.ind, self.hierarchical.inputs,
+                                            self.hierarchical.outputs)[0]
             # C1 norm with outputs included
-            elif self.divisive.metric == 'C1':
+            elif self.hierarchical.metric == 'C1':
                 _log.debug("C1 metric")
                 cluster_ = KMedoids(n_clusters=n_clusters,
-                                    random_state=self.divisive.random_state)
+                                    random_state=self.hierarchical.random_state)
 
                 inp_normalized, out, grad_normalized = self.normalizer(
-                    self.ind, self.divisive.inputs, self.divisive.outputs,
-                    self.divisive.gradients)
+                    self.ind, self.hierarchical.inputs, self.hierarchical.outputs,
+                    self.hierarchical.gradients)
                 local_inp = np.hstack(
                     (inp_normalized, out.reshape(-1, 1), grad_normalized))
 
-            elif self.divisive.metric == 'euclidean':
+            elif self.hierarchical.metric == 'euclidean':
                 _log.debug("Euclidean metric")
                 cluster_ = KMedoids(n_clusters=n_clusters,
-                                    random_state=self.divisive.random_state)
+                                    random_state=self.hierarchical.random_state)
 
-                local_inp = self.normalizer(self.ind, self.divisive.inputs,
-                                            self.divisive.outputs)[0]
+                local_inp = self.normalizer(self.ind, self.hierarchical.inputs,
+                                            self.hierarchical.outputs)[0]
             else:
                 raise ValueError("Wrong metric value: " +
-                                 self.divisive.metric +
+                                 self.hierarchical.metric +
                                  ".Possible values are as, C1, euclidean.")
 
             cluster_.fit(local_inp)
@@ -1069,15 +1023,18 @@ class DivisiveNode():
             res_ = []
             state_ = []
             val_indexes = cluster_.predict(
-                self.divisive.inputs_val[self.t_ind])
+                self.hierarchical.inputs_val[self.t_ind])
             for label in unique_labels:
                 mask = labels == label
                 mask_val = val_indexes == label
                 m_ind = self.ind[mask]
-                # TODO change when an independent validation set is passed
-
                 m_val = self.t_ind[mask_val]
-                node = DivisiveNode(self, m_ind, m_ind, self.divisive)
+
+                # score is evaluated on the train data, when the validation set
+                # is not rich enough to be spread among all the clusters
+                if len(m_val)==0: m_val = m_ind
+
+                node = TopDownNode(self, m_ind, m_val, self.hierarchical)
                 children_.extend([node])
 
                 # check if at least one cluster has not reached tolerance
@@ -1139,24 +1096,16 @@ class DivisiveNode():
         nodes."""
 
         # costly r2 evaluation with gpr
-        pred = np.zeros(self.divisive.inputs.shape[0])
+        pred = np.zeros(self.hierarchical.inputs.shape[0])
         for node in children:
             pred[node.ind] = node.predict(
-                self.divisive.inputs[node.ind]).squeeze()
+                self.hierarchical.inputs[node.ind]).squeeze()
 
         pred = pred[self.ind]
-        full_children_r2 = r2_score(self.divisive.outputs[self.ind],
+        full_children_r2 = r2_score(self.hierarchical.outputs[self.ind],
                                     pred,
                                     multioutput='uniform_average')
 
-        # full_children_r2 = 1 -
-        #     np.sum(np.array([node.t_ind.shape[0]*(1-node.score) *
-        #     np.var(node.divisive.outputs_val[node.t_ind]) for node in
-        #     children])) / (np.var(self.divisive.outputs_val[self.t_ind]) *
-        #     self.t_ind.shape[0])
-
-        # in practice it may be useful to multply full_children_r2 by a value >
-        # 1
         if res_max < full_children_r2:
             _log.debug("Best score bested: {} < {}".format(
                 res_max, full_children_r2))
@@ -1167,7 +1116,7 @@ class DivisiveNode():
             _log.debug("Best score not bested: {} < {}".format(
                 res_max, full_children_r2))
 
-        if res_max >= self.divisive.score_tolerance:
+        if res_max >= self.hierarchical.score_tolerance:
             return_value = "break"
         else:
             return_value = "continue"
@@ -1284,10 +1233,6 @@ class DivisiveNode():
         return r_dim
 
     def as_dim(self, max_dim, threshold=0.95):
-        r_dim = 0
-        # assert max_dim < self.evals.shape[0], "max_red_dim cannot be equal or
-        #     grater than the input dimension"
-
         r_dim = 1
         while (r_dim <= max_dim):
             _log.debug(
@@ -1312,7 +1257,7 @@ class DivisiveNode():
     def predict(self, test):
         test_normalized = self.normalizer(inputs=test)[0]
 
-        # DEBUG inp = self.divisive.inputs[self.ind] inp_normalized = (inp -
+        # DEBUG inp = self.hierarchical.inputs[self.ind] inp_normalized = (inp -
         # self.mean).dot(self.inv_sqrt_cov) fig = plt.figure() ax1 =
         # fig.add_subplot(111)
         # # ax1.scatter(test_normalized[:, 0], test_normalized[:, 1], c='r')

@@ -3,7 +3,7 @@ Athena init
 """
 __all__ = [
     'active', 'feature_map', 'kas', 'projection_factory', 'nll', 'subspaces',
-    'utils'
+    'utils', 'local'
 ]
 
 from .active import ActiveSubspaces
@@ -15,3 +15,5 @@ from .subspaces import Subspaces
 from .utils import (Normalizer, initialize_weights, linear_program_ineq,
                     local_linear_gradients, sort_eigpairs, CrossValidation,
                     rrmse, average_rrmse)
+from .local import (ClusterBase, KMeansAS, KMedoidsAS, TopDownHierarchical,
+                    TopDownNode, plot_scores)
