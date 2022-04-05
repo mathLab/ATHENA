@@ -122,15 +122,18 @@ In the following some illustrative examples of what you can do with this package
 ## How to cite
 If you use this package in your publications please cite the package as follows:
 
-F. Romor, M. Tezzele, and G. Rozza (2021). ATHENA: Advanced Techniques for High dimensional parameter spaces to Enhance Numerical Analysis. arXiv preprint arXiv:2105.06713. https://arxiv.org/abs/2105.06713
+F. Romor, M. Tezzele, and G. Rozza. ATHENA: Advanced Techniques for High dimensional parameter spaces to Enhance Numerical Analysis. Software Impacts, 10:100133, 2021. doi:10.1016/j.simpa.2021.100133
 
 Or if you use LaTeX:
 ```tex
 @article{romor2020athena,
     author = {Romor, Francesco and Tezzele, Marco and Rozza, Gianluigi},
-    journal = {arXiv preprint arXiv:2105.06713},
+    doi = {10.1016/j.simpa.2021.100133},
+    journal = {Software Impacts},
+    pages = {100133},
     title = {{ATHENA: Advanced Techniques for High dimensional parameter spaces to Enhance Numerical Analysis}},
-    year = {Submitted, 2021}}
+    volume = {10},
+    year = {2021}}
 ```
 
 ### References
