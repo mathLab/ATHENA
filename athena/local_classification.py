@@ -1,17 +1,29 @@
-import numpy as np
+"""
+Module classification with local Active Subspaces dimension.
+
+:References:
+
+    - Romor Francesco, Marco Tezzele, and Gianluigi Rozza.
+      "A local approach to parameter space reduction for regression and classification tasks." arXiv preprint arXiv:2107.10867 (2021).
+
+"""
+
+import abc
+import itertools
+import logging
+
+import matplotlib.pyplot as plt
+import matplotlib.cm as cm
+
+from sklearn.neural_network import MLPClassifier
+from sklearn.model_selection import train_test_split
 
 from scipy.sparse import coo_matrix
 from scipy.sparse.csgraph import connected_components
 
-from sklearn.model_selection import train_test_split
-from sklearn.neural_network import MLPClassifier
+import numpy as np
 
-import matplotlib.pyplot as plt
-import matplotlib.cm as cm
-import abc
 
-import itertools
-import logging
 
 _log = logging.getLogger('classify_as')
 mpl_logger = logging.getLogger('matplotlib')

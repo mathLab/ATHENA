@@ -3,7 +3,7 @@ Module local Active Subspaces.
 
 :References:
 
-    - Romor, Francesco, Marco Tezzele, and Gianluigi Rozza.
+    - Romor Francesco, Marco Tezzele, and Gianluigi Rozza.
       "A local approach to parameter space reduction for regression and classification tasks." arXiv preprint arXiv:2107.10867 (2021).
 
 """
@@ -19,12 +19,7 @@ from scipy import linalg
 
 from sklearn.cluster import KMeans
 from sklearn_extra.cluster import KMedoids
-from sklearn.tree import DecisionTreeClassifier
-from sklearn.utils.validation import check_is_fitted
-from sklearn.utils import check_array
 from sklearn.metrics import r2_score, mean_absolute_error, silhouette_score
-from sklearn.metrics.pairwise import pairwise_distances_argmin
-from sklearn.manifold import TSNE
 
 import GPy
 from athena import Normalizer, ActiveSubspaces
@@ -188,6 +183,7 @@ class ClusterBase():
     def plot_clusters(self, save=False, title='2d_clusters', plot=True):
         """Plot clusters of 2d data."""
         assert self.inputs.shape[1] == 2
+        plt.figure(figsize=(8, 8))
         plt.scatter(self.inputs[:, 0], self.inputs[:, 1], c=self.labels)
         plt.grid(linestyle='dotted')
         plt.tight_layout()
