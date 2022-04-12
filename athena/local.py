@@ -7,15 +7,11 @@ Module local Active Subspaces.
       "A local approach to parameter space reduction for regression and classification tasks." arXiv preprint arXiv:2107.10867 (2021).
 
 """
-from typing import List
-from statistics import mean
-
+import logging
 import numpy as np
-
 import matplotlib.pyplot as plt
 import matplotlib.cm as cm
-
-from scipy import linalg
+from scipy.linalg import sqrtm, inv
 
 from sklearn.cluster import KMeans
 from sklearn_extra.cluster import KMedoids
@@ -23,8 +19,6 @@ from sklearn.metrics import r2_score, mean_absolute_error, silhouette_score
 
 import GPy
 from athena import Normalizer, ActiveSubspaces
-
-import logging
 
 _log = logging.getLogger('hierarchical')
 mpl_logger = logging.getLogger('matplotlib')
@@ -40,41 +34,62 @@ class MaximumASDimensionReached(Exception):
 class ClusterBase():
     """Local Active Subspaces clustering Base class.
     """
-    def __init__(self, config):
-        self.inputs = config['inputs'] if config.get(
-            'inputs', None) is not None else None
-        self.outputs = config['outputs'] if config.get(
-            'outputs', None) is not None else None
+    def __init__(self):
 
-        if self.inputs is None or self.outputs is None:
-            raise TypeError('inputs or outputs argument is None')
+        self.inputs = None
+        self.outputs = None
+        self.gradients = None
+        self.inputs_test = None
+        self.outputs_test = None
+        self.inputs_val = None
+        self.outputs_val = None
 
-        self.inputs = config['inputs']
-        self.outputs = config['outputs'].squeeze()
-        self.gradients = config['gradients'] if config.get(
-            'gradients', None) is not None else None
+        self.outputs_dim = None
+        self.method = None # gradients evaluation method
+        self.as_dim = None
 
-        self.as_dim = min(config['as_dim'], self.inputs.shape[1])
-        self.method = 'exact' if config.get('gradients',
-                                            None) is not None else 'local'
+        self.clustering = None # implemented KMeans or KMedoids
 
-        self.n_clusters = config['n_clusters']
-        self.random_state = config['random_state']
-
-        self.clustering = None
-        self.labels = None  # cluster labels start from 0
-        self.unique_labels = None
+        # cluster labels start from 0
+        self.labels = None  # labels list of each input
+        self.unique_labels = None # set of labels
 
         self.full_as = None
         self.full_gpr = None
         self.local_ass = None
         self.local_gprs = None
 
+        self.max_clusters = None
+        self.random_state = None
+
+    def _init_local_as(self, inputs=None, outputs=None, gradients=None, config=None):
+        assert inputs is not None and outputs is not None, 'inputs or outputs argument is None'
+
+        if isinstance(inputs, np.ndarray) and isinstance(outputs, np.ndarray):
+            self.inputs = inputs
+            self.outputs = outputs.squeeze()
+        else:
+            raise TypeError('Inputs and outputs type is not np.ndarray.')
+
+        if gradients is None or isinstance(gradients, np.ndarray):
+            self.gradients = gradients
+        else:
+            raise TypeError('Gradients type is not np.ndarray.')
+
+        self.method = 'exact' if self.gradients is not None else 'local'
+
+        self.as_dim = min(config['as_dim'], self.inputs.shape[1])
+
+        self.max_clusters = config['max_clusters']
+        self.random_state = config['random_state']
+
+        # test samples used to evalute prediction errors
         self.inputs_test = config['inputs_test'] if config.get(
             'inputs_test', None) is not None else self.inputs
         self.outputs_test = config['outputs_test'] if config.get(
             'outputs_test', None) is not None else self.outputs
 
+        # validation samples used to tune the local AS' regressions
         self.inputs_val = config['inputs_val'] if config.get(
             'inputs_val', None) is not None else self.inputs
         self.outputs_val = config['outputs_val'] if config.get(
@@ -85,9 +100,10 @@ class ClusterBase():
         else:
             self.outputs_dim = 1
 
-    def fit(self):
+    def fit(self, inputs=None, outputs=None, gradients=None, config=None):
         """
         """
+        self._init_local_as(inputs, outputs, gradients, config)
         self._fit_global()
         self._fit_clustering()
         self._fit_reduction()
@@ -193,19 +209,19 @@ class ClusterBase():
 
 class KMeansAS(ClusterBase):
     """Clustering with k-means"""
-    def __init__(self, config):
-        super().__init__(config)
+    def __init__(self):
+        super().__init__()
         self.centers = None
 
     def _fit_clustering(self):
-        self.clustering = KMeans(n_clusters=self.n_clusters,
+        self.clustering = KMeans(n_clusters=self.max_clusters,
                                  random_state=self.random_state)
         self.clustering.fit(self.inputs)
 
         self.labels = self.clustering.labels_
         self.unique_labels = list(set(self.labels))
         self.centers = self.clustering.cluster_centers_
-        _log.debug("Number of clusters k-means: {}".format(self.n_clusters))
+        _log.debug("Number of clusters k-means: {}".format(self.max_clusters))
 
         silhouette_ = silhouette_score(self.inputs, self.labels)
         _log.debug(
@@ -214,20 +230,20 @@ class KMeansAS(ClusterBase):
 
 class KMedoidsAS(ClusterBase):
     """Clustering with k-medoids"""
-    def __init__(self, config):
-        super().__init__(config)
+    def __init__(self):
+        super().__init__()
         self.centers = None
 
     def _fit_clustering(self):
         self.clustering = KMedoids(metric=self.as_metric,
-                                   n_clusters=self.n_clusters,
+                                   n_clusters=self.max_clusters,
                                    random_state=self.random_state)
         self.clustering.fit(self.inputs)
 
         self.labels = self.clustering.labels_
         self.unique_labels = list(set(self.labels))
         self.centers = self.clustering.cluster_centers_
-        _log.debug("Number of clusters k-means: {}".format(self.n_clusters))
+        _log.debug("Number of clusters k-means: {}".format(self.max_clusters))
 
         silhouette_ = silhouette_score(self.inputs, self.labels)
         _log.debug(
@@ -240,7 +256,7 @@ class KMedoidsAS(ClusterBase):
 
 
 class TopDownHierarchical(ClusterBase):
-    def __init__(self, config):
+    def __init__(self):
         """TODO check states logic.
         1. 2 and 4 are exclusives
         2. 0 and 4 have the same role
@@ -250,35 +266,25 @@ class TopDownHierarchical(ClusterBase):
         'refinement_criterion': global, mean, force
         'as_dim_criterion': spectral_gap, residual
         """
-        super().__init__(config)
+        super().__init__()
 
-        try:
-            # clustering parameters
-            self.max_clusters = config['max_clusters']
-            self.max_red_dim = config['max_red_dim']
-            self.max_children = config['max_children']
-            self.min_children = config['min_children']
-            self.min_local = config['min_local']  # minimum number of elements
-            self.score_tolerance = config['score_tolerance']
-            self.dim_cut = config['dim_cut']
+        # clustering parameters
+        self.max_clusters = None
+        self.max_red_dim = None
+        self.max_children = None
+        self.min_children = None
+        self.min_local = None  # minimum number of elements
+        self.score_tolerance = None
+        self.dim_cut = None
 
-            self.normalization = config[
-                'normalization']  # uniform, gaussian, root
-            self.metric = config['metric']  # as, CI, euclidean
-            self.refinement_criterion = config[
-                'refinement_criterion']  #global, mean, force
-            self.as_dim_criterion = config[
-                'as_dim_criterion']  # spectral_gap, residual
+        self.normalization = None # uniform, gaussian, root
+        self.metric = None  # as, CI, euclidean
+        self.refinement_criterion = None #global, mean, force
+        self.as_dim_criterion = None # spectral_gap, residual
 
-        except KeyError as k:
-            raise KeyError(
-                "Missing mandatory keyword {} for class TopDownHierarchical".
-                format(k.args[0])) from k
-
-        self.minimum_score = config.get('minimum_score', None)  # it increases the cluster dimension until the score threshold is reached
-        self.max_dim_refine_further = config.get('max_dim_refine_further',
-                                                 self.inputs.shape[1])
-        self.verbose = config.get('verbose', True)
+        self.minimum_score = None # it increases the cluster dimension until the score threshold is reached
+        self.max_dim_refine_further = None
+        self.verbose = False
 
         self.total_clusters = 0
         self.state_d = {
@@ -294,7 +300,41 @@ class TopDownHierarchical(ClusterBase):
 
         self.root = None
 
-    def fit(self):
+    def _init_hierarchical(self, config):
+        """"""
+        try:
+            # clustering parameters
+            self.max_clusters = config['max_clusters']
+            self.max_red_dim = config['max_red_dim']
+            self.max_children = config['max_children']
+            self.min_children = config['min_children']
+            self.min_local = config['min_local']
+            self.score_tolerance = config['score_tolerance']
+            self.dim_cut = config['dim_cut']
+            self.normalization = config[
+                'normalization']
+            self.metric = config['metric']
+            self.refinement_criterion = config[
+                'refinement_criterion']
+            self.as_dim_criterion = config[
+                'as_dim_criterion']
+
+        except KeyError as k:
+            raise KeyError(
+                "Missing mandatory keyword {} for class TopDownHierarchical".
+                format(k.args[0])) from k
+
+        self.minimum_score = config.get(
+            'minimum_score', None
+        )
+        self.max_dim_refine_further = config.get('max_dim_refine_further', self.inputs.shape[1])
+        self.verbose = config.get('verbose', True)
+
+    def fit(self, inputs=None, outputs=None, gradients=None, config=None):
+        """
+        """
+        self._init_local_as(inputs, outputs, gradients, config)
+        self._init_hierarchical(config)
         self._fit_global()
         scores, leaves_dimensions_list = self._fit_clustering()
         return scores, leaves_dimensions_list
@@ -403,7 +443,7 @@ class TopDownHierarchical(ClusterBase):
         print("Start refining: increasing the as dimension when possible.")
 
         class CallRefine(object):
-            def __init__(self, minimum_core):
+            def __init__(self, minimum_score):
                 self.min = minimum_score
 
             def __call__(self, node):
@@ -626,14 +666,14 @@ class TopDownHierarchical(ClusterBase):
 
         return predictions, labels
 
-    def _cluster_min_dist(self, test, clusters: List):
+    def _cluster_min_dist(self, test, clusters):
         group_list = []
         for node in clusters:
             group_list.append(self.inputs[node.ind])
         return self.set_min_dist(test, group_list)
 
     @staticmethod
-    def set_min_dist(test, groups: List):
+    def set_min_dist(test, groups):
         "Returns the index of the group with the shortes distance from test."
         dist_group = np.zeros(len(groups))
         for i_cl, cluster in enumerate(groups):
@@ -799,8 +839,8 @@ class TopDownNode():
                 inp = inputs[ind]
                 self.mean = np.mean(inp, axis=0, keepdims=True)
                 cov = np.cov(inp.T)
-                self.sqrt_cov = linalg.sqrtm(cov)
-                self.inv_sqrt_cov = linalg.inv(self.sqrt_cov)
+                self.sqrt_cov = sqrtm(cov)
+                self.inv_sqrt_cov = inv(self.sqrt_cov)
 
             elif self.type == 'uniform':
                 _log.debug("Uniform normalization")
@@ -811,7 +851,6 @@ class TopDownNode():
 
             elif self.type == 'root':
                 _log.debug("Without normalization")
-                pass
             else:
                 raise ValueError(
                     "A proper flag was not passed to normalize class: " +
@@ -1138,7 +1177,7 @@ class TopDownNode():
         threshold or if res_max is below the average of the local r2 scores. It
         can happen that refinement is not performed because the parent score is
         the best."""
-        res_ = mean(res)
+        res_ = sum(res) * (1 / len(res))
         max_state = max(children_states)
 
         # stop refinement: tolerance achieved for the first time w.r.t.
@@ -1174,7 +1213,7 @@ class TopDownNode():
         can NOT happen that refinement is not performed because the parent score
         is the best.
         """
-        res_ = mean(res)
+        res_ = sum(res) * (1 / len(res))
         max_state = max(children_states)
 
         # stop refinement: tolerance achieved for the first time w.r.t.

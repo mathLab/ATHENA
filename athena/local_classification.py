@@ -23,8 +23,6 @@ from scipy.sparse.csgraph import connected_components
 
 import numpy as np
 
-
-
 _log = logging.getLogger('classify_as')
 mpl_logger = logging.getLogger('matplotlib')
 mpl_logger.setLevel(logging.WARNING)
@@ -44,10 +42,17 @@ class SpectralClassification(metaclass=abc.ABCMeta):
         self.graph = None
 
     @abc.abstractstaticmethod
-    def custom_distance(self, X: np.ndarray) -> np.ndarray:
+    def custom_distance(X: np.ndarray) -> np.ndarray:
         return NotImplementedError
 
-    def fit(self):
+    @abc.abstractmethod
+    def _init_values(self, *args, **kwargs):
+        return NotImplementedError
+
+    def fit(self, *args, **kwargs):
+        self._init_values(*args, **kwargs)
+        assert self.n_neighbours is not None and self.features is not None, "Features and n_neighboours variables not initialized."
+
         self.graph = self.make_graph()
         n_components, labels = connected_components(csgraph=self.graph,
                                                     directed=True,
@@ -132,8 +137,8 @@ class SpectralClassification(metaclass=abc.ABCMeta):
     def plot_decision_boundaries(self, true_inputs=None, true_labels=None):
         """Use scikit-learn classification algorithms to plot decision
         boundaries"""
-        assert (self.n_components is not None)
-        assert (self.labels is not None)
+        assert self.n_components is not None
+        assert self.labels is not None
         if true_inputs is not None and true_labels is not None:
             return decision_boundaries(self.features[:, :self.X.shape[1]],
                                        self.labels.reshape(-1, 1), true_inputs,
@@ -143,20 +148,33 @@ class SpectralClassification(metaclass=abc.ABCMeta):
                                        self.labels.reshape(-1, 1),
                                        self.n_components)
 
+
 class ClassifyAS(SpectralClassification):
     """Compute the local AS dimension of every input-gradient sample, evaluating
     the AS dimension of the n_neighbours neighbouring samples with a resampling
     of neighbour_resampling. The local_as_criterion can be 'min' or 'average'
     over the batches of neighbouring samples."""
-    def __init__(self,
-                 inputs,
-                 gradients,
-                 n_neighbours=None,
-                 threshold=None,
-                 neighbour_resampling=5,
-                 local_as_criterion='min'):
-        if n_neighbours is None: n_neighbours = inputs.shape[1]
-        if threshold is None: threshold = 0.999999
+    def __init__(self):
+        super().__init__()
+
+        self.X = None
+        self.features = None
+        self.n_neighbours = None
+        self.threshold = None
+        self.neighbour_resampling = None
+        self.local_as_criterion = None
+
+    def _init_values(self,
+                     inputs,
+                     gradients,
+                     n_neighbours=None,
+                     threshold=None,
+                     neighbour_resampling=5,
+                     local_as_criterion='min'):
+        if n_neighbours is None:
+            n_neighbours = inputs.shape[1]
+        if threshold is None:
+            threshold = 0.999999
 
         assert (0 < threshold <= 1)
         assert (n_neighbours >= neighbour_resampling)
@@ -296,8 +314,8 @@ def decision_boundaries(X,
 
         fig, ax = plt.subplots(1, n_labels, figsize=(4 * n_labels, 5))
         plt.suptitle("Classification of the local AS dimension with \n" +
-                  str(clf) +
-                  "\nMean accuracy on the test set: {:.2f}".format(score))
+                     str(clf) +
+                     "\nMean accuracy on the test set: {:.2f}".format(score))
 
         for l in range(n_labels):
             Z_ = Z[:, l].reshape(xx.shape)
@@ -305,10 +323,10 @@ def decision_boundaries(X,
 
             if true_inputs is not None and true_labels is not None:
                 ax[l].scatter(true_inputs[:, components[0]],
-                            true_inputs[:, components[1]],
-                            c=true_labels,
-                            edgecolors='k',
-                            alpha=0.8)
+                              true_inputs[:, components[1]],
+                              c=true_labels,
+                              edgecolors='k',
+                              alpha=0.8)
 
             ax[l].set_xlim(xx.min(), xx.max())
             ax[l].set_ylim(yy.min(), yy.max())
