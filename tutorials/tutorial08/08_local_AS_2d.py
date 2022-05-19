@@ -2,29 +2,29 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-from athena import Normalizer, TopDownHierarchical, KMeansAS, KMedoidsAS, ClassifyAS, plot_scores
+from athena import Normalizer, TopDownHierarchicalAS, KMeansAS, KMedoidsAS, ClassifyAS, plot_scores
 
 # import logging
 # logging.basicConfig(filename='divisive.log', level=logging.DEBUG)
 
-def plot_scores_(possible_clusters, config):
+def plot_scores_(possible_clusters, inputs, outputs, gradients, config):
     """
     method='kmeans' or 'kmedoids' or 'divisive'
     """
     scores = []
     for n_clusters in possible_clusters:
         if config['method'] == 'kmeans':
-            config['n_clusters'] = n_clusters
-            cluster_as = KMeansAS(config=config)
+            config['max_clusters'] = n_clusters
+            cluster_as = KMeansAS()
         elif config['method'] == 'kmedoids':
-            config['n_clusters'] = n_clusters
-            cluster_as = KMedoidsAS(config=config)
+            config['max_clusters'] = n_clusters
+            cluster_as = KMedoidsAS()
         elif config['method'] == 'top-down':
             config['max_clusters'] = n_clusters
             config['min_children'] = n_clusters
             config['max_children'] = n_clusters
-            cluster_as = TopDownHierarchical(config=config)
-        cluster_as.fit()
+            cluster_as = TopDownHierarchicalAS()
+        cluster_as.fit(inputs, outputs, gradients, config)
         score = cluster_as.compute_scores(inputs_test, outputs_test)
         scores.append(score)
     scores = np.asarray(scores)
@@ -85,9 +85,6 @@ config = {
     'max_dim_refine_further':2,
     'inputs_test': inputs_test,
     'outputs_test': outputs_test,
-    'inputs': inputs,
-    'outputs': outputs,
-    'gradients': gradients,
 }
 
 plot_config = {
@@ -102,18 +99,18 @@ plot_config = {
     'filename': 'quartic_2d_r2_top-down_2_10.pdf'
 }
 
-# TopDownHierarchical clusters
-cluster_as = TopDownHierarchical(config=config)
-cluster_as.fit()
+# TopDownHierarchicalAS clusters
+cluster_as = TopDownHierarchicalAS()
+cluster_as.fit(inputs, outputs, gradients, config)
 cluster_as.plot_clusters(with_test=True)
 
 # classification with local AS
-agg = ClassifyAS(inputs,
+agg = ClassifyAS()
+n_c, labels = agg.fit(inputs,
                  gradients,
                  n_neighbours=6,
                  threshold=0.9999,
                  neighbour_resampling=5)
-n_c, labels = agg.fit()
 print("Number of components: ", n_c)
 agg.plot()
 score = agg.plot_decision_boundaries()
@@ -127,14 +124,14 @@ possible_clusters = np.arange(cl_min, cl_max, 1)
 # k-means
 config['method'] = 'kmeans'
 plot_config['filename'] = 'quartic_2d_r2_kmeans_{}_{}.pdf'.format(cl_min, cl_max)
-plot_scores_(possible_clusters, config)
+plot_scores_(possible_clusters, inputs, outputs, gradients, config)
 
 # k-medoids
 config['method'] = 'kmedoids'
 plot_config['filename'] = 'quartic_2d_r2_kmedoids_{}_{}.pdf'.format(cl_min, cl_max)
-plot_scores_(possible_clusters, config)
+plot_scores_(possible_clusters, inputs, outputs, gradients, config)
 
 # top-down clustering
 config['method'] = 'top-down'
 plot_config['filename'] = 'quartic_2d_r2_top-down_{}_{}.pdf'.format(cl_min, cl_max)
-plot_scores_(possible_clusters, config)
+plot_scores_(possible_clusters, inputs, outputs, gradients, config)
