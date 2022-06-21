@@ -125,3 +125,21 @@ class TestUtils(TestCase):
                                        outputs,
                                        figsize=(7, 7),
                                        title='Sufficient_summary_plots')
+
+    def test_partition_spectral_gap(self):
+        np.random.seed(42)
+        matrix = np.array([[1, 1, 1], [2, -4.5, 2], [1, 1.1, 1]])
+        weights = np.ones((3, 1))
+        ss = Subspaces(dim=1)
+        ss.evals, ss.evects = ss._build_decompose_cov_matrix(matrix, weights)
+        ss.partition_spectral_gap()
+        self.assertEqual(ss.dim, 1)
+
+    def test_partition_residual_energy(self):
+        np.random.seed(42)
+        matrix = np.array([[1, 1, 1], [2, -4.5, 2], [1, 1.1, 1]])
+        weights = np.ones((3, 1))
+        ss = Subspaces(dim=1)
+        ss.evals, ss.evects = ss._build_decompose_cov_matrix(matrix, weights)
+        ss.partition_residual_energy()
+        self.assertEqual(ss.dim, 1)

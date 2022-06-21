@@ -16,6 +16,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.utils.extmath import randomized_svd
 from .utils import sort_eigpairs
+import itertools
+import operator
 plt.rcParams.update({'font.size': 16})
 
 
@@ -139,8 +141,7 @@ class Subspaces():
         sub_dist = np.zeros((range_dim - 1, self.n_boot))
 
         for i in range(self.n_boot):
-            gradients0, weights0 = self._bootstrap_replicate(
-                gradients, weights)
+            gradients0, weights0 = self._bootstrap_replicate(gradients, weights)
             e0, W0 = self._build_decompose_cov_matrix(gradients=gradients0,
                                                       weights=weights0,
                                                       metric=metric)
@@ -250,6 +251,43 @@ class Subspaces():
                 'the eigenvectors cannot have dimension less than dim = {}.'.
                 format(self.dim))
 
+    def partition_spectral_gap(self):
+        """
+        Partition the eigenvectors to define the active and inactive subspaces,
+        based on the highest spectral gap of the ordered eigenvalues.
+
+        :raises: TypeError
+        """
+        if self.evals is None:
+            raise TypeError(
+                'The method fit has to be called first in order to compute the eigenvalues.'
+            )
+
+        spectral_gap_index = np.argmax(self.evals[:-1] - self.evals[1:])
+        self.dim = int(spectral_gap_index + 1)
+        self._partition()
+
+    def partition_residual_energy(self, tol=0.99):
+        """
+        Partition the eigenvectors to define the active and inactive subspaces,
+        based on the residual energy normalized to 1 i.e. the normalized sum of the eigenvalues
+        corresponding to the active components must be lower than tol.
+
+        :param float tol: threshold for the residual energy.
+
+        :raises: TypeError, ValueError
+        """
+        if self.evals is None:
+            raise ValueError(
+                'The method fit has to be called first in order to compute the eigenvalues.'
+            )
+
+        residual_energies = np.array(
+            list(itertools.accumulate(self.evals, operator.add))) / np.sum(
+                self.evals)
+        self.dim = residual_energies[residual_energies <= tol].shape[0]
+        self._partition()
+
     def plot_eigenvalues(self,
                          n_evals=None,
                          filename=None,
@@ -270,7 +308,7 @@ class Subspaces():
         """
         if self.evals is None:
             raise TypeError('The eigenvalues have not been computed.'
-                             'You have to perform the fit method.')
+                            'You have to perform the fit method.')
         if n_evals is None:
             n_evals = self.evals.shape[0]
         if n_evals > self.evals.shape[0]:
@@ -320,7 +358,7 @@ class Subspaces():
 
         plt.grid(linestyle='dotted')
         plt.tight_layout()
-        
+
         if filename:
             plt.savefig(filename)
         else:
@@ -347,7 +385,7 @@ class Subspaces():
         """
         if self.evects is None:
             raise TypeError('The eigenvectors have not been computed.'
-                             'You have to perform the fit method.')
+                            'You have to perform the fit method.')
         if n_evects is None:
             n_evects = self.dim
         if n_evects > self.evects.shape[0]:
@@ -413,7 +451,7 @@ class Subspaces():
         """
         if self.evects is None:
             raise TypeError('The eigenvectors have not been computed.'
-                             'You have to perform the fit method.')
+                            'You have to perform the fit method.')
 
         plt.figure(figsize=figsize)
         plt.title(title)
