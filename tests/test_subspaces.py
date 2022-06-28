@@ -143,3 +143,21 @@ class TestUtils(TestCase):
         ss.evals, ss.evects = ss._build_decompose_cov_matrix(matrix, weights)
         dim = ss._set_dim_residual_energy()
         self.assertEqual(dim, 1)
+
+    def test_partition_spectral_gap_robust(self):
+        np.random.seed(42)
+        matrix = np.array([[1, 1, 1], [2, -4.5, 2], [1, 1.1, 1]])
+        weights = np.ones((3, 1))
+        ss = Subspaces(dim=0, reduction_method='robust')
+        ss.evals, ss.evects = ss._build_decompose_cov_matrix(matrix, weights)
+        dim = ss._set_dim_spectral_gap()
+        self.assertEqual(dim, 1)
+
+    def test_partition_residual_energy_robust(self):
+        np.random.seed(42)
+        matrix = np.array([[1, 1, 1], [2, -4.5, 2], [1, 1.1, 1]])
+        weights = np.ones((3, 1))
+        ss = Subspaces(dim=1, reduction_method='robust')
+        ss.evals, ss.evects = ss._build_decompose_cov_matrix(matrix, weights)
+        dim = ss._set_dim_residual_energy()
+        self.assertEqual(dim, 1)

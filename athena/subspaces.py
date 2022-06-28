@@ -29,17 +29,22 @@ class Subspaces():
         the method uses the `dim` argument for the truncation; if float between 0
         and 1, a truncation with retained energy.The `dim`
         parameter is available using all the available methods.
-    :param str method: method to compute the AS. Possible choices are
+    :param str method: method to approximate the gradients. Possible choices are
         'exact' when the gradients are provided, or 'local' to use local linear
         models. This approach is related to the sufficient dimension reduction
         method known sometimes as the outer product of gradient method. See the
         2001 paper 'Structure adaptive approach for dimension reduction' from
         Hristache, et al.
+    :param str method: reduction method to compute the AS. Possible choices are
+        'svd' for the Singular Value Decomposition (SVD), 'rsvd' for the
+        randomized SVD, and 'robust' for the robust principal component analysis. If the uncentered covariance matrix is too big
+        'svd' is switched to 'rsvd'.
     :param int n_boot: number of bootstrap samples. Default is 100.
     """
-    def __init__(self, dim, method='exact', n_boot=100):
+    def __init__(self, dim, method='exact', reduction_method='svd', n_boot=100):
         self.dim = dim
         self.method = method
+        self.reduction_method = reduction_method
         self.n_boot = n_boot
         self.W1 = None
         self.W2 = None
@@ -82,19 +87,74 @@ class Subspaces():
             X = np.squeeze(gradients * np.sqrt(weights).reshape(-1, 1))
             n_samples, n_pars = X.shape
 
-            if self._check_rsvd(n_samples, n_pars, self.dim):
+            if self.reduction_method == 'svd':
+                if self._check_rsvd(n_samples, n_pars, self.dim):
+                    singular, evects = randomized_svd(
+                        M=X,
+                        n_components=self.dim,
+                        n_oversamples=10,
+                        n_iter='auto',
+                        power_iteration_normalizer='auto',
+                        transpose='auto')[1:]
+                else:
+                    singular, evects = np.linalg.svd(X, full_matrices=False)[1:]
+            elif self.reduction_method == 'rsvd':
                 singular, evects = randomized_svd(
-                    M=X,
-                    n_components=self.dim,
-                    n_oversamples=10,
-                    n_iter='auto',
-                    power_iteration_normalizer='auto',
-                    transpose='auto')[1:]
+                        M=X,
+                        n_components=self.dim,
+                        n_oversamples=10,
+                        n_iter='auto',
+                        power_iteration_normalizer='auto',
+                        transpose='auto')[1:]
+            elif self.reduction_method == 'robust':
+                evects = self._rpca(X)[0][:n_pars]
+                evects = evects/np.clip(np.linalg.norm(evects, axis=1).reshape(-1, 1), a_min=1e-6, a_max=None)
+                singular = np.linalg.svd(X, full_matrices=False)[1]
             else:
-                singular, evects = np.linalg.svd(X, full_matrices=False)[1:]
-
+                raise ValueError("The `reduction_method`={} passed is not valid. The options are: `svd`, `rsvd` and `robust.".format(self.reduction_method))
             evals = singular**2
             return evals, evects.T
+
+    @staticmethod
+    def _rpca(MM):
+        """
+        Perform robust PCA as implemented in "Robust principal component
+        analysis?" from Candès et al in
+        https://dl.acm.org/doi/abs/10.1145/1970392.1970395.
+        """
+
+        mu = np.prod(MM.shape) / (4 * np.linalg.norm(MM, ord=1))
+        mu_inv = 1 / mu
+
+        # mu_inv = 4 * np.linalg.norm(MM, ord=1)/np.prod(MM.shape)
+        lam = 1 / np.sqrt(np.max(MM.shape))
+
+        Sk = np.zeros(MM.shape)
+        Yk = np.zeros(MM.shape)
+
+        rpca_iter= 0
+        max_iter=2000
+        err = np.Inf
+        tol = 1e-10
+
+        def shrink(M, tau):
+            return np.sign(M) * np.maximum((np.abs(M) - tau), np.zeros(M.shape))
+
+        def svd_threshold(M, tau):
+            U, S, V = np.linalg.svd(M, full_matrices=False)
+            return np.dot(U, np.dot(np.diag(shrink(S, tau)), V))
+
+        def frobenius_norm(M):
+            return np.linalg.norm(M, ord='fro')
+
+        while (err > tol) and rpca_iter < max_iter:
+            Lk = svd_threshold(MM - Sk + mu_inv * Yk, mu_inv)
+            Sk = shrink(MM - Lk + (mu_inv * Yk), mu_inv * lam)
+            Yk = Yk + mu * (MM - Lk - Sk)
+            err = frobenius_norm(MM - Lk - Sk)
+            rpca_iter += 1
+
+        return Lk, Sk
 
     def _compute_bootstrap_ranges(self, gradients, weights, metric=None):
         """Compute bootstrap ranges for eigenvalues and subspaces.

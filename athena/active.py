@@ -31,8 +31,8 @@ class ActiveSubspaces(Subspaces):
         Hristache, et al.
     :param int n_boot: number of bootstrap samples. Default is 100.
     """
-    def __init__(self, dim, method='exact', n_boot=100):
-        super().__init__(dim, method, n_boot)
+    def __init__(self, dim, method='exact', reduction_method='svd' ,n_boot=100):
+        super().__init__(dim, method, reduction_method, n_boot)
 
     @property
     def activity_scores(self):

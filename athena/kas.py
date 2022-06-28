@@ -59,8 +59,9 @@ class KernelActiveSubspaces(Subspaces):
                  feature_map=None,
                  n_features=None,
                  method='exact',
+                 reduction_method='svd',
                  n_boot=None):
-        super().__init__(dim, method, n_boot)
+        super().__init__(dim, method, reduction_method, n_boot)
         self.feature_map = feature_map
         self.n_features = n_features
         self.features = None
