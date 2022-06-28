@@ -24,6 +24,11 @@ plt.rcParams.update({'font.size': 16})
 class Subspaces():
     """Active Subspaces base class
 
+    :param dim: The dimension of the active subspace. If 0, the method computes
+        the spectral gap and uses it for truncation; if positive interger,
+        the method uses the `dim` argument for the truncation; if float between 0
+        and 1, a truncation with retained energy.The `dim`
+        parameter is available using all the available methods.
     :param str method: method to compute the AS. Possible choices are
         'exact' when the gradients are provided, or 'local' to use local linear
         models. This approach is related to the sufficient dimension reduction
@@ -77,13 +82,7 @@ class Subspaces():
             X = np.squeeze(gradients * np.sqrt(weights).reshape(-1, 1))
             n_samples, n_pars = X.shape
 
-            # computational complexity of svd and random svd
-            svd_complexity = n_samples * n_pars * self.dim
-            rsvd_complexity = n_samples * n_pars * np.log(
-                self.dim) + (n_samples + n_pars) * self.dim**2
-
-            if svd_complexity > rsvd_complexity and (n_samples > 10000
-                                                     or n_pars > 10000):
+            if self._check_rsvd(n_samples, n_pars, self.dim):
                 singular, evects = randomized_svd(
                     M=X,
                     n_components=self.dim,
@@ -123,14 +122,9 @@ class Subspaces():
         n_pars = gradients.shape[-1]
         n_samples = gradients.shape[0]
 
-        svd_complexity = n_samples * n_pars * self.dim
-        rsvd_complexity = n_samples * n_pars * np.log(
-            self.dim) + (n_samples + n_pars) * self.dim**2
-
         # randomized_svd is not implemented for vectorial as yet
         if len(gradients.shape) == 2:
-            if svd_complexity > rsvd_complexity and (n_samples > 10000
-                                                     or n_pars > 10000):
+            if self._check_rsvd(n_samples, n_pars, self.dim):
                 range_dim = self.dim
             else:
                 range_dim = min(n_pars, n_samples)
@@ -231,10 +225,13 @@ class Subspaces():
 
         :raises: TypeError, ValueError
         """
+
+        self.dim = self._set_dim()
+
         if not isinstance(self.dim, int):
             raise TypeError('dim should be an integer.')
 
-        if self.dim < 1 or self.dim > self.evects.shape[1]:
+        if self.dim < 0 or self.dim > self.evects.shape[1]:
             raise ValueError(
                 'dim must be positive and less than the dimension of the '
                 ' eigenvectors: dim = {}.'.format(self.dim))
@@ -251,27 +248,49 @@ class Subspaces():
                 'the eigenvectors cannot have dimension less than dim = {}.'.
                 format(self.dim))
 
-    def partition_spectral_gap(self):
+    def _set_dim(self):
         """
-        Partition the eigenvectors to define the active and inactive subspaces,
-        based on the highest spectral gap of the ordered eigenvalues.
+        Set the active subspace dimension based on the spectral gap if self.dim
+        is 0, residual energy if 0<self.dim<1 or manual set of AS dimension if self.dim>=1.
 
-        :raises: TypeError
+        :raises: ValueError
+        """
+
+        # spectral gap
+        if isinstance(self.dim, int) and self.dim == 0:
+            dim = self._set_dim_spectral_gap()
+        # residual energy
+        elif self.dim > 0 and self.dim < 1:
+            dim = self._set_dim_residual_energy()
+        # manual set of AS dimension
+        elif isinstance(self.dim, int) and self.dim >=1:
+            dim = self.dim
+        else:
+            raise ValueError(
+                "The parameter `dim`={} has not a valid value.".format(self.dim)
+            )
+
+        return dim
+
+    def _set_dim_spectral_gap(self):
+        """
+        Set the active subspace dimension based on the highest spectral gap of the ordered eigenvalues.
+
+        :raises: ValueError
         """
         if self.evals is None:
-            raise TypeError(
+            raise ValueError(
                 'The method fit has to be called first in order to compute the eigenvalues.'
             )
 
         spectral_gap_index = np.argmax(self.evals[:-1] - self.evals[1:])
-        self.dim = int(spectral_gap_index + 1)
-        self._partition()
+        return int(spectral_gap_index + 1)
 
-    def partition_residual_energy(self, tol=0.99):
+    def _set_dim_residual_energy(self, tol=0.99):
         """
-        Partition the eigenvectors to define the active and inactive subspaces,
-        based on the residual energy normalized to 1 i.e. the normalized sum of the eigenvalues
-        corresponding to the active components must be lower than tol.
+        Set the active subspace dimension based on the residual energy
+        normalized to 1: the normalized sum of the eigenvalues
+        corresponding to the active components will be lower than tol.
 
         :param float tol: threshold for the residual energy.
 
@@ -282,11 +301,20 @@ class Subspaces():
                 'The method fit has to be called first in order to compute the eigenvalues.'
             )
 
-        residual_energies = np.array(
-            list(itertools.accumulate(self.evals, operator.add))) / np.sum(
-                self.evals)
-        self.dim = residual_energies[residual_energies <= tol].shape[0]
-        self._partition()
+        cumulative_energy = np.cumsum(self.evals**2 / (self.evals**2).sum())
+        return np.searchsorted(cumulative_energy, tol)
+
+    def _check_rsvd(self, n_samples, n_pars, dim):
+        """ Check if random svd is to be applied."""
+        if isinstance(dim, int) and dim > 0:
+            # computational complexity of svd and random svd
+            svd_complexity = n_samples * n_pars * dim
+            rsvd_complexity = n_samples * n_pars * np.log(
+                dim) + (n_samples + n_pars) * dim**2
+
+            return svd_complexity > rsvd_complexity and (n_samples > 10000 or n_pars > 10000)
+        else:
+            return False
 
     def plot_eigenvalues(self,
                          n_evals=None,

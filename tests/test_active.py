@@ -391,13 +391,13 @@ class TestUtils(TestCase):
         matrix = np.random.uniform(-1, 1, 9).reshape(3, 3)
         ss = ActiveSubspaces(dim=2.0)
         ss.evects = matrix
-        with self.assertRaises(TypeError):
+        with self.assertRaises(ValueError):
             ss._partition()
 
     def test_partition_04(self):
         np.random.seed(42)
         matrix = np.random.uniform(-1, 1, 9).reshape(3, 3)
-        ss = ActiveSubspaces(dim=0)
+        ss = ActiveSubspaces(dim=0.)
         ss.evects = matrix
         with self.assertRaises(ValueError):
             ss._partition()

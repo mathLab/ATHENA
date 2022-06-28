@@ -40,7 +40,7 @@ class ActiveSubspaces(Subspaces):
         Return the activity scores as defined in Constantine and Diaz, Global
         sensitivity metrics from active subspaces, arxiv.org/abs/1510.04361
         Equation (21).
-        
+
         :return: array with the activity score of each parameter.
         :rtype: numpy.ndarray
         :raises: TypeError
@@ -366,7 +366,7 @@ class ActiveSubspaces(Subspaces):
 
     def _frequent_directions(self, gradients):
         """
-        Function that performs the frequent directions algorithm for 
+        Function that performs the frequent directions algorithm for
         matrix sketching. For more details about the method, see
         "Frequent directions: Simple and deterministic matrix
         sketching." Ghashami, Mina, et al.

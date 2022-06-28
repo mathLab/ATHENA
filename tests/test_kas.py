@@ -309,7 +309,7 @@ class TestUtils(TestCase):
         matrix = np.random.uniform(-1, 1, 9).reshape(3, 3)
         ss = KernelActiveSubspaces(dim=2.0)
         ss.evects = matrix
-        with self.assertRaises(TypeError):
+        with self.assertRaises(ValueError):
             ss._partition()
 
     def test_partition_04(self):
