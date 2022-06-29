@@ -183,7 +183,7 @@ class TestProjectionFactory(TestCase):
                               subspace=ss)
         best = fm.tune_pr_matrix(func=average_rrmse,
                                  bounds=[slice(-2, 1, 0.2) for i in range(1)],
-                                 fn_args={'csv':csv},
+                                 fn_args={'csv': csv},
                                  maxiter=10,
                                  save_file=False)[1]
         true = np.array([[0., 0.], [0., 0.], [0., 0.]])
@@ -208,7 +208,7 @@ class TestProjectionFactory(TestCase):
                               subspace=ss)
         best = fm.tune_pr_matrix(func=average_rrmse,
                                  bounds=[slice(-2, 1, 0.2) for i in range(1)],
-                                 fn_args={'csv':csv},
+                                 fn_args={'csv': csv},
                                  method='dual_annealing',
                                  maxiter=5,
                                  save_file=False)[1]
@@ -235,7 +235,7 @@ class TestProjectionFactory(TestCase):
                               subspace=ss)
         best = fm.tune_pr_matrix(func=average_rrmse,
                                  bounds=[slice(-2, 1, 0.2) for i in range(1)],
-                                 fn_args={'csv':csv},
+                                 fn_args={'csv': csv},
                                  method='bso',
                                  maxiter=10,
                                  save_file=False)[1]

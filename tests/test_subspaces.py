@@ -68,7 +68,7 @@ class TestUtils(TestCase):
         matrix = np.random.uniform(-1, 1, 9).reshape(3, 3)
         ss = Subspaces(dim=2.0)
         ss.evects = matrix
-        with self.assertRaises(TypeError):
+        with self.assertRaises(ValueError):
             ss._partition()
 
     def test_partition_04(self):
@@ -125,3 +125,21 @@ class TestUtils(TestCase):
                                        outputs,
                                        figsize=(7, 7),
                                        title='Sufficient_summary_plots')
+
+    def test_partition_spectral_gap(self):
+        np.random.seed(42)
+        matrix = np.array([[1, 1, 1], [2, -4.5, 2], [1, 1.1, 1]])
+        weights = np.ones((3, 1))
+        ss = Subspaces(dim=0)
+        ss.evals, ss.evects = ss._build_decompose_cov_matrix(matrix, weights)
+        dim = ss._set_dim_spectral_gap()
+        self.assertEqual(dim, 1)
+
+    def test_partition_residual_energy(self):
+        np.random.seed(42)
+        matrix = np.array([[1, 1, 1], [2, -4.5, 2], [1, 1.1, 1]])
+        weights = np.ones((3, 1))
+        ss = Subspaces(dim=1)
+        ss.evals, ss.evects = ss._build_decompose_cov_matrix(matrix, weights)
+        dim = ss._set_dim_residual_energy()
+        self.assertEqual(dim, 1)

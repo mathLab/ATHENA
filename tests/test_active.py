@@ -4,6 +4,7 @@ from athena.active import ActiveSubspaces
 from contextlib import contextmanager
 import matplotlib.pyplot as plt
 
+
 @contextmanager
 def assert_plot_figures_added():
     """
@@ -156,10 +157,10 @@ class TestUtils(TestCase):
     def test_fit_11(self):
         np.random.seed(42)
         grad = np.array(
-            [[-0.50183952, 0, 0, 0, 0, 0 ,0, 0, 0, 0, 0, 0, 0, 0, 0],
-             [-1.26638196, 0, 0, 0, 0, 0 ,0, 0, 0, 0, 0, 0, 0, 0, 0],
-             [ 0.43017941, 0, 0, 0, 0, 0 ,0, 0, 0, 0, 0, 0, 0, 0, 0],
-             [ 0.65008914, 0, 0, 0, 0, 0 ,0, 0, 0, 0, 0, 0, 0, 0, 0]])
+            [[-0.50183952, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+             [-1.26638196, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+             [0.43017941, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+             [0.65008914, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]])
         gradients = (grad[i, :] for i in range(4))
         ss = ActiveSubspaces(dim=2, method='exact', n_boot=150)
         ss.fit(gradients=gradients)
@@ -169,25 +170,27 @@ class TestUtils(TestCase):
     def test_fit_12(self):
         np.random.seed(42)
         grad = np.array(
-            [[-0.50183952, 0, 0, 0, 0, 0 ,0, 0, 0, 0, 0, 0, 0, 0, 0],
-             [-1.26638196, 0, 0, 0, 0, 0 ,0, 0, 0, 0, 0, 0, 0, 0, 0],
-             [ 0.43017941, 0, 0, 0, 0, 0 ,0, 0, 0, 0, 0, 0, 0, 0, 0],
-             [ 0.65008914, 0, 0, 0, 0, 0 ,0, 0, 0, 0, 0, 0, 0, 0, 0]])
+            [[-0.50183952, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+             [-1.26638196, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+             [0.43017941, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+             [0.65008914, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]])
         gradients = (grad[i, :] for i in range(4))
         ss = ActiveSubspaces(dim=2, method='exact', n_boot=150)
         ss.fit(gradients=gradients)
-        true_evects = np.array(
-            [[1., 0.], [0., 1.], [0., 0.], [0., 0.], [0., 0.], [0., 0.],
-             [0., 0.], [0., 0.], [0., 0.], [0., 0.], [0., 0.], [0., 0.],
-             [0., 0.], [0., 0.], [0., 0.]])
+        true_evects = np.array([[1., 0.], [0., 1.], [0., 0.], [0.,
+                                                               0.], [0., 0.],
+                                [0., 0.], [0., 0.], [0., 0.], [0.,
+                                                               0.], [0., 0.],
+                                [0., 0.], [0., 0.], [0., 0.], [0., 0.],
+                                [0., 0.]])
         np.testing.assert_array_almost_equal(true_evects, ss.evects)
-    
+
     def test_activity_scores_01(self):
         np.random.seed(42)
         gradients = np.random.uniform(-1, 1, 180).reshape(15, 3, 4)
         ss = ActiveSubspaces(dim=1, method='exact', n_boot=150)
         ss.fit(gradients=gradients)
-        true_scores = np.array([0.599489, 0.055179, 0.37102 , 0.300374])
+        true_scores = np.array([0.599489, 0.055179, 0.37102, 0.300374])
         np.testing.assert_array_almost_equal(true_scores, ss.activity_scores)
 
     def test_activity_scores_02(self):
@@ -211,9 +214,11 @@ class TestUtils(TestCase):
         gradients = (inputs[i, :] for i in range(4))
         ss = ActiveSubspaces(dim=2, method='exact', n_boot=150)
         ss.fit(gradients=gradients)
-        true_scores = np.array([0.061844, 0.914259, 0.868018, 0.830417, 1.081719, 0.652845,
-        0.486826, 0.974479, 0.165313, 0.111259, 1.135542, 0.547697,
-        1.099458, 0.860475, 0.377612])
+        true_scores = np.array([
+            0.061844, 0.914259, 0.868018, 0.830417, 1.081719, 0.652845,
+            0.486826, 0.974479, 0.165313, 0.111259, 1.135542, 0.547697,
+            1.099458, 0.860475, 0.377612
+        ])
         np.testing.assert_array_almost_equal(true_scores, ss.activity_scores)
 
     def test_transform_01(self):
@@ -386,13 +391,13 @@ class TestUtils(TestCase):
         matrix = np.random.uniform(-1, 1, 9).reshape(3, 3)
         ss = ActiveSubspaces(dim=2.0)
         ss.evects = matrix
-        with self.assertRaises(TypeError):
+        with self.assertRaises(ValueError):
             ss._partition()
 
     def test_partition_04(self):
         np.random.seed(42)
         matrix = np.random.uniform(-1, 1, 9).reshape(3, 3)
-        ss = ActiveSubspaces(dim=0)
+        ss = ActiveSubspaces(dim=0.)
         ss.evects = matrix
         with self.assertRaises(ValueError):
             ss._partition()
@@ -522,10 +527,10 @@ class TestUtils(TestCase):
     def test_plot_eigenvalues_05(self):
         np.random.seed(42)
         grad = np.array(
-            [[-0.50183952, 0, 0, 0, 0, 0 ,0, 0, 0, 0, 0, 0, 0, 0, 0],
-             [-1.26638196, 0, 0, 0, 0, 0 ,0, 0, 0, 0, 0, 0, 0, 0, 0],
-             [ 0.43017941, 0, 0, 0, 0, 0 ,0, 0, 0, 0, 0, 0, 0, 0, 0],
-             [ 0.65008914, 0, 0, 0, 0, 0 ,0, 0, 0, 0, 0, 0, 0, 0, 0]])
+            [[-0.50183952, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+             [-1.26638196, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+             [0.43017941, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+             [0.65008914, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]])
         gradients = (grad[i, :] for i in range(4))
         ss = ActiveSubspaces(dim=2, method='exact', n_boot=200)
         ss.fit(gradients=gradients)
@@ -568,10 +573,10 @@ class TestUtils(TestCase):
     def test_plot_eigenvectors_05(self):
         np.random.seed(42)
         grad = np.array(
-            [[-0.50183952, 0, 0, 0, 0, 0 ,0, 0, 0, 0, 0, 0, 0, 0, 0],
-             [-1.26638196, 0, 0, 0, 0, 0 ,0, 0, 0, 0, 0, 0, 0, 0, 0],
-             [ 0.43017941, 0, 0, 0, 0, 0 ,0, 0, 0, 0, 0, 0, 0, 0, 0],
-             [ 0.65008914, 0, 0, 0, 0, 0 ,0, 0, 0, 0, 0, 0, 0, 0, 0]])
+            [[-0.50183952, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+             [-1.26638196, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+             [0.43017941, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+             [0.65008914, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]])
         gradients = (grad[i, :] for i in range(4))
         ss = ActiveSubspaces(dim=2, method='exact', n_boot=200)
         ss.fit(gradients=gradients)
@@ -616,12 +621,12 @@ class TestUtils(TestCase):
     def test_frequent_directions_01(self):
         np.random.seed(42)
         grad = np.array(
-            [[-0.50183952, 0, 0, 0, 0, 0 ,0, 0, 0, 0, 0, 0, 0, 0, 0],
-             [-1.26638196, 0, 0, 0, 0, 0 ,0, 0, 0, 0, 0, 0, 0, 0, 0],
-             [ 0.43017941, 0, 0, 0, 0, 0 ,0, 0, 0, 0, 0, 0, 0, 0, 0],
-             [ 0.65008914, 0, 0, 0, 0, 0 ,0, 0, 0, 0, 0, 0, 0, 0, 0]])
+            [[-0.50183952, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+             [-1.26638196, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+             [0.43017941, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+             [0.65008914, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]])
         gradients = (grad[i, :] for i in range(4))
         ss = ActiveSubspaces(dim=2, method='exact', n_boot=150)
         evals, v = ss._frequent_directions(gradients=gradients)
         self.assertEqual(v.shape, (15, 2))
-        self.assertEqual(evals.shape, (2,))
+        self.assertEqual(evals.shape, (2, ))

@@ -124,9 +124,7 @@ class TestUtils(TestCase):
                                    n_features=4,
                                    method='exact',
                                    n_boot=49)
-        ss.fit(inputs=inputs,
-               gradients=gradients,
-               weights=weights)
+        ss.fit(inputs=inputs, gradients=gradients, weights=weights)
         true_evects = np.array(
             [[0.74714817, 0.6155644, 0.23414206, 0.08959675],
              [0.35380297, -0.10917583, -0.91115623, 0.18082704],
@@ -236,10 +234,7 @@ class TestUtils(TestCase):
                                    n_features=4,
                                    method='local',
                                    n_boot=49)
-        ss.fit(inputs=inputs,
-               outputs=outputs,
-               weights=weights,
-               metric=metric)
+        ss.fit(inputs=inputs, outputs=outputs, weights=weights, metric=metric)
         true_evals = np.array(
             [1.58774145e+05, 2.37399662e+02, 8.73268317e+01, 2.99624379e+01])
         np.testing.assert_allclose(true_evals, ss.evals)
@@ -314,7 +309,7 @@ class TestUtils(TestCase):
         matrix = np.random.uniform(-1, 1, 9).reshape(3, 3)
         ss = KernelActiveSubspaces(dim=2.0)
         ss.evects = matrix
-        with self.assertRaises(TypeError):
+        with self.assertRaises(ValueError):
             ss._partition()
 
     def test_partition_04(self):

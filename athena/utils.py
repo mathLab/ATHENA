@@ -5,6 +5,7 @@ import matplotlib.pyplot as plt
 from scipy.optimize import linprog
 import GPy
 
+
 class Normalizer():
     """A class for normalizing and unnormalizing bounded inputs.
 
@@ -209,8 +210,7 @@ class CrossValidation():
 
         if any([v is None for v in [inputs, outputs, gradients, subspace]]):
             raise ValueError(
-                'Any among inputs, outputs, gradients, subspace is None.'
-            )
+                'Any among inputs, outputs, gradients, subspace is None.')
 
         self.inputs = inputs
         self.outputs = outputs
@@ -344,7 +344,8 @@ def average_rrmse(hyperparams, best, csv, verbose=False, resample=5):
     :rtype: numpy.float64
     """
     if isinstance(csv, CrossValidation) is False:
-        raise ValueError("The argument csv must be of type athena.utils.CrossValidation")
+        raise ValueError(
+            "The argument csv must be of type athena.utils.CrossValidation")
 
     if len(hyperparams.shape) > 1:
         hyperparams = np.squeeze(hyperparams)

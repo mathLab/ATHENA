@@ -2,16 +2,9 @@
 Package metadata
 """
 __all__ = [
-    '__project__',
-    '__title__',
-    '__author__',
-    '__copyright__',
-    '__license__',
-    '__version__',
-    '__mail__',
-    '__maintainer__',
-    '__status__',
-    '__packagename__']
+    '__project__', '__title__', '__author__', '__copyright__', '__license__',
+    '__version__', '__mail__', '__maintainer__', '__status__', '__packagename__'
+]
 
 __project__ = 'ATHENA'
 __title__ = "athena"
