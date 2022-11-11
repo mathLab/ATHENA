@@ -215,7 +215,7 @@ class NonlinearLevelSet():
             reduced_inputs = self.forward(inputs)[:, 0]
             plt.plot(reduced_inputs.detach().numpy(), outputs, 'bo')
             plt.xlabel('Reduced input')
-            plt.xlabel('Output')
+            plt.ylabel('Output')
         else:
             raise ValueError(
                 'Sufficient summary plots cannot be made in more than 1 ' \
