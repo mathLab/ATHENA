@@ -10,11 +10,11 @@ Active Subspaces module.
       Journal of Open Source Software, 1(5), 79, 2016.
 
 """
-import numpy as np
-from .subspaces import Subspaces
-from scipy.linalg import null_space
 import types
+import numpy as np
+from scipy.linalg import null_space
 
+from .subspaces import Subspaces
 from .utils import (Normalizer, initialize_weights, linear_program_ineq,
                     local_linear_gradients)
 
