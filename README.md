@@ -47,7 +47,7 @@ See the [**Examples and Tutorials**](#examples-and-tutorials) section below and 
 
 ## Dependencies and installation
 **ATHENA** requires `numpy`, `matplotlib`, `scipy`, `torch`, `GPy`, `GPyOpt`,
-`scikit-learn`, `sphinx` (for the documentation) and `pytest` (for local test).
+`scikit-learn`, `scikit-learn-extra`, `sphinx` (for the documentation) and `pytest` (for local test).
 The code is compatible with Python 3.6 and above. It can be installed directly
 from the source code or via pip.
 

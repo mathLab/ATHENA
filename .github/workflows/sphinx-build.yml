@@ -16,7 +16,7 @@ jobs:
       uses: ammaraskar/sphinx-action@master
       with:
         pre-build-command: "python -m pip install pip sphinx_rtd_theme numpy
-        scipy matplotlib GPy GPyOpt torch scikit-learn -U"
+        scipy matplotlib GPy GPyOpt torch scikit-learn scikit-learn-extra -U"
         docs-folder: "docs/"
 
     - name: Deploy
