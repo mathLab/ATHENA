@@ -255,7 +255,7 @@ class KMedoidsAS(ClusterBase):
             self.full_as.evects.T.dot(X - Y) * self.full_as.evals)
 
 
-class TopDownHierarchical(ClusterBase):
+class TopDownHierarchicalAS(ClusterBase):
     def __init__(self):
         """TODO check states logic.
         1. 2 and 4 are exclusives

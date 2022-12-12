@@ -15,6 +15,6 @@ from .subspaces import Subspaces
 from .utils import (Normalizer, initialize_weights, linear_program_ineq,
                     local_linear_gradients, sort_eigpairs, CrossValidation,
                     rrmse, average_rrmse)
-from .local import (ClusterBase, KMeansAS, KMedoidsAS, TopDownHierarchical,
+from .local import (ClusterBase, KMeansAS, KMedoidsAS, TopDownHierarchicalAS,
                     TopDownNode, plot_scores)
 from .local_classification import (SpectralClassification, ClassifyAS)

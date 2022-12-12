@@ -31,7 +31,7 @@ plt.rcParams.update({'font.size': 14})
 
 
 class SpectralClassification(metaclass=abc.ABCMeta):
-    """Evaluate connected components from X, n_neighbours, features and custom
+    """Evaluate the connected components from X, n_neighbours, features and custom
     distance that must be defined in concrete class."""
     def __init__(self):
         self.X = None
@@ -202,12 +202,12 @@ class ClassifyAS(SpectralClassification):
         # if two nodes have different AS dimension the distance is inf
         if np.abs(x[-1] - y[-1]) != 0:
             return np.inf
-            # when two nodes have the same AS dimension the distance is euclidean one
+            # when two nodes have the same AS dimension the distance is the euclidean one
         else:
             return np.linalg.norm(x[:-1] - y[:-1])
 
     def evaluate_minimum_distance(self, X, dX):
-        """Evaluate local acive subspace dimension depending on the choice of
+        """Evaluate local active subspace dimension depending on the choice of
         the number of neighbouring points and of subsampling from the same
         neighbour in order to evaluate the local active subspace"""
 
