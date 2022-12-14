@@ -21,7 +21,7 @@ jobs:
     - name: Install Python dependencies
       run: |
         python3 -m pip install --upgrade pip
-        python3 -m pip install numpy scipy matplotlib pytest pytest-cov future torch nose gpy gpyopt sphinx sklearn
+        python3 -m pip install numpy scipy matplotlib pytest pytest-cov future torch gpy gpyopt scikit-learn scikit-learn-extra 
 
     - name: Test with pytest
       env:
