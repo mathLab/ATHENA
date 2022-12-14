@@ -275,6 +275,16 @@ class TestUtils(TestCase):
                                   [-0.49850367, -0.37146678]])
         np.testing.assert_array_almost_equal(true_inactive, inactive)
 
+    def test_transform_06(self):
+        np.random.seed(42)
+        inputs = np.random.uniform(-1, 1, 60).reshape(15, 4)
+        outputs = np.random.uniform(0, 5, 15)
+        ss = ActiveSubspaces(dim=2, method='local', n_boot=250)
+        ss.fit(inputs=inputs, outputs=outputs)
+        ss.W2 = None
+        inactive = ss.transform(np.random.uniform(-1, 1, 8).reshape(2, 4))[1]
+        self.assertIsNone(inactive)
+
     def test_inverse_transform_01(self):
         np.random.seed(42)
         inputs = np.random.uniform(-1, 1, 60).reshape(15, 4)
