@@ -4,9 +4,10 @@ Module for Kernel-based Active Subspaces.
 :References:
 
     - Francesco Romor, Marco Tezzele, Andrea Lario, Gianluigi Rozza.
-      Kernel-based Active Subspaces with application to CFD problems using
-      Discontinuous Galerkin Method. 2020.
-      arxiv: https://arxiv.org/abs/2008.12083
+      Kernel-based active subspaces with application to computational fluid
+      dynamics parametric problems using discontinuous Galerkin method.
+      International Journal for Numerical Methods in Engineering,
+      123(23):6000–6027, 2022. doi:10.1002/nme.7099
 
 """
 import numpy as np

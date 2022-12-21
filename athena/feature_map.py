@@ -4,9 +4,10 @@ Module for the feature map class
 :References:
 
     - Francesco Romor, Marco Tezzele, Andrea Lario, Gianluigi Rozza.
-      Kernel-based Active Subspaces with application to CFD problems using
-      Discontinuous Galerkin Method. 2020.
-      arxiv: https://arxiv.org/abs/2008.12083
+      Kernel-based active subspaces with application to computational fluid
+      dynamics parametric problems using discontinuous Galerkin method.
+      International Journal for Numerical Methods in Engineering,
+      123(23):6000–6027, 2022. doi:10.1002/nme.7099
 
 """
 from functools import partial
@@ -176,11 +177,7 @@ class FeatureMap():
         best = [0.8, np.zeros((self.n_features, self.input_dim))]
 
         if method is None:
-            if len(self.params) < 4:
-                method = 'brute'
-            else:
-                method = 'dual_annealing'
-
+            method = 'brute' if len(self.params) < 4 else 'dual_annealing'
         if method == 'brute':
             self.params = brute(func=func,
                                 ranges=bounds,
@@ -200,11 +197,14 @@ class FeatureMap():
                                              maxiter=maxiter,
                                              no_local_search=False).x
         elif method == 'bso':
-            bounds = [{
-                'name': 'var_' + str(i),
-                'type': 'continuous',
-                'domain': [bound.start, bound.stop]
-            } for i, bound in enumerate(bounds)]
+            bounds = [
+                {
+                    'name': f'var_{str(i)}',
+                    'type': 'continuous',
+                    'domain': [bound.start, bound.stop],
+                }
+                for i, bound in enumerate(bounds)
+            ]
             func_obj = partial(func, best=best, **fn_args)
             bopt = GPyOpt.methods.BayesianOptimization(func_obj,
                                                        domain=bounds,
