@@ -66,35 +66,36 @@ class Subspaces():
         :return: the sorted eigenvalues, and the corresponding eigenvectors.
         :rtype: numpy.ndarray, numpy.ndarray
         """
-        if self.method == 'exact' or self.method == 'local':
-            if metric is not None:
-                cov_matrix = np.array(
-                    np.sum([
-                        weights[i, 0] *
-                        np.dot(gradients[i, :, :].T,
-                               np.dot(metric, gradients[i, :, :]))
-                        for i in range(gradients.shape[0])
-                    ],
-                           axis=0))
-                evals, evects = sort_eigpairs(cov_matrix)
-                return np.squeeze(evals), evects
+        if self.method not in ['exact', 'local']:
+            return
+        if metric is not None:
+            cov_matrix = np.array(
+                np.sum([
+                    weights[i, 0] *
+                    np.dot(gradients[i, :, :].T,
+                           np.dot(metric, gradients[i, :, :]))
+                    for i in range(gradients.shape[0])
+                ],
+                       axis=0))
+            evals, evects = sort_eigpairs(cov_matrix)
+            return np.squeeze(evals), evects
 
-            X = np.squeeze(gradients * np.sqrt(weights).reshape(-1, 1))
-            n_samples, n_pars = X.shape
+        X = np.squeeze(gradients * np.sqrt(weights).reshape(-1, 1))
+        n_samples, n_pars = X.shape
 
-            if self._check_rsvd(n_samples, n_pars, self.dim):
-                singular, evects = randomized_svd(
-                    M=X,
-                    n_components=self.dim,
-                    n_oversamples=10,
-                    n_iter='auto',
-                    power_iteration_normalizer='auto',
-                    transpose='auto')[1:]
-            else:
-                singular, evects = np.linalg.svd(X, full_matrices=False)[1:]
+        if self._check_rsvd(n_samples, n_pars, self.dim):
+            singular, evects = randomized_svd(
+                M=X,
+                n_components=self.dim,
+                n_oversamples=10,
+                n_iter='auto',
+                power_iteration_normalizer='auto',
+                transpose='auto')[1:]
+        else:
+            singular, evects = np.linalg.svd(X, full_matrices=False)[1:]
 
-            evals = singular**2
-            return evals, evects.T
+        evals = singular**2
+        return evals, evects.T
 
     def _compute_bootstrap_ranges(self, gradients, weights, metric=None):
         """Compute bootstrap ranges for eigenvalues and subspaces.
@@ -183,8 +184,8 @@ class Subspaces():
         to be implemented in subclasses.
         """
         raise NotImplementedError(
-            'Subclass must implement abstract method {}.fit'.format(
-                self.__class__.__name__))
+            f'Subclass must implement abstract method {self.__class__.__name__}.fit'
+        )
 
     def transform(self, inputs):
         """
@@ -200,9 +201,9 @@ class Subspaces():
             variables.
         :rtype: numpy.ndarray, numpy.ndarray
         """
-        raise NotImplementedError('Subclass must implement abstract method '
-                                  '{}.transform'.format(
-                                      self.__class__.__name__))
+        raise NotImplementedError(
+            f'Subclass must implement abstract method {self.__class__.__name__}.transform'
+        )
 
     def inverse_transform(self, reduced_inputs, n_points):
         """
@@ -216,8 +217,8 @@ class Subspaces():
             space that are returned that map to the given active variables.
         """
         raise NotImplementedError(
-            'Subclass must implement abstract method {}.inverse_transform'.
-            format(self.__class__.__name__))
+            f'Subclass must implement abstract method {self.__class__.__name__}.inverse_transform'
+        )
 
     def _partition(self):
         """
@@ -233,8 +234,8 @@ class Subspaces():
 
         if self.dim < 0 or self.dim > self.evects.shape[1]:
             raise ValueError(
-                'dim must be positive and less than the dimension of the '
-                ' eigenvectors: dim = {}.'.format(self.dim))
+                f'dim must be positive and less than the dimension of the  eigenvectors: dim = {self.dim}.'
+            )
 
         # allow evaluation of active eigenvectors only
         if self.evects.shape[1] < self.evects.shape[0]:
@@ -245,8 +246,8 @@ class Subspaces():
             self.W2 = self.evects[:, self.dim:]
         else:
             raise ValueError(
-                'the eigenvectors cannot have dimension less than dim = {}.'.
-                format(self.dim))
+                f'the eigenvectors cannot have dimension less than dim = {self.dim}.'
+            )
 
     def _set_dim(self):
         """
@@ -259,16 +260,12 @@ class Subspaces():
         # spectral gap
         if isinstance(self.dim, int) and self.dim == 0:
             dim = self._set_dim_spectral_gap()
-        # residual energy
         elif self.dim > 0 and self.dim < 1:
             dim = self._set_dim_residual_energy()
-        # manual set of AS dimension
         elif isinstance(self.dim, int) and self.dim >=1:
             dim = self.dim
         else:
-            raise ValueError(
-                "The parameter `dim`={} has not a valid value.".format(self.dim)
-            )
+            raise ValueError(f"The parameter `dim`={self.dim} has not a valid value.")
 
         return dim
 
@@ -397,7 +394,7 @@ class Subspaces():
                           filename=None,
                           figsize=None,
                           labels=None,
-                          title=''):
+                          title=''):  # sourcery skip: extract-method
         """
         Plot the eigenvectors.
 
@@ -440,7 +437,7 @@ class Subspaces():
             if labels:
                 ax.set_xticklabels(labels)
 
-            ax.set_ylabel('Active eigenvector {}'.format(i + 1))
+            ax.set_ylabel(f'Active eigenvector {i + 1}')
             ax.grid(linestyle='dotted')
             ax.axis([0, n_pars + 1, -1 - 0.1, 1 + 0.1])
 
@@ -459,7 +456,7 @@ class Subspaces():
                                 outputs,
                                 filename=None,
                                 figsize=(10, 8),
-                                title=''):
+                                title=''):  # sourcery skip: extract-method
         """
         Plot the sufficient summary.
 
