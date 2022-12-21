@@ -18,6 +18,7 @@ from sklearn.utils.extmath import randomized_svd
 from .utils import sort_eigpairs
 import itertools
 import operator
+
 plt.rcParams.update({'font.size': 16})
 
 
@@ -71,9 +72,8 @@ class Subspaces():
         if metric is not None:
             cov_matrix = np.array(
                 np.sum([
-                    weights[i, 0] *
-                    np.dot(gradients[i, :, :].T,
-                           np.dot(metric, gradients[i, :, :]))
+                    weights[i, 0] * np.dot(gradients[i, :, :].T,
+                                           np.dot(metric, gradients[i, :, :]))
                     for i in range(gradients.shape[0])
                 ],
                        axis=0))
@@ -84,13 +84,12 @@ class Subspaces():
         n_samples, n_pars = X.shape
 
         if self._check_rsvd(n_samples, n_pars, self.dim):
-            singular, evects = randomized_svd(
-                M=X,
-                n_components=self.dim,
-                n_oversamples=10,
-                n_iter='auto',
-                power_iteration_normalizer='auto',
-                transpose='auto')[1:]
+            singular, evects = randomized_svd(M=X,
+                                              n_components=self.dim,
+                                              n_oversamples=10,
+                                              n_iter='auto',
+                                              power_iteration_normalizer='auto',
+                                              transpose='auto')[1:]
         else:
             singular, evects = np.linalg.svd(X, full_matrices=False)[1:]
 
@@ -262,10 +261,11 @@ class Subspaces():
             dim = self._set_dim_spectral_gap()
         elif self.dim > 0 and self.dim < 1:
             dim = self._set_dim_residual_energy()
-        elif isinstance(self.dim, int) and self.dim >=1:
+        elif isinstance(self.dim, int) and self.dim >= 1:
             dim = self.dim
         else:
-            raise ValueError(f"The parameter `dim`={self.dim} has not a valid value.")
+            raise ValueError(
+                f"The parameter `dim`={self.dim} has not a valid value.")
 
         return dim
 
@@ -306,10 +306,11 @@ class Subspaces():
         if isinstance(dim, int) and dim > 0:
             # computational complexity of svd and random svd
             svd_complexity = n_samples * n_pars * dim
-            rsvd_complexity = n_samples * n_pars * np.log(
-                dim) + (n_samples + n_pars) * dim**2
+            rsvd_complexity = n_samples * n_pars * np.log(dim) + (
+                n_samples + n_pars) * dim**2
 
-            return svd_complexity > rsvd_complexity and (n_samples > 10000 or n_pars > 10000)
+            return svd_complexity > rsvd_complexity and (n_samples > 10000
+                                                         or n_pars > 10000)
         else:
             return False
 

@@ -72,8 +72,8 @@ class NonlinearLevelSet():
               outputs=None,
               interactive=False,
               target_loss=0.0001,
-              optim_args={},
-              scheduler_args={}):
+              optim_args=None,
+              scheduler_args=None):
         """
         Train the whole RevNet.
 
@@ -93,6 +93,10 @@ class NonlinearLevelSet():
         :raises: ValueError: in interactive mode outputs must be provided for
             the sufficient summary plot.
         """
+        if optim_args is None:
+            optim_args = {}
+        if scheduler_args is None:
+            scheduler_args = {}
         if inputs.shape[1] % 2 != 0:
             raise ValueError('The parameter space\'s dimension must be even.')
 
@@ -329,8 +333,10 @@ class ForwardNet(nn.Module):
         self.omega = slice(active_dim)
 
         for i in range(self.n_layers):
-            setattr(self, f'fc{i + 1}_y', nn.Linear(self.n_params, 2 * self.n_params))
-            setattr(self, f'fc{i + 1}_z', nn.Linear(self.n_params, 2 * self.n_params))
+            setattr(self, f'fc{i + 1}_y',
+                    nn.Linear(self.n_params, 2 * self.n_params))
+            setattr(self, f'fc{i + 1}_z',
+                    nn.Linear(self.n_params, 2 * self.n_params))
 
     def forward(self, inputs):
         """
@@ -485,8 +491,10 @@ class BackwardNet(nn.Module):
         self.dh = dh
 
         for i in range(self.n_layers):
-            setattr(self, f'fc{i + 1}_y', nn.Linear(self.n_params, 2 * self.n_params))
-            setattr(self, f'fc{i + 1}_z', nn.Linear(self.n_params, 2 * self.n_params))
+            setattr(self, f'fc{i + 1}_y',
+                    nn.Linear(self.n_params, 2 * self.n_params))
+            setattr(self, f'fc{i + 1}_z',
+                    nn.Linear(self.n_params, 2 * self.n_params))
 
     def forward(self, mapped_inputs):
         """

@@ -110,7 +110,7 @@ class FeatureMap():
                        method=None,
                        maxiter=50,
                        save_file=False,
-                       fn_args={}):
+                       fn_args=None):
         """
         Tune the parameters of the spectral distribution. Three methods are
         available: log-grid-search (brute), annealing (dual_annealing) and
@@ -174,6 +174,8 @@ class FeatureMap():
             numpy.ndarray of zeros.
         :rtype: list
         """
+        if fn_args is None:
+            fn_args = {}
         best = [0.8, np.zeros((self.n_features, self.input_dim))]
 
         if method is None:
@@ -197,14 +199,11 @@ class FeatureMap():
                                              maxiter=maxiter,
                                              no_local_search=False).x
         elif method == 'bso':
-            bounds = [
-                {
-                    'name': f'var_{str(i)}',
-                    'type': 'continuous',
-                    'domain': [bound.start, bound.stop],
-                }
-                for i, bound in enumerate(bounds)
-            ]
+            bounds = [{
+                'name': f'var_{str(i)}',
+                'type': 'continuous',
+                'domain': [bound.start, bound.stop],
+            } for i, bound in enumerate(bounds)]
             func_obj = partial(func, best=best, **fn_args)
             bopt = GPyOpt.methods.BayesianOptimization(func_obj,
                                                        domain=bounds,

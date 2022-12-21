@@ -73,10 +73,12 @@ class SpectralClassification(metaclass=abc.ABCMeta):
         for i in range(self.n_components):
             # dim_mask = self.features[:, -1] == i + 1
             dim_mask = self.labels == i
-            ax1.scatter(self.X[dim_mask, id1],
-                        self.X[dim_mask, id2],
-                        c=colors[i].reshape(1, -1),
-                        label="id " + str(i))
+            ax1.scatter(
+                self.X[dim_mask, id1],
+                self.X[dim_mask, id2],
+                c=colors[i].reshape(1, -1),
+                label=f"id {str(i)}",
+            )
         plt.title("clusters")
         plt.grid()
         plt.legend()
@@ -85,10 +87,12 @@ class SpectralClassification(metaclass=abc.ABCMeta):
         colors1 = cm.rainbow(np.linspace(0, 1, self.X.shape[1]))
         for i in range(self.X.shape[1]):
             dim_mask = self.features[:, -1] == i + 1
-            ax1.scatter(self.X[dim_mask, id1],
-                        self.X[dim_mask, id2],
-                        c=colors1[i].reshape(1, -1),
-                        label="dim " + str(i + 1))
+            ax1.scatter(
+                self.X[dim_mask, id1],
+                self.X[dim_mask, id2],
+                c=colors1[i].reshape(1, -1),
+                label=f"dim {str(i + 1)}",
+            )
         plt.title("as dimensions")
         plt.grid()
         plt.legend()
@@ -102,11 +106,11 @@ class SpectralClassification(metaclass=abc.ABCMeta):
     def make_graph(self):
         """Use scipy sparse format COO to create adjacency list"""
         distance_matrix = self.custom_distance(self.features)
-        _log.debug("distance matrix {}".format(distance_matrix))
+        _log.debug(f"distance matrix {distance_matrix}")
 
         adjacency_list = np.argsort(distance_matrix,
                                     axis=1)[:, :self.n_neighbours]
-        _log.debug("adjacency list {}".format(adjacency_list))
+        _log.debug(f"adjacency list {adjacency_list}")
 
         distance_restricted = np.take_along_axis(distance_matrix,
                                                  adjacency_list,
@@ -117,19 +121,19 @@ class SpectralClassification(metaclass=abc.ABCMeta):
         neighbours_count = np.array([self.n_neighbours]) - np.count_nonzero(
             inf_mask, axis=1)
 
-        _log.debug("neighbours count {}".format(neighbours_count))
+        _log.debug(f"neighbours count {neighbours_count}")
         assert (all(neighbours_count >= 1))
 
         row = np.hstack((i * np.ones(neighbours_count[i], dtype=np.int8)
                          for i in range(neighbours_count.shape[0])))
-        _log.debug("row {}".format(row))
+        _log.debug(f"row {row}")
 
         col = np.hstack((adjacency_list[i, :neighbours_count[i]]
                          for i in range(neighbours_count.shape[0])))
-        _log.debug("col {}".format(col))
+        _log.debug(f"col {col}")
 
         data = np.ones(np.sum(neighbours_count), dtype=np.int8)
-        _log.debug("data {}".format(data))
+        _log.debug(f"data {data}")
 
         assert (data.shape[0] == row.shape[0] == col.shape[0])
         return coo_matrix((data, (row, col)), dtype=np.int8)
@@ -218,7 +222,7 @@ class ClassifyAS(SpectralClassification):
         for i in range(X.shape[0]):
             D = np.linalg.norm((X - X[i].reshape(1, -1)), axis=1)
             ind = np.argsort(D)
-            _log.debug("ind {}, neigh {}, dist {}".format(i, ind, D))
+            _log.debug(f"ind {i}, neigh {ind}, dist {D}")
 
             res = []
 
@@ -235,13 +239,13 @@ class ClassifyAS(SpectralClassification):
                     if cumulative > self.threshold: break
                 res.append(as_dim)
 
-                _log.debug(" {} evals {}, res {}, {}, \n{}".format(
-                    mask, as_dim, res, evals[:4],
-                    dX[ind[:self.n_neighbours]][mask, :]))
+                _log.debug(
+                    f" {mask} evals {as_dim}, res {res}, {evals[:4]}, \n{dX[ind[:self.n_neighbours]][mask, :]}"
+                )
 
-            _log.debug("{} as dimensiones {} approx {}".format(
-                i, int(as_dim_features[i] / self.n_neighbours),
-                as_dim_features[i] / self.n_neighbours))
+            _log.debug(
+                f"{i} as dimensiones {int(as_dim_features[i] / self.n_neighbours)} approx {as_dim_features[i] / self.n_neighbours}"
+            )
 
             if self.local_as_criterion == 'min':
                 as_dim_features[i] = round(min(res))
@@ -249,10 +253,10 @@ class ClassifyAS(SpectralClassification):
                 as_dim_features[i] = round(sum(res) / self.n_neighbours)
             else:
                 raise ValueError(
-                    "The local_as_criterion must be 'min' or 'mean'. Passed value is {}"
-                    .format(self.local_as_criterion))
+                    f"The local_as_criterion must be 'min' or 'mean'. Passed value is {self.local_as_criterion}"
+                )
 
-        _log.debug("as dimensiones {}".format(as_dim_features))
+        _log.debug(f"as dimensiones {as_dim_features}")
         return as_dim_features.reshape(-1, 1)
 
 
@@ -265,7 +269,7 @@ def decision_boundaries(X,
                         test_size=0.2,
                         classifier=MLPClassifier(alpha=1, max_iter=1000)):
 
-    _log.debug("Shapes: {} {} ".format(X.shape, y.shape))
+    _log.debug(f"Shapes: {X.shape} {y.shape} ")
 
     clf = classifier
     h = .02  # step size in the mesh
@@ -277,15 +281,15 @@ def decision_boundaries(X,
                                                         test_size=test_size,
                                                         random_state=42)
 
-    _log.debug("Shapes train, test: {}, {}, {}, {}".format(
-        X_train.shape, X_test.shape, y_train.shape, y_test.shape))
+    _log.debug(
+        f"Shapes train, test: {X_train.shape}, {X_test.shape}, {y_train.shape}, {y_test.shape}"
+    )
 
     x_min, x_max = X[:, components[0]].min() - .1, X[:,
                                                      components[0]].max() + .1
     y_min, y_max = X[:, components[1]].min() - .1, X[:,
                                                      components[1]].max() + .1
-    xx, yy = np.meshgrid(np.arange(x_min, x_max, h),
-                         np.arange(y_min, y_max, h))
+    xx, yy = np.meshgrid(np.arange(x_min, x_max, h), np.arange(y_min, y_max, h))
 
     # train lassifier
     clf.fit(X_train, y_train)
@@ -293,7 +297,7 @@ def decision_boundaries(X,
 
     if true_inputs is not None and true_labels is not None:
         score_true = clf.score(true_inputs, true_labels)
-        _log.debug("Score {} {}".format(score, score_true))
+        _log.debug(f"Score {score} {score_true}")
 
     if plot:
         # Plot the decision boundary. For that, we will assign a color to
@@ -303,12 +307,12 @@ def decision_boundaries(X,
             Z = clf.decision_function(
                 np.hstack((np.c_[xx.ravel(), yy.ravel()],
                            np.zeros((xx.ravel().shape[0], X.shape[1] - 2)))))
-            _log.debug("Decision function  {}".format(Z.shape))
+            _log.debug(f"Decision function  {Z.shape}")
         else:
             Z = clf.predict_proba(
                 np.hstack((np.c_[xx.ravel(), yy.ravel()],
                            np.zeros((xx.ravel().shape[0], X.shape[1] - 2)))))
-            _log.debug("Predictions probability {}".format(Z.shape[1]))
+            _log.debug(f"Predictions probability {Z.shape[1]}")
 
         n_labels = Z.shape[1]
 
@@ -332,7 +336,7 @@ def decision_boundaries(X,
             ax[l].set_ylim(yy.min(), yy.max())
             ax[l].set_xticks(())
             ax[l].set_yticks(())
-            ax[l].set_title("Local cluster {}".format(l))
+            ax[l].set_title(f"Local cluster {l}")
 
         plt.tight_layout()
         plt.show()
