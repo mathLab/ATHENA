@@ -130,7 +130,7 @@ class NonlinearLevelSet():
                                                 gradients)
 
             if i % 10 == 0 or i == self.epochs - 1:
-                print('epoch = {}, loss = {}'.format(i, loss))
+                print(f'epoch = {i}, loss = {loss}')
                 if interactive:
                     ax1.cla()
                     ax1.set_title('Sufficient summary plot')
@@ -149,8 +149,8 @@ class NonlinearLevelSet():
                 self.backward.zero_grad()
 
                 for j in range(self.backward.n_layers):
-                    name_y = 'fc{}_y'.format(j + 1)
-                    name_z = 'fc{}_z'.format(j + 1)
+                    name_y = f'fc{j + 1}_y'
+                    name_z = f'fc{j + 1}_z'
                     getattr(self.backward, name_y).weight = torch.nn.Parameter(
                         getattr(self.forward, name_y).weight)
                     getattr(self.backward, name_z).weight = torch.nn.Parameter(
@@ -329,10 +329,8 @@ class ForwardNet(nn.Module):
         self.omega = slice(active_dim)
 
         for i in range(self.n_layers):
-            setattr(self, 'fc{}_y'.format(i + 1),
-                    nn.Linear(self.n_params, 2 * self.n_params))
-            setattr(self, 'fc{}_z'.format(i + 1),
-                    nn.Linear(self.n_params, 2 * self.n_params))
+            setattr(self, f'fc{i + 1}_y', nn.Linear(self.n_params, 2 * self.n_params))
+            setattr(self, f'fc{i + 1}_z', nn.Linear(self.n_params, 2 * self.n_params))
 
     def forward(self, inputs):
         """
@@ -349,12 +347,12 @@ class ForwardNet(nn.Module):
         vars()['var0_z'] = torch.clone(bb[1])
 
         for i in range(self.n_layers):
-            name_y = 'fc{}_y'.format(i + 1)
-            name_z = 'fc{}_z'.format(i + 1)
-            var_y0 = 'var{}_y'.format(i)
-            var_z0 = 'var{}_z'.format(i)
-            var_y1 = 'var{}_y'.format(i + 1)
-            var_z1 = 'var{}_z'.format(i + 1)
+            name_y = f'fc{i + 1}_y'
+            name_z = f'fc{i + 1}_z'
+            var_y0 = f'var{i}_y'
+            var_z0 = f'var{i}_z'
+            var_y1 = f'var{i + 1}_y'
+            var_z1 = f'var{i + 1}_z'
 
             sig_y = torch.unsqueeze(
                 torch.tanh(getattr(self, name_y)(vars()[var_z0])), 2)
@@ -386,16 +384,16 @@ class ForwardNet(nn.Module):
         """
         # Define the weights and bias of the inverse network
         for i in range(self.n_layers):
-            name_y = 'fc{}_y'.format(i + 1)
-            name_z = 'fc{}_z'.format(i + 1)
+            name_y = f'fc{i + 1}_y'
+            name_z = f'fc{i + 1}_z'
 
-            inv_name_y_weight = 'inv_fc{}_y_weight'.format(i + 1)
-            inv_name_z_weight = 'inv_fc{}_z_weight'.format(i + 1)
+            inv_name_y_weight = f'inv_fc{i + 1}_y_weight'
+            inv_name_z_weight = f'inv_fc{i + 1}_z_weight'
             vars()[inv_name_y_weight] = getattr(self, name_y).weight
             vars()[inv_name_z_weight] = getattr(self, name_z).weight
 
-            inv_name_y_bias = 'inv_fc{}_y_bias'.format(i + 1)
-            inv_name_z_bias = 'inv_fc{}_z_bias'.format(i + 1)
+            inv_name_y_bias = f'inv_fc{i + 1}_y_bias'
+            inv_name_z_bias = f'inv_fc{i + 1}_z_bias'
             vars()[inv_name_y_bias] = getattr(self, name_y).bias
             vars()[inv_name_z_bias] = getattr(self, name_z).bias
 
@@ -407,20 +405,20 @@ class ForwardNet(nn.Module):
             output_dy[:, j] += 0.001
 
             bb = torch.split(output_dy, self.n_params, dim=1)
-            var_y0 = 'var{}_y'.format(self.n_layers - 1)
-            var_z0 = 'var{}_z'.format(self.n_layers - 1)
+            var_y0 = f'var{self.n_layers - 1}_y'
+            var_z0 = f'var{self.n_layers - 1}_z'
             vars()[var_y0] = bb[0]
             vars()[var_z0] = bb[1]
 
             for i in range(self.n_layers - 1, -1, -1):
-                inv_name_y_weight = 'inv_fc{}_y_weight'.format(i + 1)
-                inv_name_z_weight = 'inv_fc{}_z_weight'.format(i + 1)
-                inv_name_y_bias = 'inv_fc{}_y_bias'.format(i + 1)
-                inv_name_z_bias = 'inv_fc{}_z_bias'.format(i + 1)
-                var_y0 = 'var{}_y'.format(i)
-                var_z0 = 'var{}_z'.format(i)
-                var_y1 = 'var{}_y'.format(i - 1)
-                var_z1 = 'var{}_z'.format(i - 1)
+                inv_name_y_weight = f'inv_fc{i + 1}_y_weight'
+                inv_name_z_weight = f'inv_fc{i + 1}_z_weight'
+                inv_name_y_bias = f'inv_fc{i + 1}_y_bias'
+                inv_name_z_bias = f'inv_fc{i + 1}_z_bias'
+                var_y0 = f'var{i}_y'
+                var_z0 = f'var{i}_z'
+                var_y1 = f'var{i - 1}_y'
+                var_z1 = f'var{i - 1}_z'
 
                 sig_z = torch.tanh(
                     torch.add(
@@ -487,10 +485,8 @@ class BackwardNet(nn.Module):
         self.dh = dh
 
         for i in range(self.n_layers):
-            setattr(self, 'fc{}_y'.format(i + 1),
-                    nn.Linear(self.n_params, 2 * self.n_params))
-            setattr(self, 'fc{}_z'.format(i + 1),
-                    nn.Linear(self.n_params, 2 * self.n_params))
+            setattr(self, f'fc{i + 1}_y', nn.Linear(self.n_params, 2 * self.n_params))
+            setattr(self, f'fc{i + 1}_z', nn.Linear(self.n_params, 2 * self.n_params))
 
     def forward(self, mapped_inputs):
         """
@@ -505,8 +501,8 @@ class BackwardNet(nn.Module):
         y, z = torch.split(mapped_inputs, self.n_params, dim=1)
 
         for i in range(self.n_layers - 1, -1, -1):
-            name_y = 'fc{}_y'.format(i + 1)
-            name_z = 'fc{}_z'.format(i + 1)
+            name_y = f'fc{i + 1}_y'
+            name_z = f'fc{i + 1}_z'
 
             sig_z = torch.unsqueeze(torch.tanh(getattr(self, name_z)(y)), 2)
             K_z = torch.transpose(getattr(self, name_z).weight, 0, 1)
