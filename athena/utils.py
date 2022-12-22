@@ -4,6 +4,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from scipy.optimize import linprog
 import GPy
+from sklearn.gaussian_process import GaussianProcessRegressor
 
 
 class Normalizer():
@@ -155,10 +156,11 @@ def local_linear_gradients(inputs, outputs, weights=None, n_neighbors=None):
     return gradients, new_inputs
 
 
-def sort_eigpairs(matrix):
-    """Compute eigenpairs and sort.
+def sort_eigpairs(evals, evects):
+    """Sort eigenpairs.
 
-    :param numpy.ndarray matrix: matrix whose eigenpairs you want.
+    :param numpy.ndarray evals: eigenvalues.
+    :param numpy.ndarray evects: eigenvectors.
     :return: vector of sorted eigenvalues; orthogonal matrix of corresponding
         eigenvectors.
     :rtype: numpy.ndarray, numpy.ndarray
@@ -169,7 +171,6 @@ def sort_eigpairs(matrix):
         the eigenvectors so that the first component of each eigenvector is
         positive. This normalization is very helpful for the bootstrapping.
     """
-    evals, evects = np.linalg.eigh(matrix)
     evals = abs(evals)
     ind = np.argsort(evals)
     evals = evals[ind[::-1]]
@@ -177,7 +178,7 @@ def sort_eigpairs(matrix):
     s = np.sign(evects[0, :])
     s[s == 0] = 1
     evects *= s
-    return evals.reshape(-1, 1), evects
+    return evals, evects
 
 
 class CrossValidation():
@@ -260,9 +261,12 @@ class CrossValidation():
         y = self.ss.transform(inputs)[0]
 
         # build response surface
-        kern = GPy.kern.RBF(input_dim=y.shape[1], ARD=True)
-        self.gp = GPy.models.GPRegression(y, np.atleast_2d(outputs), kern)
-        self.gp.optimize_restarts(15, verbose=False)
+        # kern = GPy.kern.RBF(input_dim=y.shape[1], ARD=True)
+        # self.gp = GPy.models.GPRegression(y, np.atleast_2d(outputs), kern)
+        # self.gp.optimize_restarts(15, verbose=False)
+
+        self.gp = GaussianProcessRegressor(n_restarts_optimizer=15)
+        self.gp.fit(y, np.atleast_2d(outputs))
 
     def predict(self, inputs):
         """
@@ -274,7 +278,8 @@ class CrossValidation():
         :rtype: numpy.ndarray
         """
         x_test = self.ss.transform(inputs)[0]
-        return self.gp.predict(np.atleast_2d(x_test))[0]
+        # return self.gp.predict(np.atleast_2d(x_test))[0]
+        return self.gp.predict(np.atleast_2d(x_test), return_std=False)
 
     def scorer(self, inputs, outputs):
         """

@@ -314,12 +314,12 @@ class ActiveSubspaces(Subspaces):
 
             # find an upper bound on the step
             min_ind = np.logical_and(g <= 0,
-                                     f < -np.sqrt(np.finfo(np.float).eps))
+                                     f < -np.sqrt(np.finfo(np.float64).eps))
             eps_max = np.amin(f[min_ind] / g[min_ind])
 
             # find a lower bound on the step
             max_ind = np.logical_and(g > 0,
-                                     f < -np.sqrt(np.finfo(np.float).eps))
+                                     f < -np.sqrt(np.finfo(np.float64).eps))
             eps_min = np.amax(f[max_ind] / g[max_ind])
 
             # randomly sample eps

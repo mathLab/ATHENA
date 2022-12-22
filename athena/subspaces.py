@@ -75,9 +75,8 @@ class Subspaces():
                     weights[i, 0] * np.dot(gradients[i, :, :].T,
                                            np.dot(metric, gradients[i, :, :]))
                     for i in range(gradients.shape[0])
-                ],
-                       axis=0))
-            evals, evects = sort_eigpairs(cov_matrix)
+                ], axis=0))
+            evals, evects = sort_eigpairs(*np.linalg.eigh(cov_matrix))
             return np.squeeze(evals), evects
 
         X = np.squeeze(gradients * np.sqrt(weights).reshape(-1, 1))
@@ -94,6 +93,8 @@ class Subspaces():
             singular, evects = np.linalg.svd(X, full_matrices=False)[1:]
 
         evals = singular**2
+
+        evals, evects = sort_eigpairs(evals, evects)
         return evals, evects.T
 
     def _compute_bootstrap_ranges(self, gradients, weights, metric=None):
@@ -318,7 +319,7 @@ class Subspaces():
                          n_evals=None,
                          filename=None,
                          figsize=(8, 8),
-                         title=''):
+                         title=''):  # sourcery skip: class-extract-method
         """
         Plot the eigenvalues.
 
