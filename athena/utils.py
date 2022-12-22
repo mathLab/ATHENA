@@ -260,11 +260,6 @@ class CrossValidation():
                     **self.kwargs)
         y = self.ss.transform(inputs)[0]
 
-        # build response surface
-        # kern = GPy.kern.RBF(input_dim=y.shape[1], ARD=True)
-        # self.gp = GPy.models.GPRegression(y, np.atleast_2d(outputs), kern)
-        # self.gp.optimize_restarts(15, verbose=False)
-
         self.gp = GaussianProcessRegressor(n_restarts_optimizer=15)
         self.gp.fit(y, np.atleast_2d(outputs))
 
@@ -278,7 +273,6 @@ class CrossValidation():
         :rtype: numpy.ndarray
         """
         x_test = self.ss.transform(inputs)[0]
-        # return self.gp.predict(np.atleast_2d(x_test))[0]
         return self.gp.predict(np.atleast_2d(x_test), return_std=False)
 
     def scorer(self, inputs, outputs):

@@ -319,7 +319,7 @@ class Subspaces():
                          n_evals=None,
                          filename=None,
                          figsize=(8, 8),
-                         title=''):  # sourcery skip: class-extract-method
+                         title=''):
         """
         Plot the eigenvalues.
 
@@ -396,7 +396,7 @@ class Subspaces():
                           filename=None,
                           figsize=None,
                           labels=None,
-                          title=''):  # sourcery skip: extract-method
+                          title=''):
         """
         Plot the eigenvectors.
 
@@ -458,7 +458,7 @@ class Subspaces():
                                 outputs,
                                 filename=None,
                                 figsize=(10, 8),
-                                title=''):  # sourcery skip: extract-method
+                                title=''):
         """
         Plot the sufficient summary.
 
