@@ -71,7 +71,7 @@ asub.fit(gradients=df)
 
 title = '2D sine'
 asub.plot_eigenvalues(figsize=(6, 4), title=title)
-print("Eigenvalues: {}".format(np.squeeze(asub.evals)))
+print(f"Eigenvalues: {np.squeeze(asub.evals)}")
 
 asub.plot_eigenvectors(figsize=(6, 4), title=title)
 asub.plot_sufficient_summary(x, f, figsize=(6, 4), title=title)

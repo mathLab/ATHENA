@@ -3,7 +3,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy.optimize import linprog
-import GPy
 from sklearn.gaussian_process import GaussianProcessRegressor
 
 
@@ -200,8 +199,8 @@ class CrossValidation():
     :param dict kwargs: additional paramters organized in a dictionary to pass
         to subspace.fit method. For example 'weights' or 'metric'.
 
-    :cvar `GPy.models.GPRegression` gp: Gaussian process of the response surface
-        built with GPy library.
+    :cvar `sklearn.gaussian_process.GaussianProcessRegressor` gp: Gaussian
+        process of the response surface built with scikit-learn.
     """
     def __init__(self, inputs, outputs, gradients, subspace, folds=5, **kwargs):
 
