@@ -4,6 +4,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from scipy.optimize import linprog
 import GPy
+from sklearn.gaussian_process import GaussianProcessRegressor
 
 
 class Normalizer():
@@ -28,8 +29,7 @@ class Normalizer():
             between -1 and 1.
         :rtype: numpy.ndarray
         """
-        inputs_norm = 2.0 * (inputs - self.lb) / (self.ub - self.lb) - 1.0
-        return inputs_norm
+        return 2.0 * (inputs - self.lb) / (self.ub - self.lb) - 1.0
 
     def inverse_transform(self, inputs):
         """Return corresponding points shifted and scaled to
@@ -42,8 +42,7 @@ class Normalizer():
             between `self.lb` and `self.ub`.
         :rtype: numpy.ndarray
         """
-        inputs_unnorm = (self.ub - self.lb) * (inputs + 1.0) / 2.0 + self.lb
-        return inputs_unnorm
+        return (self.ub - self.lb) * (inputs + 1.0) / 2.0 + self.lb
 
 
 def initialize_weights(matrix):
@@ -81,11 +80,11 @@ def linear_program_ineq(c, A, b):
     b = b.reshape(-1, )
 
     # make unbounded bounds
-    bounds = [(None, None) for i in range(c.shape[0])]
+    bounds = [(None, None) for _ in range(c.shape[0])]
     res = linprog(c=c, A_ub=-A, b_ub=-b, bounds=bounds)
     if res.success:
         return res.x.reshape(-1, 1)
-    raise RuntimeError('Scipy did not solve the LP. {}'.format(res.message))
+    raise RuntimeError(f'Scipy did not solve the LP. {res.message}')
 
 
 def local_linear_gradients(inputs, outputs, weights=None, n_neighbors=None):
@@ -119,14 +118,12 @@ def local_linear_gradients(inputs, outputs, weights=None, n_neighbors=None):
     if n_neighbors is None:
         n_neighbors = int(min(np.floor(1.7 * n_pars), n_samples))
     elif not isinstance(n_neighbors, int):
-        raise TypeError(
-            'n_neighbors ({}) must be an integer.'.format(n_neighbors))
+        raise TypeError(f'n_neighbors ({n_neighbors}) must be an integer.')
 
     if n_neighbors <= n_pars or n_neighbors > n_samples:
         raise ValueError(
-            'n_neighbors must be between the number of parameters '
-            'and the number of samples. Unsatisfied: {} < {} < {}.'.format(
-                n_pars, n_neighbors, n_samples))
+            f'n_neighbors must be between the number of parameters and the number of samples. Unsatisfied: {n_pars} < {n_neighbors} < {n_samples}.'
+        )
 
     if weights is None:
         weights = initialize_weights(inputs)
@@ -159,10 +156,11 @@ def local_linear_gradients(inputs, outputs, weights=None, n_neighbors=None):
     return gradients, new_inputs
 
 
-def sort_eigpairs(matrix):
-    """Compute eigenpairs and sort.
+def sort_eigpairs(evals, evects):
+    """Sort eigenpairs.
 
-    :param numpy.ndarray matrix: matrix whose eigenpairs you want.
+    :param numpy.ndarray evals: eigenvalues.
+    :param numpy.ndarray evects: eigenvectors.
     :return: vector of sorted eigenvalues; orthogonal matrix of corresponding
         eigenvectors.
     :rtype: numpy.ndarray, numpy.ndarray
@@ -173,7 +171,6 @@ def sort_eigpairs(matrix):
         the eigenvectors so that the first component of each eigenvector is
         positive. This normalization is very helpful for the bootstrapping.
     """
-    evals, evects = np.linalg.eigh(matrix)
     evals = abs(evals)
     ind = np.argsort(evals)
     evals = evals[ind[::-1]]
@@ -181,7 +178,7 @@ def sort_eigpairs(matrix):
     s = np.sign(evects[0, :])
     s[s == 0] = 1
     evects *= s
-    return evals.reshape(-1, 1), evects
+    return evals, evects
 
 
 class CrossValidation():
@@ -208,7 +205,7 @@ class CrossValidation():
     """
     def __init__(self, inputs, outputs, gradients, subspace, folds=5, **kwargs):
 
-        if any([v is None for v in [inputs, outputs, gradients, subspace]]):
+        if any(v is None for v in [inputs, outputs, gradients, subspace]):
             raise ValueError(
                 'Any among inputs, outputs, gradients, subspace is None.')
 
@@ -263,10 +260,8 @@ class CrossValidation():
                     **self.kwargs)
         y = self.ss.transform(inputs)[0]
 
-        # build response surface
-        kern = GPy.kern.RBF(input_dim=y.shape[1], ARD=True)
-        self.gp = GPy.models.GPRegression(y, np.atleast_2d(outputs), kern)
-        self.gp.optimize_restarts(15, verbose=False)
+        self.gp = GaussianProcessRegressor(n_restarts_optimizer=15)
+        self.gp.fit(y, np.atleast_2d(outputs))
 
     def predict(self, inputs):
         """
@@ -278,8 +273,7 @@ class CrossValidation():
         :rtype: numpy.ndarray
         """
         x_test = self.ss.transform(inputs)[0]
-        y = self.gp.predict(np.atleast_2d(x_test))[0]
-        return y
+        return self.gp.predict(np.atleast_2d(x_test), return_std=False)
 
     def scorer(self, inputs, outputs):
         """
@@ -343,7 +337,7 @@ def average_rrmse(hyperparams, best, csv, verbose=False, resample=5):
         a specified number of resamples of the projection matrix.
     :rtype: numpy.float64
     """
-    if isinstance(csv, CrossValidation) is False:
+    if not isinstance(csv, CrossValidation):
         raise ValueError(
             "The argument csv must be of type athena.utils.CrossValidation")
 
@@ -371,7 +365,7 @@ def average_rrmse(hyperparams, best, csv, verbose=False, resample=5):
 
         # save the best parameters
         if verbose is True:
-            print("params {} mean {}, std {}".format(hyperparams, mean, std))
+            print(f"params {hyperparams} mean {mean}, std {std}")
         score_records.append(mean)
 
         # skip resampling from the same hyperparam if the error is not below

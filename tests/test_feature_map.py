@@ -182,11 +182,13 @@ class TestProjectionFactory(TestCase):
                               folds=2,
                               subspace=ss)
         best = fm.tune_pr_matrix(func=average_rrmse,
-                                 bounds=[slice(-2, 1, 0.2) for i in range(1)],
+                                 bounds=[slice(-2, 1, 0.2) for _ in range(1)],
                                  fn_args={'csv': csv},
                                  maxiter=10,
                                  save_file=False)[1]
-        true = np.array([[0., 0.], [0., 0.], [0., 0.]])
+        true = np.array([[-0.781768, -1.871064],
+                         [-0.545585, -1.13183],
+                         [1.961803,  0.95774]])
         np.testing.assert_array_almost_equal(true, best)
 
     def test_dual_annealing(self):
@@ -207,38 +209,39 @@ class TestProjectionFactory(TestCase):
                               folds=2,
                               subspace=ss)
         best = fm.tune_pr_matrix(func=average_rrmse,
-                                 bounds=[slice(-2, 1, 0.2) for i in range(1)],
+                                 bounds=[slice(-2, 1, 0.2) for _ in range(1)],
                                  fn_args={'csv': csv},
                                  method='dual_annealing',
                                  maxiter=5,
                                  save_file=False)[1]
-        true = np.array([[0.21895786, 0.52423581], [-5.3186504, 14.9646475],
-                         [4.2713126, 11.28870881]])
+        true = np.array([[-18.205881, 0.130872], [-4.232873, 1.833328],
+                         [-5.631037, 2.571455]])
         np.testing.assert_array_almost_equal(true, best)
 
-    def test_bso(self):
-        np.random.seed(42)
-        inputs = np.random.uniform(-1, 1, 10).reshape(5, 2)
-        outputs = np.random.uniform(0, 5, 10).reshape(5, 2)
-        gradients = np.random.uniform(-1, 1, 20).reshape(5, 2, 2)
-        fm = FeatureMap(distr='laplace',
-                        bias=np.random.uniform(-1, 1, 3),
-                        input_dim=2,
-                        n_features=3,
-                        params=np.zeros(1),
-                        sigma_f=outputs.var())
-        ss = KernelActiveSubspaces(dim=1, feature_map=fm)
-        csv = CrossValidation(inputs=inputs,
-                              outputs=outputs,
-                              gradients=gradients,
-                              folds=2,
-                              subspace=ss)
-        best = fm.tune_pr_matrix(func=average_rrmse,
-                                 bounds=[slice(-2, 1, 0.2) for i in range(1)],
-                                 fn_args={'csv': csv},
-                                 method='bso',
-                                 maxiter=10,
-                                 save_file=False)[1]
-        true = np.array([[14.9646475, 4.2713126], [11.28870881, 8.33313971],
-                         [1.16475035, 9.92216877]])
-        np.testing.assert_array_almost_equal(true, best)
+    # TODO: remove GPyOpt dependency with Emukit
+    # def test_bso(self):
+    #     np.random.seed(42)
+    #     inputs = np.random.uniform(-1, 1, 10).reshape(5, 2)
+    #     outputs = np.random.uniform(0, 5, 10).reshape(5, 2)
+    #     gradients = np.random.uniform(-1, 1, 20).reshape(5, 2, 2)
+    #     fm = FeatureMap(distr='laplace',
+    #                     bias=np.random.uniform(-1, 1, 3),
+    #                     input_dim=2,
+    #                     n_features=3,
+    #                     params=np.zeros(1),
+    #                     sigma_f=outputs.var())
+    #     ss = KernelActiveSubspaces(dim=1, feature_map=fm)
+    #     csv = CrossValidation(inputs=inputs,
+    #                           outputs=outputs,
+    #                           gradients=gradients,
+    #                           folds=2,
+    #                           subspace=ss)
+    #     best = fm.tune_pr_matrix(func=average_rrmse,
+    #                              bounds=[slice(-2, 1, 0.2) for _ in range(1)],
+    #                              fn_args={'csv': csv},
+    #                              method='bso',
+    #                              maxiter=10,
+    #                              save_file=False)[1]
+    #     true = np.array([[14.9646475, 4.2713126], [11.28870881, 8.33313971],
+    #                      [1.16475035, 9.92216877]])
+    #     np.testing.assert_array_almost_equal(true, best)

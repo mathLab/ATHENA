@@ -96,9 +96,8 @@ class ActiveSubspaces(Subspaces):
             >>> ss3 =  ActiveSubspaces(dim=1, method='local', n_boot=150)
             >>> ss3.fit(inputs=inputs, outputs=outputs)
         """
-        if self.method == 'exact':
-            if gradients is None:
-                raise TypeError('gradients argument is None.')
+        if self.method == 'exact' and gradients is None:
+            raise TypeError('gradients argument is None.')
 
         # estimate active subspace with local linear models.
         if self.method == 'local':
@@ -146,11 +145,7 @@ class ActiveSubspaces(Subspaces):
 
         active = np.dot(inputs, self.W1)
         # allow evaluation of active variables only
-        if self.W2 is None:
-            inactive = None
-        else:
-            inactive = np.dot(inputs, self.W2)
-
+        inactive = None if self.W2 is None else np.dot(inputs, self.W2)
         return active, inactive
 
     def inverse_transform(self, reduced_inputs, n_points=1):
@@ -319,12 +314,12 @@ class ActiveSubspaces(Subspaces):
 
             # find an upper bound on the step
             min_ind = np.logical_and(g <= 0,
-                                     f < -np.sqrt(np.finfo(np.float).eps))
+                                     f < -np.sqrt(np.finfo(np.float64).eps))
             eps_max = np.amin(f[min_ind] / g[min_ind])
 
             # find a lower bound on the step
             max_ind = np.logical_and(g > 0,
-                                     f < -np.sqrt(np.finfo(np.float).eps))
+                                     f < -np.sqrt(np.finfo(np.float64).eps))
             eps_min = np.amax(f[max_ind] / g[max_ind])
 
             # randomly sample eps
@@ -378,7 +373,7 @@ class ActiveSubspaces(Subspaces):
             the reduced matrix.
         :rtype: numpy.ndarray, numpy.ndarray
         """
-        s = np.array([next(gradients) for i in range(self.dim)]).T
+        s = np.array([next(gradients) for _ in range(self.dim)]).T
         for grad in gradients:
             evects, sigma = np.linalg.svd(s, full_matrices=False)[:2]
             s = np.dot(

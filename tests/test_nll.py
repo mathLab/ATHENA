@@ -20,17 +20,17 @@ def assert_plot_figures_added():
 
 
 def read_data():
-    data = np.loadtxt('tests/data/naca0012.txt', skiprows=1, delimiter=',')
-    real_inputs = data[:, 1:19]
+    data_in = np.loadtxt('tests/data/naca0012.txt', skiprows=1, delimiter=',')
+    real_inputs = data_in[:, 1:19]
     n_params = real_inputs.shape[1]
     lb = -0.01 * np.ones(n_params)
     ub = 0.01 * np.ones(n_params)
     normalizer = Normalizer(lb=lb, ub=ub)
     # inputs in [-1, 1]
     inputs = normalizer.fit_transform(real_inputs)
-    lift = data[:, 19]
+    lift = data_in[:, 19]
     # gradients with respect to normalized inputs
-    grad_lift = data[:, 21:39]
+    grad_lift = data_in[:, 21:39]
     return inputs, lift, grad_lift
 
 

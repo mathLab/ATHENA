@@ -147,11 +147,11 @@ class ProjectionFactory():
         'uniform': uniform.__func__
     }
 
-    def __new__(self, fname):
+    def __new__(cls, fname):
         # to make the str callable we have to use a dictionary with all the
         # implemented projection matrices
-        if fname in self.projections:
-            return self.__projections[fname]
+        if fname in cls.projections:
+            return cls.__projections[fname]
         raise NameError(
             """The name of the projection matrix is not correct or not
             implemented. Check the documentation for all the available
