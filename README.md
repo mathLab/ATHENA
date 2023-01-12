@@ -46,9 +46,9 @@ See the [**Examples and Tutorials**](#examples-and-tutorials) section below and 
 
 
 ## Dependencies and installation
-**ATHENA** requires `numpy`, `matplotlib`, `scipy`, `torch`, `GPy`, `GPyOpt`,
+**ATHENA** requires `numpy`, `matplotlib`, `scipy`, `torch`, `GPyOpt`,
 `scikit-learn`, `scikit-learn-extra`, `sphinx` (for the documentation) and `pytest` (for local test).
-The code is compatible with Python 3.6 and above. It can be installed directly
+The code is compatible with Python 3.8 and above. It can be installed directly
 from the source code or via pip.
 
 ### Installing from pip
@@ -143,21 +143,31 @@ To implement the numerical methods present in this package we followed these wor
 
 * Constantine et al. Python Active-subspaces Utility Library, Journal of Open Source Software, 1(5), 79, 2016. [[DOI](https://doi.org/10.21105/joss.00079)].
 
-* Romor, Tezzele, Lario, Rozza. *Kernel-based Active Subspaces with application to CFD parametric problems using Discontinuous Galerkin method*. 2020. [[arXiv](https://arxiv.org/abs/2008.12083)]
+* Romor, Tezzele, Lario, Rozza. *Kernel-based Active Subspaces with application to CFD parametric problems using Discontinuous Galerkin method*. 2022. [[DOI](https://doi.org/10.1002/nme.7099)]
 
 * Zhang, Zhang, Hinkle. *Learning nonlinear level sets for dimensionality reduction in function approximation*. Advances in Neural Information Processing Systems 32: Annual Conference on Neural Information Processing Systems 2019, NeurIPS 2019, 8-14 December 2019, Vancouver, BC, Canada. [[arXiv](https://arxiv.org/abs/1902.10652)].
+
+* Romor, Tezzele, Rozza. *A local approach to parameter space reduction for regression and classification tasks*. 2021. [[arXiv](https://arxiv.org/abs/2107.10867)].
 
 
 ### Recent works with ATHENA
 Here there is a list of the scientific works involving **ATHENA** you can consult and/or cite. If you want to add one, please open a PR.
 
+* Tezzele, Romor, Rozza. *Reduction in Parameter Space*, in Advanced Reduced Order Methods and Applications in Computational Fluid Dynamics. 2022. [[DOI](https://doi.org/10.1137/1.9781611977257.ch16)].
+
+* Tezzele, Fabris, Sidari, Sicchiero, Rozza. *A multi-fidelity approach coupling parameter space reduction and non-intrusive POD with application to structural optimization of passenger ship hulls*. 2022. [[DOI](https://doi.org/10.1002/nme.7159)].
+
+* Teng, Wang, Ju, Gruber, Zhang. *Level set learning with pseudo-reversible neural networks for nonlinear dimension reduction in function approximation*. 2021. [[arXiv](https://arxiv.org/abs/2112.01438)].
+
 * Romor, Tezzele, Rozza. *A local approach to parameter space reduction for regression and classification tasks*. 2021. [[arXiv](https://arxiv.org/abs/2107.10867)].
+
+* Meneghetti, Demo, Rozza. *A Dimensionality Reduction Approach for Convolutional Neural Networks*. 2021. [[arXiv](https://arxiv.org/abs/2110.09163)].
 
 * Demo, Tezzele, Mola, Rozza. *Hull shape design optimization with parameter space and model reductions and self-learning mesh morphing*. 2021. [[DOI](https://doi.org/10.3390/jmse9020185)], [[arXiv](https://arxiv.org/abs/2101.03781)].
 
 * Romor, Tezzele, Rozza. *Multi-fidelity data fusion for the approximation of scalar functions with low intrinsic dimensionality through active subspaces*. 2020. [[DOI](https://doi.org/10.1002/pamm.202000349)], [[arXiv](https://arxiv.org/abs/2010.08349)].
 
-* Romor, Tezzele, Lario, Rozza. *Kernel-based Active Subspaces with application to CFD parametric problems using Discontinuous Galerkin method*. 2020. [[arXiv](https://arxiv.org/abs/2008.12083)].
+* Romor, Tezzele, Lario, Rozza. *Kernel-based Active Subspaces with application to CFD parametric problems using Discontinuous Galerkin method*. 2022. [[DOI](https://doi.org/10.1002/nme.7099)]
 
 * Demo, Tezzele, Rozza. *A supervised learning approach involving active subspaces for an efficient genetic algorithm in high-dimensional optimization problems*. 2020. [[DOI](https://doi.org/10.1137/20M1345219)], [[arXiv](https://arxiv.org/abs/2006.07282)].
 
