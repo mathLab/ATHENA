@@ -24,6 +24,9 @@
 **ATHENA**: Advanced Techniques for High dimensional parameter spaces to Enhance Numerical Analysis
 
 ## Table of contents
+
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/ee271486bdbe4351b4f4c9dd1eed4a2e)](https://app.codacy.com/gh/mathLab/ATHENA?utm_source=github.com&utm_medium=referral&utm_content=mathLab/ATHENA&utm_campaign=Badge_Grade_Settings)
+
 * [Description](#description)
 * [Dependencies and installation](#dependencies-and-installation)
 	* [Installing from pip](#installing-from-pip)
