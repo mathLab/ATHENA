@@ -10,14 +10,13 @@
     <a href="https://badge.fury.io/py/athena-mathlab" target="_blank">
       <img alt="PyPI version" src="https://badge.fury.io/py/athena-mathlab.svg">
     </a>
-    <a href="https://travis-ci.org/mathLab/ATHENA" target="_blank">
-        <img alt="Build Status" src="https://travis-ci.org/mathLab/ATHENA.svg">
+    <a href="https://github.com/mathLab/ATHENA/actions/workflows/ci.yml" target="_blank">
+        <img alt="Build Status" src="https://github.com/mathLab/ATHENA/actions/workflows/ci.yml/badge.svg">
     </a>
-    <a href="https://coveralls.io/github/mathLab/ATHENA" target="_blank">
-        <img alt="Coverage Status" src="https://coveralls.io/repos/github/mathLab/ATHENA/badge.svg">
-    </a>
-    <a href="https://www.codacy.com/gh/mathLab/ATHENA/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=mathLab/ATHENA&amp;utm_campaign=Badge_Grade" target="_blank">
-        <img alt="Codacy Badge" src="https://app.codacy.com/project/badge/Grade/309f5667ded04daab0acf392974a8029">
+    <a href="https://www.codacy.com/gh/mathLab/ATHENA/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=mathLab/ATHENA&amp;utm_campaign=Badge_Coverage">
+        <img alt="Coverage Status" src="https://app.codacy.com/project/badge/Coverage/309f5667ded04daab0acf392974a8029"/></a>
+    <a href="https://app.codacy.com/gh/mathLab/ATHENA?utm_source=github.com&utm_medium=referral&utm_content=mathLab/ATHENA&utm_campaign=Badge_Grade_Settings" target="_blank">
+        <img alt="Codacy Badge" src="https://api.codacy.com/project/badge/Grade/ee271486bdbe4351b4f4c9dd1eed4a2e">
     </a>
 </p>
 
