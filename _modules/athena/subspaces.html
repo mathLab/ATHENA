@@ -1,93 +1,46 @@
-
-
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  
-  <title>athena.subspaces &mdash; ATHENA 0.1.2 documentation</title>
-  
-
-  
-  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="../../_static/graphviz.css" type="text/css" />
-
-  
-  
-
-  
-  
-
-  
-
-  
+  <title>athena.subspaces &mdash; ATHENA 0.1.2.post2303 documentation</title><link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/graphviz.css" type="text/css" />
   <!--[if lt IE 9]>
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
-  
-    
-      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+  <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
         <script src="../../_static/doctools.js"></script>
         <script src="../../_static/language_data.js"></script>
-    
-    <script type="text/javascript" src="../../_static/js/theme.js"></script>
-
-    
+    <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" /> 
 </head>
 
-<body class="wy-body-for-nav">
-
-   
+<body class="wy-body-for-nav"> 
   <div class="wy-grid-for-nav">
-    
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-          
 
           
-            <a href="../../index.html" class="icon icon-home"> ATHENA
           
-
-          
+          <a href="../../index.html" class="icon icon-home">
+            ATHENA
           </a>
-
-          
-            
-            
               <div class="version">
-                0.1.2
+                0.1.2.post2303
               </div>
-            
-          
-
-          
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
-
-          
-        </div>
-
-        
-        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
-          
-            
-            
-              
-            
-            
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../code.html">Code Documentation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../tutorials.html">Tutorials</a></li>
@@ -96,69 +49,30 @@
 <li class="toctree-l1"><a class="reference internal" href="../../LICENSE.html">License</a></li>
 </ul>
 
-            
-          
         </div>
-        
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
-
-      
-      <nav class="wy-nav-top" aria-label="top navigation">
-        
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../../index.html">ATHENA</a>
-        
       </nav>
 
-
       <div class="wy-nav-content">
-        
         <div class="rst-content">
-        
-          
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div role="navigation" aria-label="breadcrumbs navigation">
-
+          <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-    
-      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
-        
-          <li><a href="../index.html">Module code</a> &raquo;</li>
-        
-      <li>athena.subspaces</li>
-    
-    
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">athena.subspaces</li>
       <li class="wy-breadcrumbs-aside">
-        
       </li>
-    
   </ul>
-
-  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
-            
+             
   <h1>Source code for athena.subspaces</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">Base module for Active Subspaces and Kernel-based Active Subspaces.</span>
@@ -178,12 +92,20 @@
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 <span class="kn">from</span> <span class="nn">sklearn.utils.extmath</span> <span class="kn">import</span> <span class="n">randomized_svd</span>
 <span class="kn">from</span> <span class="nn">.utils</span> <span class="kn">import</span> <span class="n">sort_eigpairs</span>
+<span class="kn">import</span> <span class="nn">itertools</span>
+<span class="kn">import</span> <span class="nn">operator</span>
+
 <span class="n">plt</span><span class="o">.</span><span class="n">rcParams</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s1">&#39;font.size&#39;</span><span class="p">:</span> <span class="mi">16</span><span class="p">})</span>
 
 
 <div class="viewcode-block" id="Subspaces"><a class="viewcode-back" href="../../subspaces.html#athena.active.Subspaces">[docs]</a><span class="k">class</span> <span class="nc">Subspaces</span><span class="p">():</span>
     <span class="sd">&quot;&quot;&quot;Active Subspaces base class</span>
 
+<span class="sd">    :param dim: The dimension of the active subspace. If 0, the method computes</span>
+<span class="sd">        the spectral gap and uses it for truncation; if positive interger,</span>
+<span class="sd">        the method uses the `dim` argument for the truncation; if float between 0</span>
+<span class="sd">        and 1, a truncation with retained energy.The `dim`</span>
+<span class="sd">        parameter is available using all the available methods.</span>
 <span class="sd">    :param str method: method to compute the AS. Possible choices are</span>
 <span class="sd">        &#39;exact&#39; when the gradients are provided, or &#39;local&#39; to use local linear</span>
 <span class="sd">        models. This approach is related to the sufficient dimension reduction</span>
@@ -221,41 +143,35 @@
 <span class="sd">        :return: the sorted eigenvalues, and the corresponding eigenvectors.</span>
 <span class="sd">        :rtype: numpy.ndarray, numpy.ndarray</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">method</span> <span class="o">==</span> <span class="s1">&#39;exact&#39;</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">method</span> <span class="o">==</span> <span class="s1">&#39;local&#39;</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">metric</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="n">cov_matrix</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
-                    <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">([</span>
-                        <span class="n">weights</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">*</span>
-                        <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">gradients</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:]</span><span class="o">.</span><span class="n">T</span><span class="p">,</span>
-                               <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">metric</span><span class="p">,</span> <span class="n">gradients</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:]))</span>
-                        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">gradients</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-                    <span class="p">],</span>
-                           <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">))</span>
-                <span class="n">evals</span><span class="p">,</span> <span class="n">evects</span> <span class="o">=</span> <span class="n">sort_eigpairs</span><span class="p">(</span><span class="n">cov_matrix</span><span class="p">)</span>
-                <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">squeeze</span><span class="p">(</span><span class="n">evals</span><span class="p">),</span> <span class="n">evects</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">method</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;exact&#39;</span><span class="p">,</span> <span class="s1">&#39;local&#39;</span><span class="p">]:</span>
+            <span class="k">return</span>
+        <span class="k">if</span> <span class="n">metric</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">cov_matrix</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
+                <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">([</span>
+                    <span class="n">weights</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">gradients</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:]</span><span class="o">.</span><span class="n">T</span><span class="p">,</span>
+                                           <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">metric</span><span class="p">,</span> <span class="n">gradients</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:]))</span>
+                    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">gradients</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+                <span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">))</span>
+            <span class="n">evals</span><span class="p">,</span> <span class="n">evects</span> <span class="o">=</span> <span class="n">sort_eigpairs</span><span class="p">(</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">eigh</span><span class="p">(</span><span class="n">cov_matrix</span><span class="p">))</span>
+            <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">squeeze</span><span class="p">(</span><span class="n">evals</span><span class="p">),</span> <span class="n">evects</span>
 
-            <span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">squeeze</span><span class="p">(</span><span class="n">gradients</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">weights</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
-            <span class="n">n_samples</span><span class="p">,</span> <span class="n">n_pars</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">shape</span>
+        <span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">squeeze</span><span class="p">(</span><span class="n">gradients</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">weights</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+        <span class="n">n_samples</span><span class="p">,</span> <span class="n">n_pars</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">shape</span>
 
-            <span class="c1"># computational complexity of svd and random svd</span>
-            <span class="n">svd_complexity</span> <span class="o">=</span> <span class="n">n_samples</span> <span class="o">*</span> <span class="n">n_pars</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">dim</span>
-            <span class="n">rsvd_complexity</span> <span class="o">=</span> <span class="n">n_samples</span> <span class="o">*</span> <span class="n">n_pars</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">dim</span><span class="p">)</span> <span class="o">+</span> <span class="p">(</span><span class="n">n_samples</span> <span class="o">+</span> <span class="n">n_pars</span><span class="p">)</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">dim</span><span class="o">**</span><span class="mi">2</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_check_rsvd</span><span class="p">(</span><span class="n">n_samples</span><span class="p">,</span> <span class="n">n_pars</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">dim</span><span class="p">):</span>
+            <span class="n">singular</span><span class="p">,</span> <span class="n">evects</span> <span class="o">=</span> <span class="n">randomized_svd</span><span class="p">(</span><span class="n">M</span><span class="o">=</span><span class="n">X</span><span class="p">,</span>
+                                              <span class="n">n_components</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">dim</span><span class="p">,</span>
+                                              <span class="n">n_oversamples</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
+                                              <span class="n">n_iter</span><span class="o">=</span><span class="s1">&#39;auto&#39;</span><span class="p">,</span>
+                                              <span class="n">power_iteration_normalizer</span><span class="o">=</span><span class="s1">&#39;auto&#39;</span><span class="p">,</span>
+                                              <span class="n">transpose</span><span class="o">=</span><span class="s1">&#39;auto&#39;</span><span class="p">)[</span><span class="mi">1</span><span class="p">:]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">singular</span><span class="p">,</span> <span class="n">evects</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">svd</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">full_matrices</span><span class="o">=</span><span class="kc">False</span><span class="p">)[</span><span class="mi">1</span><span class="p">:]</span>
 
-            <span class="k">if</span> <span class="n">svd_complexity</span> <span class="o">&gt;</span> <span class="n">rsvd_complexity</span> <span class="ow">and</span> <span class="p">(</span><span class="n">n_samples</span> <span class="o">&gt;</span> <span class="mi">10000</span>
-                                                     <span class="ow">or</span> <span class="n">n_pars</span> <span class="o">&gt;</span> <span class="mi">10000</span><span class="p">):</span>
-                <span class="n">singular</span><span class="p">,</span> <span class="n">evects</span> <span class="o">=</span> <span class="n">randomized_svd</span><span class="p">(</span>
-                    <span class="n">M</span><span class="o">=</span><span class="n">X</span><span class="p">,</span>
-                    <span class="n">n_components</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">dim</span><span class="p">,</span>
-                    <span class="n">n_oversamples</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
-                    <span class="n">n_iter</span><span class="o">=</span><span class="s1">&#39;auto&#39;</span><span class="p">,</span>
-                    <span class="n">power_iteration_normalizer</span><span class="o">=</span><span class="s1">&#39;auto&#39;</span><span class="p">,</span>
-                    <span class="n">transpose</span><span class="o">=</span><span class="s1">&#39;auto&#39;</span><span class="p">)[</span><span class="mi">1</span><span class="p">:]</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">singular</span><span class="p">,</span> <span class="n">evects</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">svd</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">full_matrices</span><span class="o">=</span><span class="kc">False</span><span class="p">)[</span><span class="mi">1</span><span class="p">:]</span>
+        <span class="n">evals</span> <span class="o">=</span> <span class="n">singular</span><span class="o">**</span><span class="mi">2</span>
 
-            <span class="n">evals</span> <span class="o">=</span> <span class="n">singular</span><span class="o">**</span><span class="mi">2</span>
-            <span class="k">return</span> <span class="n">evals</span><span class="p">,</span> <span class="n">evects</span><span class="o">.</span><span class="n">T</span></div>
+        <span class="n">evals</span><span class="p">,</span> <span class="n">evects</span> <span class="o">=</span> <span class="n">sort_eigpairs</span><span class="p">(</span><span class="n">evals</span><span class="p">,</span> <span class="n">evects</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">evals</span><span class="p">,</span> <span class="n">evects</span><span class="o">.</span><span class="n">T</span></div>
 
 <div class="viewcode-block" id="Subspaces._compute_bootstrap_ranges"><a class="viewcode-back" href="../../subspaces.html#athena.active.Subspaces._compute_bootstrap_ranges">[docs]</a>    <span class="k">def</span> <span class="nf">_compute_bootstrap_ranges</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gradients</span><span class="p">,</span> <span class="n">weights</span><span class="p">,</span> <span class="n">metric</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Compute bootstrap ranges for eigenvalues and subspaces.</span>
@@ -283,14 +199,9 @@
         <span class="n">n_pars</span> <span class="o">=</span> <span class="n">gradients</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
         <span class="n">n_samples</span> <span class="o">=</span> <span class="n">gradients</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 
-        <span class="n">svd_complexity</span> <span class="o">=</span> <span class="n">n_samples</span> <span class="o">*</span> <span class="n">n_pars</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">dim</span>
-        <span class="n">rsvd_complexity</span> <span class="o">=</span> <span class="n">n_samples</span> <span class="o">*</span> <span class="n">n_pars</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">dim</span><span class="p">)</span> <span class="o">+</span> <span class="p">(</span><span class="n">n_samples</span> <span class="o">+</span> <span class="n">n_pars</span><span class="p">)</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">dim</span><span class="o">**</span><span class="mi">2</span>
-
         <span class="c1"># randomized_svd is not implemented for vectorial as yet</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">gradients</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">svd_complexity</span> <span class="o">&gt;</span> <span class="n">rsvd_complexity</span> <span class="ow">and</span> <span class="p">(</span><span class="n">n_samples</span> <span class="o">&gt;</span> <span class="mi">10000</span>
-                                                     <span class="ow">or</span> <span class="n">n_pars</span> <span class="o">&gt;</span> <span class="mi">10000</span><span class="p">):</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_check_rsvd</span><span class="p">(</span><span class="n">n_samples</span><span class="p">,</span> <span class="n">n_pars</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">dim</span><span class="p">):</span>
                 <span class="n">range_dim</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dim</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">range_dim</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">n_pars</span><span class="p">,</span> <span class="n">n_samples</span><span class="p">)</span>
@@ -301,8 +212,7 @@
         <span class="n">sub_dist</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">range_dim</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_boot</span><span class="p">))</span>
 
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_boot</span><span class="p">):</span>
-            <span class="n">gradients0</span><span class="p">,</span> <span class="n">weights0</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_bootstrap_replicate</span><span class="p">(</span>
-                <span class="n">gradients</span><span class="p">,</span> <span class="n">weights</span><span class="p">)</span>
+            <span class="n">gradients0</span><span class="p">,</span> <span class="n">weights0</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_bootstrap_replicate</span><span class="p">(</span><span class="n">gradients</span><span class="p">,</span> <span class="n">weights</span><span class="p">)</span>
             <span class="n">e0</span><span class="p">,</span> <span class="n">W0</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_build_decompose_cov_matrix</span><span class="p">(</span><span class="n">gradients</span><span class="o">=</span><span class="n">gradients0</span><span class="p">,</span>
                                                       <span class="n">weights</span><span class="o">=</span><span class="n">weights0</span><span class="p">,</span>
                                                       <span class="n">metric</span><span class="o">=</span><span class="n">metric</span><span class="p">)</span>
@@ -350,8 +260,8 @@
 <span class="sd">        to be implemented in subclasses.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span>
-            <span class="s1">&#39;Subclass must implement abstract method </span><span class="si">{}</span><span class="s1">.fit&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-                <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">))</span></div>
+            <span class="sa">f</span><span class="s1">&#39;Subclass must implement abstract method </span><span class="si">{self.__class__.__name__}</span><span class="s1">.fit&#39;</span>
+        <span class="p">)</span></div>
 
 <div class="viewcode-block" id="Subspaces.transform"><a class="viewcode-back" href="../../subspaces.html#athena.active.Subspaces.transform">[docs]</a>    <span class="k">def</span> <span class="nf">transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inputs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -367,9 +277,9 @@
 <span class="sd">            variables.</span>
 <span class="sd">        :rtype: numpy.ndarray, numpy.ndarray</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s1">&#39;Subclass must implement abstract method &#39;</span>
-                                  <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">.transform&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-                                      <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">))</span></div>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s1">&#39;Subclass must implement abstract method </span><span class="si">{self.__class__.__name__}</span><span class="s1">.transform&#39;</span>
+        <span class="p">)</span></div>
 
 <div class="viewcode-block" id="Subspaces.inverse_transform"><a class="viewcode-back" href="../../subspaces.html#athena.active.Subspaces.inverse_transform">[docs]</a>    <span class="k">def</span> <span class="nf">inverse_transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reduced_inputs</span><span class="p">,</span> <span class="n">n_points</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -383,8 +293,8 @@
 <span class="sd">            space that are returned that map to the given active variables.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span>
-            <span class="s1">&#39;Subclass must implement abstract method </span><span class="si">{}</span><span class="s1">.inverse_transform&#39;</span><span class="o">.</span>
-            <span class="nb">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">))</span></div>
+            <span class="sa">f</span><span class="s1">&#39;Subclass must implement abstract method </span><span class="si">{self.__class__.__name__}</span><span class="s1">.inverse_transform&#39;</span>
+        <span class="p">)</span></div>
 
 <div class="viewcode-block" id="Subspaces._partition"><a class="viewcode-back" href="../../subspaces.html#athena.active.Subspaces._partition">[docs]</a>    <span class="k">def</span> <span class="nf">_partition</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -392,13 +302,16 @@
 
 <span class="sd">        :raises: TypeError, ValueError</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">dim</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_set_dim</span><span class="p">()</span>
+
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dim</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;dim should be an integer.&#39;</span><span class="p">)</span>
 
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">dim</span> <span class="o">&lt;</span> <span class="mi">1</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">dim</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">evects</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">dim</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">dim</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">evects</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                <span class="s1">&#39;dim must be positive and less than the dimension of the &#39;</span>
-                <span class="s1">&#39; eigenvectors: dim = </span><span class="si">{}</span><span class="s1">.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dim</span><span class="p">))</span>
+                <span class="sa">f</span><span class="s1">&#39;dim must be positive and less than the dimension of the  eigenvectors: dim = </span><span class="si">{self.dim}</span><span class="s1">.&#39;</span>
+            <span class="p">)</span>
 
         <span class="c1"># allow evaluation of active eigenvectors only</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">evects</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">evects</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
@@ -409,8 +322,74 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">W2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">evects</span><span class="p">[:,</span> <span class="bp">self</span><span class="o">.</span><span class="n">dim</span><span class="p">:]</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                <span class="s1">&#39;the eigenvectors cannot have dimension less than dim = </span><span class="si">{}</span><span class="s1">.&#39;</span><span class="o">.</span>
-                <span class="nb">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dim</span><span class="p">))</span></div>
+                <span class="sa">f</span><span class="s1">&#39;the eigenvectors cannot have dimension less than dim = </span><span class="si">{self.dim}</span><span class="s1">.&#39;</span>
+            <span class="p">)</span></div>
+
+<div class="viewcode-block" id="Subspaces._set_dim"><a class="viewcode-back" href="../../subspaces.html#athena.active.Subspaces._set_dim">[docs]</a>    <span class="k">def</span> <span class="nf">_set_dim</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Set the active subspace dimension based on the spectral gap if self.dim</span>
+<span class="sd">        is 0, residual energy if 0&lt;self.dim&lt;1 or manual set of AS dimension if self.dim&gt;=1.</span>
+
+<span class="sd">        :raises: ValueError</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># spectral gap</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dim</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">dim</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">dim</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_set_dim_spectral_gap</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">dim</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">dim</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">dim</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_set_dim_residual_energy</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dim</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">dim</span> <span class="o">&gt;=</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">dim</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dim</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;The parameter `dim`=</span><span class="si">{self.dim}</span><span class="s2"> has not a valid value.&quot;</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">dim</span></div>
+
+<div class="viewcode-block" id="Subspaces._set_dim_spectral_gap"><a class="viewcode-back" href="../../subspaces.html#athena.active.Subspaces._set_dim_spectral_gap">[docs]</a>    <span class="k">def</span> <span class="nf">_set_dim_spectral_gap</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Set the active subspace dimension based on the highest spectral gap of the ordered eigenvalues.</span>
+
+<span class="sd">        :raises: ValueError</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">evals</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s1">&#39;The method fit has to be called first in order to compute the eigenvalues.&#39;</span>
+            <span class="p">)</span>
+
+        <span class="n">spectral_gap_index</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">evals</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">evals</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span>
+        <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">spectral_gap_index</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Subspaces._set_dim_residual_energy"><a class="viewcode-back" href="../../subspaces.html#athena.active.Subspaces._set_dim_residual_energy">[docs]</a>    <span class="k">def</span> <span class="nf">_set_dim_residual_energy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mf">0.99</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Set the active subspace dimension based on the residual energy</span>
+<span class="sd">        normalized to 1: the normalized sum of the eigenvalues</span>
+<span class="sd">        corresponding to the active components will be lower than tol.</span>
+
+<span class="sd">        :param float tol: threshold for the residual energy.</span>
+
+<span class="sd">        :raises: TypeError, ValueError</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">evals</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s1">&#39;The method fit has to be called first in order to compute the eigenvalues.&#39;</span>
+            <span class="p">)</span>
+
+        <span class="n">cumulative_energy</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cumsum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">evals</span><span class="o">**</span><span class="mi">2</span> <span class="o">/</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">evals</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">())</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">searchsorted</span><span class="p">(</span><span class="n">cumulative_energy</span><span class="p">,</span> <span class="n">tol</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Subspaces._check_rsvd"><a class="viewcode-back" href="../../subspaces.html#athena.active.Subspaces._check_rsvd">[docs]</a>    <span class="k">def</span> <span class="nf">_check_rsvd</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_samples</span><span class="p">,</span> <span class="n">n_pars</span><span class="p">,</span> <span class="n">dim</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Check if random svd is to be applied.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">dim</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="ow">and</span> <span class="n">dim</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="c1"># computational complexity of svd and random svd</span>
+            <span class="n">svd_complexity</span> <span class="o">=</span> <span class="n">n_samples</span> <span class="o">*</span> <span class="n">n_pars</span> <span class="o">*</span> <span class="n">dim</span>
+            <span class="n">rsvd_complexity</span> <span class="o">=</span> <span class="n">n_samples</span> <span class="o">*</span> <span class="n">n_pars</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">dim</span><span class="p">)</span> <span class="o">+</span> <span class="p">(</span>
+                <span class="n">n_samples</span> <span class="o">+</span> <span class="n">n_pars</span><span class="p">)</span> <span class="o">*</span> <span class="n">dim</span><span class="o">**</span><span class="mi">2</span>
+
+            <span class="k">return</span> <span class="n">svd_complexity</span> <span class="o">&gt;</span> <span class="n">rsvd_complexity</span> <span class="ow">and</span> <span class="p">(</span><span class="n">n_samples</span> <span class="o">&gt;</span> <span class="mi">10000</span>
+                                                         <span class="ow">or</span> <span class="n">n_pars</span> <span class="o">&gt;</span> <span class="mi">10000</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span></div>
 
 <div class="viewcode-block" id="Subspaces.plot_eigenvalues"><a class="viewcode-back" href="../../subspaces.html#athena.active.Subspaces.plot_eigenvalues">[docs]</a>    <span class="k">def</span> <span class="nf">plot_eigenvalues</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
                          <span class="n">n_evals</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
@@ -432,7 +411,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">evals</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;The eigenvalues have not been computed.&#39;</span>
-                             <span class="s1">&#39;You have to perform the fit method.&#39;</span><span class="p">)</span>
+                            <span class="s1">&#39;You have to perform the fit method.&#39;</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">n_evals</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">n_evals</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">evals</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
         <span class="k">if</span> <span class="n">n_evals</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">evals</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
@@ -482,7 +461,7 @@
 
         <span class="n">plt</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;dotted&#39;</span><span class="p">)</span>
         <span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
-        
+
         <span class="k">if</span> <span class="n">filename</span><span class="p">:</span>
             <span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
@@ -509,7 +488,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">evects</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;The eigenvectors have not been computed.&#39;</span>
-                             <span class="s1">&#39;You have to perform the fit method.&#39;</span><span class="p">)</span>
+                            <span class="s1">&#39;You have to perform the fit method.&#39;</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">n_evects</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">n_evects</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dim</span>
         <span class="k">if</span> <span class="n">n_evects</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">evects</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
@@ -536,7 +515,7 @@
             <span class="k">if</span> <span class="n">labels</span><span class="p">:</span>
                 <span class="n">ax</span><span class="o">.</span><span class="n">set_xticklabels</span><span class="p">(</span><span class="n">labels</span><span class="p">)</span>
 
-            <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;Active eigenvector </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Active eigenvector {i + 1}&#39;</span><span class="p">)</span>
             <span class="n">ax</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;dotted&#39;</span><span class="p">)</span>
             <span class="n">ax</span><span class="o">.</span><span class="n">axis</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="n">n_pars</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span> <span class="o">-</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mi">1</span> <span class="o">+</span> <span class="mf">0.1</span><span class="p">])</span>
 
@@ -575,7 +554,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">evects</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;The eigenvectors have not been computed.&#39;</span>
-                             <span class="s1">&#39;You have to perform the fit method.&#39;</span><span class="p">)</span>
+                            <span class="s1">&#39;You have to perform the fit method.&#39;</span><span class="p">)</span>
 
         <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="n">figsize</span><span class="p">)</span>
         <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="n">title</span><span class="p">)</span>
@@ -622,49 +601,32 @@
 </pre></div>
 
            </div>
-           
           </div>
           <footer>
 
   <hr/>
 
   <div role="contentinfo">
-    <p>
-        &#169; Copyright Copyright 2019-2021, Athena contributors.
-      <span class="lastupdated">
-        Last updated on May 05, 2021.
-      </span>
-
-    </p>
+    <p>&#169; Copyright Copyright 2019-2023, Athena contributors.
+      <span class="lastupdated">Last updated on Mar 01, 2023.
+      </span></p>
   </div>
-    
-    
-    
-    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
-    
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
     <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
-    
-    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
 
 </footer>
         </div>
       </div>
-
     </section>
-
   </div>
-  
-
-  <script type="text/javascript">
+  <script>
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script>
-
-  
-  
-    
-   
+  </script> 
 
 </body>
 </html>
