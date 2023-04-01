@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Nonlinear Level Set Learning &mdash; ATHENA 0.1.2.post2303 documentation</title><link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <title>Nonlinear Level Set Learning &mdash; ATHENA 0.1.2.post2304 documentation</title><link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/graphviz.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -33,7 +33,7 @@
             ATHENA
           </a>
               <div class="version">
-                0.1.2.post2303
+                0.1.2.post2304
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -162,7 +162,7 @@ networks (RevNet).</p>
 <li><p><strong>lr</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a>) – learning rate.</p></li>
 <li><p><strong>epochs</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – number of ephocs.</p></li>
 <li><p><strong>dh</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a>) – so-called time step of the RevNet. Default is 0.25.</p></li>
-<li><p><strong>optimizer</strong> (<a class="reference external" href="https://pytorch.org/docs/master/optim.html#torch.optim.Optimizer" title="(in PyTorch vmaster (2.0.0a0+git40d54cf ))"><em>torch.optim.Optimizer</em></a>) – optimizer used in the training of
+<li><p><strong>optimizer</strong> (<a class="reference external" href="https://pytorch.org/docs/master/optim.html#torch.optim.Optimizer" title="(in PyTorch vmaster (2.1.0a0+git6b319d1 ))"><em>torch.optim.Optimizer</em></a>) – optimizer used in the training of
 the RevNet. Its argument are passed in the dict optim_args when
 <a class="reference internal" href="_summaries/athena.nll.NonlinearLevelSet.train.html#athena.nll.NonlinearLevelSet.train" title="athena.nll.NonlinearLevelSet.train"><code class="xref py py-meth docutils literal notranslate"><span class="pre">train()</span></code></a> is called.</p></li>
 <li><p><strong>scheduler</strong> (<em>torch.optim.lr_scheduler._LRScheduler</em>) – scheduler used in
@@ -241,7 +241,7 @@ size. Defaults to (10, 8).</p></li>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>inputs</strong> (<a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (2.0.0a0+git40d54cf ))"><em>torch.Tensor</em></a>) – DoubleTensor n_samples-by-n_params
+<li><p><strong>inputs</strong> (<a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (2.1.0a0+git6b319d1 ))"><em>torch.Tensor</em></a>) – DoubleTensor n_samples-by-n_params
 containing the points in the full input space.</p></li>
 <li><p><strong>outputs</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.24)"><em>numpy.ndarray</em></a>) – array n_samples-by-1 containing the
 corresponding function evaluations.</p></li>
@@ -302,9 +302,9 @@ Use either .pt or .pth. See notes below.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>inputs</strong> (<a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (2.0.0a0+git40d54cf ))"><em>torch.Tensor</em></a>) – DoubleTensor n_samples-by-n_params
+<li><p><strong>inputs</strong> (<a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (2.1.0a0+git6b319d1 ))"><em>torch.Tensor</em></a>) – DoubleTensor n_samples-by-n_params
 containing the points in the full input space.</p></li>
-<li><p><strong>gradients</strong> (<a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (2.0.0a0+git40d54cf ))"><em>torch.Tensor</em></a>) – DoubleTensor n_samples-by-n_params
+<li><p><strong>gradients</strong> (<a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (2.1.0a0+git6b319d1 ))"><em>torch.Tensor</em></a>) – DoubleTensor n_samples-by-n_params
 containing the gradient samples wrt the input parameters.</p></li>
 <li><p><strong>outputs</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.24)"><em>numpy.ndarray</em></a>) – array n_samples-by-1 containing the
 corresponding function evaluations. Needed only for the interactive
@@ -329,7 +329,7 @@ the sufficient summary plot.</p>
 <dl class="class">
 <dt>
 <em class="property">class </em><code class="sig-name descname">ForwardNet</code><span class="sig-paren">(</span><em class="sig-param">n_params</em>, <em class="sig-param">n_layers</em>, <em class="sig-param">dh</em>, <em class="sig-param">active_dim</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/athena/nll.html#ForwardNet"><span class="viewcode-link">[source]</span></a></dt>
-<dd><p>Bases: <a class="reference external" href="https://pytorch.org/docs/master/generated/torch.nn.Module.html#torch.nn.Module" title="(in PyTorch vmaster (2.0.0a0+git40d54cf ))"><code class="xref py py-class docutils literal notranslate"><span class="pre">torch.nn.modules.module.Module</span></code></a></p>
+<dd><p>Bases: <a class="reference external" href="https://pytorch.org/docs/master/generated/torch.nn.Module.html#torch.nn.Module" title="(in PyTorch vmaster (2.1.0a0+git6b319d1 ))"><code class="xref py py-class docutils literal notranslate"><span class="pre">torch.nn.modules.module.Module</span></code></a></p>
 <p>Forward net class. It is part of the RevNet.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -354,6 +354,11 @@ automatically set with <cite>active_dim</cite>.</p>
 
 <dl class="attribute">
 <dt>
+<code class="sig-name descname">_backward_pre_hooks</code><em class="property"> = None</em></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt>
 <code class="sig-name descname">_buffers</code><em class="property"> = None</em></dt>
 <dd></dd></dl>
 
@@ -364,7 +369,17 @@ automatically set with <cite>active_dim</cite>.</p>
 
 <dl class="attribute">
 <dt>
+<code class="sig-name descname">_forward_hooks_with_kwargs</code><em class="property"> = None</em></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt>
 <code class="sig-name descname">_forward_pre_hooks</code><em class="property"> = None</em></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="sig-name descname">_forward_pre_hooks_with_kwargs</code><em class="property"> = None</em></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
@@ -402,6 +417,11 @@ automatically set with <cite>active_dim</cite>.</p>
 <code class="sig-name descname">_state_dict_hooks</code><em class="property"> = None</em></dt>
 <dd></dd></dl>
 
+<dl class="attribute">
+<dt>
+<code class="sig-name descname">_state_dict_pre_hooks</code><em class="property"> = None</em></dt>
+<dd></dd></dl>
+
 <dl class="method">
 <dt>
 <code class="sig-name descname">customized_loss</code><span class="sig-paren">(</span><em class="sig-param">inputs</em>, <em class="sig-param">mapped_inputs</em>, <em class="sig-param">gradients</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/athena/nll.html#ForwardNet.customized_loss"><span class="viewcode-link">[source]</span></a></dt>
@@ -409,12 +429,12 @@ automatically set with <cite>active_dim</cite>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>inputs</strong> (<a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (2.0.0a0+git40d54cf ))"><em>torch.Tensor</em></a>) – DoubleTensor n_samples-by-n_params
+<li><p><strong>inputs</strong> (<a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (2.1.0a0+git6b319d1 ))"><em>torch.Tensor</em></a>) – DoubleTensor n_samples-by-n_params
 containing the points in the full input space.</p></li>
-<li><p><strong>mapped_inputs</strong> (<a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (2.0.0a0+git40d54cf ))"><em>torch.Tensor</em></a>) – DoubleTensor
+<li><p><strong>mapped_inputs</strong> (<a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (2.1.0a0+git6b319d1 ))"><em>torch.Tensor</em></a>) – DoubleTensor
 n_samples-by-n_params containing the mapped points in the
 full input space. They are the result of the forward application.</p></li>
-<li><p><strong>gradients</strong> (<a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (2.0.0a0+git40d54cf ))"><em>torch.Tensor</em></a>) – DoubleTensor n_samples-by-n_params
+<li><p><strong>gradients</strong> (<a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (2.1.0a0+git6b319d1 ))"><em>torch.Tensor</em></a>) – DoubleTensor n_samples-by-n_params
 containing the gradient samples wrt the input parameters.</p></li>
 </ul>
 </dd>
@@ -427,7 +447,7 @@ containing the gradient samples wrt the input parameters.</p></li>
 <dd><p>Maps original inputs to transformed inputs.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>inputs</strong> (<a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (2.0.0a0+git40d54cf ))"><em>torch.Tensor</em></a>) – DoubleTensor n_samples-by-n_params
+<dd class="field-odd"><p><strong>inputs</strong> (<a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (2.1.0a0+git6b319d1 ))"><em>torch.Tensor</em></a>) – DoubleTensor n_samples-by-n_params
 containing the points in the original full input space.</p>
 </dd>
 <dt class="field-even">Return mapped_inputs</dt>
@@ -435,7 +455,7 @@ containing the points in the original full input space.</p>
 the nonlinear transformed inputs.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (2.0.0a0+git40d54cf ))">torch.Tensor</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (2.1.0a0+git6b319d1 ))">torch.Tensor</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -450,7 +470,7 @@ the nonlinear transformed inputs.</p>
 <dl class="class">
 <dt>
 <em class="property">class </em><code class="sig-name descname">BackwardNet</code><span class="sig-paren">(</span><em class="sig-param">n_params</em>, <em class="sig-param">n_layers</em>, <em class="sig-param">dh</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/athena/nll.html#BackwardNet"><span class="viewcode-link">[source]</span></a></dt>
-<dd><p>Bases: <a class="reference external" href="https://pytorch.org/docs/master/generated/torch.nn.Module.html#torch.nn.Module" title="(in PyTorch vmaster (2.0.0a0+git40d54cf ))"><code class="xref py py-class docutils literal notranslate"><span class="pre">torch.nn.modules.module.Module</span></code></a></p>
+<dd><p>Bases: <a class="reference external" href="https://pytorch.org/docs/master/generated/torch.nn.Module.html#torch.nn.Module" title="(in PyTorch vmaster (2.1.0a0+git6b319d1 ))"><code class="xref py py-class docutils literal notranslate"><span class="pre">torch.nn.modules.module.Module</span></code></a></p>
 <p>Backward Net class. It is part of the RevNet.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -469,6 +489,11 @@ the nonlinear transformed inputs.</p>
 
 <dl class="attribute">
 <dt>
+<code class="sig-name descname">_backward_pre_hooks</code><em class="property"> = None</em></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt>
 <code class="sig-name descname">_buffers</code><em class="property"> = None</em></dt>
 <dd></dd></dl>
 
@@ -479,7 +504,17 @@ the nonlinear transformed inputs.</p>
 
 <dl class="attribute">
 <dt>
+<code class="sig-name descname">_forward_hooks_with_kwargs</code><em class="property"> = None</em></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt>
 <code class="sig-name descname">_forward_pre_hooks</code><em class="property"> = None</em></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="sig-name descname">_forward_pre_hooks_with_kwargs</code><em class="property"> = None</em></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
@@ -517,13 +552,18 @@ the nonlinear transformed inputs.</p>
 <code class="sig-name descname">_state_dict_hooks</code><em class="property"> = None</em></dt>
 <dd></dd></dl>
 
+<dl class="attribute">
+<dt>
+<code class="sig-name descname">_state_dict_pre_hooks</code><em class="property"> = None</em></dt>
+<dd></dd></dl>
+
 <dl class="method">
 <dt>
 <code class="sig-name descname">forward</code><span class="sig-paren">(</span><em class="sig-param">mapped_inputs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/athena/nll.html#BackwardNet.forward"><span class="viewcode-link">[source]</span></a></dt>
 <dd><p>Maps transformed inputs to original inputs.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>mapped_inputs</strong> (<a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (2.0.0a0+git40d54cf ))"><em>torch.Tensor</em></a>) – DoubleTensor n_samples-by-n_params
+<dd class="field-odd"><p><strong>mapped_inputs</strong> (<a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (2.1.0a0+git6b319d1 ))"><em>torch.Tensor</em></a>) – DoubleTensor n_samples-by-n_params
 containing the nonlinear transformed inputs.</p>
 </dd>
 <dt class="field-even">Return inputs</dt>
@@ -531,7 +571,7 @@ containing the nonlinear transformed inputs.</p>
 the points in the original full input space.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (2.0.0a0+git40d54cf ))">torch.Tensor</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (2.1.0a0+git6b319d1 ))">torch.Tensor</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -557,7 +597,7 @@ the points in the original full input space.</p>
 
   <div role="contentinfo">
     <p>&#169; Copyright Copyright 2019-2023, Athena contributors.
-      <span class="lastupdated">Last updated on Mar 01, 2023.
+      <span class="lastupdated">Last updated on Apr 01, 2023.
       </span></p>
   </div>
 
