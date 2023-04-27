@@ -96,14 +96,14 @@ class TestUtils(TestCase):
     def test_sort_eigpairs_evals(self):
         np.random.seed(42)
         matrix = np.random.uniform(-1, 1, 9).reshape(3, 3)
-        evals = sort_eigpairs(*np.linalg.eigh(matrix))[0]
-        true_evals = np.array([1.466942, 1.025235, 0.294945])
+        evals = sort_eigpairs(matrix)[0]
+        true_evals = np.array([[1.466942], [1.025235], [0.294945]])
         np.testing.assert_array_almost_equal(true_evals, evals)
 
     def test_sort_eigpairs_evects(self):
         np.random.seed(42)
         matrix = np.random.uniform(-1, 1, 9).reshape(3, 3)
-        evects = sort_eigpairs(*np.linalg.eigh(matrix))[1]
+        evects = sort_eigpairs(matrix)[1]
         true_evects = np.array([[0.511409, 0.515297, 0.687699],
                                 [-0.653819, -0.286001, 0.700517],
                                 [0.557657, -0.807881, 0.190647]])

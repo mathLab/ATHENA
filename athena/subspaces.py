@@ -76,7 +76,7 @@ class Subspaces():
                                            np.dot(metric, gradients[i, :, :]))
                     for i in range(gradients.shape[0])
                 ], axis=0))
-            evals, evects = sort_eigpairs(*np.linalg.eigh(cov_matrix))
+            evals, evects = sort_eigpairs(cov_matrix)
             return np.squeeze(evals), evects
 
         X = np.squeeze(gradients * np.sqrt(weights).reshape(-1, 1))
@@ -94,7 +94,6 @@ class Subspaces():
 
         evals = singular**2
 
-        evals, evects = sort_eigpairs(evals, evects)
         return evals, evects.T
 
     def _compute_bootstrap_ranges(self, gradients, weights, metric=None):
