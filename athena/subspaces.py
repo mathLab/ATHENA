@@ -489,7 +489,7 @@ class Subspaces():
                         s=40,
                         alpha=0.9,
                         edgecolors='k')
-            plt.xlabel('Active variable ' + r'$W_1^T \mathbf{\mu}}$',
+            plt.xlabel('Active variable ' + r'$W_1^T \mathbf{\mu}$',
                        fontsize=18)
             plt.ylabel(r'$f \, (\mathbf{\mu})$', fontsize=18)
         elif self.dim == 2:
