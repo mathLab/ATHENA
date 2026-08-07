@@ -38,6 +38,7 @@ class Subspaces():
         Hristache, et al.
     :param int n_boot: number of bootstrap samples. Default is 100.
     """
+
     def __init__(self, dim, method='exact', n_boot=100):
         self.dim = dim
         self.method = method
@@ -75,7 +76,8 @@ class Subspaces():
                     weights[i, 0] * np.dot(gradients[i, :, :].T,
                                            np.dot(metric, gradients[i, :, :]))
                     for i in range(gradients.shape[0])
-                ], axis=0))
+                ],
+                       axis=0))
             evals, evects = sort_eigpairs(cov_matrix)
             return np.squeeze(evals), evects
 

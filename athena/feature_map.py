@@ -13,7 +13,7 @@ Module for the feature map class
 from functools import partial
 import numpy as np
 from scipy.optimize import brute, dual_annealing
-import GPyOpt
+from bayes_opt import BayesianOptimization
 from .projection_factory import ProjectionFactory
 
 
@@ -39,6 +39,7 @@ class FeatureMap():
 
     :raises TypeError
     """
+
     def __init__(self, distr, bias, input_dim, n_features, params, sigma_f):
         if callable(distr):
             self.distr = distr
@@ -114,7 +115,7 @@ class FeatureMap():
         """
         Tune the parameters of the spectral distribution. Three methods are
         available: log-grid-search (brute), annealing (dual_annealing) and
-        Bayesian stochastic optimization (bso) from GpyOpt. The default object
+        Bayesian stochastic optimization (bso) from bayesian-optimization package. The default object
         function to optimize is athena.utils.average_rrmse, which uses a
         cross-validation procedure from athena.utils, see Example and tutorial 06_kernel-based_AS.
 
@@ -199,22 +200,42 @@ class FeatureMap():
                                              maxiter=maxiter,
                                              no_local_search=False).x
         elif method == 'bso':
-            bounds = [{
-                'name': f'var_{str(i)}',
-                'type': 'continuous',
-                'domain': [bound.start, bound.stop],
-            } for i, bound in enumerate(bounds)]
-            func_obj = partial(func, best=best, **fn_args)
-            bopt = GPyOpt.methods.BayesianOptimization(func_obj,
-                                                       domain=bounds,
-                                                       model_type='GP',
-                                                       acquisition_type='EI',
-                                                       exact_feval=True)
-            bopt.run_optimization(max_iter=maxiter,
-                                  max_time=3600,
-                                  eps=1e-16,
-                                  verbosity=False)
-            self.params = 10**bopt.x_opt
+            # Reformat bounds for BayesianOptimization package format
+            # BayesianOptimization uses a dictionary of parameter names and their range tuples
+            # Unlike GPyOpt which used a list of dictionaries with 'name', 'type', and 'domain' keys
+            bounds_dict = {
+                f'var_{i}': (bound.start, bound.stop)
+                for i, bound in enumerate(bounds)
+            }
+
+            # Create wrapper for the objective function to handle the format difference
+            # BayesianOptimization passes parameters as keyword arguments, not as an array
+            def bayes_wrapper(**kwargs):
+                # Convert from the dict of parameters to array format expected by the original function
+                x = np.array([kwargs[f'var_{i}'] for i in range(len(bounds))])
+                # BayesianOptimization maximizes functions by default, but we want to minimize
+                # So we negate the score (lower scores are better in our original function)
+                return -func(x, best, **fn_args)
+
+            # Initialize optimizer with our wrapper function and parameter bounds
+            optimizer = BayesianOptimization(
+                f=bayes_wrapper,
+                pbounds=bounds_dict,
+                random_state=42  # For reproducible results
+            )
+
+            # Run optimization
+            # init_points: how many steps of random exploration to perform
+            # n_iter: how many steps of bayesian optimization to perform
+            optimizer.maximize(init_points=2, n_iter=maxiter)
+
+            # Extract the best parameters found and transform back
+            # optimizer.max contains the best score and parameters found
+            best_params = [
+                optimizer.max['params'][f'var_{i}'] for i in range(len(bounds))
+            ]
+            # Apply 10^ transformation as done in the original implementation
+            self.params = 10**np.array(best_params)
         else:
             raise ValueError(
                 "Method argument can only be 'brute' or 'dual_annealing' or 'bso'."

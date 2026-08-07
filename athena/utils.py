@@ -14,6 +14,7 @@ class Normalizer():
     :param numpy.ndarray ub: array n_params-by-1 that contains upper bounds
         on the simulation inputs.
     """
+
     def __init__(self, lb, ub):
         self.lb = lb
         self.ub = ub
@@ -204,6 +205,7 @@ class CrossValidation():
     :cvar `sklearn.gaussian_process.GaussianProcessRegressor` gp: Gaussian
         process of the response surface built with scikit-learn.
     """
+
     def __init__(self, inputs, outputs, gradients, subspace, folds=5, **kwargs):
 
         if any(v is None for v in [inputs, outputs, gradients, subspace]):

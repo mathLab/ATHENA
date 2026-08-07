@@ -55,6 +55,7 @@ class KernelActiveSubspaces(Subspaces):
     :cvar numpy.ndarray metric: metric matrix for vectorial active
         subspaces.
     """
+
     def __init__(self,
                  dim,
                  feature_map=None,

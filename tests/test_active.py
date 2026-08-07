@@ -17,6 +17,7 @@ def assert_plot_figures_added():
 
 
 class TestUtils(TestCase):
+
     def test_init_W1(self):
         ss = ActiveSubspaces(dim=1)
         self.assertIsNone(ss.W1)
@@ -65,10 +66,10 @@ class TestUtils(TestCase):
         weights = np.ones((15, 1)) / 15
         ss = ActiveSubspaces(dim=1, n_boot=200)
         ss.fit(gradients=gradients, weights=weights)
-        true_evects = np.array([[-0.019091,  0.408566,  0.861223,  0.301669],
-                                [-0.767799, -0.199069,  0.268823, -0.546434],
-                                [-0.463451,  0.758442, -0.427696,  0.164486],
-                                [-0.441965, -0.467131, -0.055723,  0.763774]])
+        true_evects = np.array([[-0.019091, 0.408566, 0.861223, 0.301669],
+                                [-0.767799, -0.199069, 0.268823, -0.546434],
+                                [-0.463451, 0.758442, -0.427696, 0.164486],
+                                [-0.441965, -0.467131, -0.055723, 0.763774]])
         np.testing.assert_array_almost_equal(true_evects, ss.evects)
 
     def test_fit_04(self):
@@ -86,10 +87,10 @@ class TestUtils(TestCase):
         outputs = np.random.uniform(0, 5, 15)
         ss = ActiveSubspaces(dim=1, method='local', n_boot=200)
         ss.fit(inputs=inputs, outputs=outputs)
-        true_evects = np.array([[-0.164383, -0.717021, -0.237246,  0.634486],
-                                [-0.885808, -0.177628,  0.004112, -0.428691],
-                                [ 0.255722, -0.558199,  0.734083, -0.290071],
-                                [ 0.350612, -0.377813, -0.636254, -0.574029]])
+        true_evects = np.array([[-0.164383, -0.717021, -0.237246, 0.634486],
+                                [-0.885808, -0.177628, 0.004112, -0.428691],
+                                [0.255722, -0.558199, 0.734083, -0.290071],
+                                [0.350612, -0.377813, -0.636254, -0.574029]])
         np.testing.assert_array_almost_equal(true_evects, ss.evects)
 
     def test_fit_06(self):
@@ -238,8 +239,7 @@ class TestUtils(TestCase):
         ss = ActiveSubspaces(dim=2, method='local', n_boot=250)
         ss.fit(inputs=inputs, outputs=outputs)
         inactive = ss.transform(np.random.uniform(-1, 1, 8).reshape(2, 4))[1]
-        true_inactive = np.array([[-1.035742,  0.046629],
-                                  [-0.498504,  0.371467]])
+        true_inactive = np.array([[-1.035742, 0.046629], [-0.498504, 0.371467]])
         np.testing.assert_array_almost_equal(true_inactive, inactive)
 
     def test_transform_03(self):
@@ -271,8 +271,7 @@ class TestUtils(TestCase):
         ss = ActiveSubspaces(dim=2, method='local', n_boot=250)
         ss.fit(inputs=inputs, outputs=outputs)
         inactive = ss.transform(np.random.uniform(-1, 1, 8).reshape(2, 4))[1]
-        true_inactive = np.array([[-1.035742,  0.046629],
-                                  [-0.498504,  0.371467]])
+        true_inactive = np.array([[-1.035742, 0.046629], [-0.498504, 0.371467]])
         np.testing.assert_array_almost_equal(true_inactive, inactive)
 
     def test_transform_06(self):

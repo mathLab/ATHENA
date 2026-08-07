@@ -15,8 +15,8 @@ jobs:
     - name: Create the new documentation
       uses: ammaraskar/sphinx-action@master
       with:
-        pre-build-command: "python -m pip install pip sphinx_rtd_theme numpy
-        scipy matplotlib GPy GPyOpt torch scikit-learn scikit-learn-extra -U"
+        pre-build-command: "python -m pip install pip sphinx_rtd_theme 'numpy<2.0.0'
+        scipy matplotlib bayesian-optimization torch scikit-learn scikit-learn-extra -U"
         docs-folder: "docs/"
 
     - name: Deploy

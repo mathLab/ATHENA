@@ -9,6 +9,7 @@ from athena.feature_map import FeatureMap
 
 
 class TestUtils(TestCase):
+
     def test_normalizer_init_lb(self):
         normalizer = Normalizer(np.arange(5), np.arange(2, 7))
         np.testing.assert_array_equal(normalizer.lb, np.arange(5))

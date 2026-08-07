@@ -16,7 +16,7 @@ ATHENA is a Python package for reduction of high dimensional parameter spaces in
 
 Installation
 --------------------
-ATHENA requires requires numpy, matplotlib, scipy, torch, GPy, GPyOpt, sphinx (for the documentation) and nose (for local test). The code is compatible with Python 3.6 and above. It can be installed directly from the source code available at the official GitHub `repository <https://github.com/mathLab/ATHENA>`_.
+ATHENA requires requires numpy, matplotlib, scipy, torch, bayesian-optimization, sphinx (for the documentation) and pytest (for local test). The code is compatible with Python 3.8 and above. It can be installed directly from the source code available at the official GitHub `repository <https://github.com/mathLab/ATHENA>`_.
 
 
 Installing from source

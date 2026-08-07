@@ -31,6 +31,7 @@ class ActiveSubspaces(Subspaces):
         Hristache, et al.
     :param int n_boot: number of bootstrap samples. Default is 100.
     """
+
     def __init__(self, dim, method='exact', n_boot=100):
         super().__init__(dim, method, n_boot)
 
@@ -313,13 +314,13 @@ class ActiveSubspaces(Subspaces):
             f, g = b - np.dot(A, z0), np.dot(A, d)
 
             # find an upper bound on the step
-            min_ind = np.logical_and(g <= 0,
-                                     f < -np.sqrt(np.finfo(np.float64).eps))
+            min_ind = np.logical_and(g <= 0, f
+                                     < -np.sqrt(np.finfo(np.float64).eps))
             eps_max = np.amin(f[min_ind] / g[min_ind])
 
             # find a lower bound on the step
-            max_ind = np.logical_and(g > 0,
-                                     f < -np.sqrt(np.finfo(np.float64).eps))
+            max_ind = np.logical_and(g > 0, f
+                                     < -np.sqrt(np.finfo(np.float64).eps))
             eps_min = np.amax(f[max_ind] / g[max_ind])
 
             # randomly sample eps

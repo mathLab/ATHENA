@@ -18,6 +18,7 @@ def assert_plot_figures_added():
 
 
 class TestUtils(TestCase):
+
     def test_init_W1(self):
         ss = KernelActiveSubspaces(dim=2)
         self.assertIsNone(ss.W1)

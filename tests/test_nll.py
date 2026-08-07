@@ -40,6 +40,7 @@ grad_torch = torch.as_tensor(grad_lift, dtype=torch.double)
 
 
 class TestNonlinearLevelSet(TestCase):
+
     def test_init_n_layers(self):
         nll = NonlinearLevelSet(n_layers=2,
                                 active_dim=1,
@@ -190,6 +191,7 @@ class TestNonlinearLevelSet(TestCase):
 
 
 class TestForwardNet(TestCase):
+
     def test_init_n_params(self):
         nll = ForwardNet(n_params=6, n_layers=2, dh=0.25, active_dim=1)
         self.assertEqual(nll.n_params, 3)
@@ -208,6 +210,7 @@ class TestForwardNet(TestCase):
 
 
 class TestBackwardNet(TestCase):
+
     def test_init_n_params(self):
         nll = BackwardNet(n_params=6, n_layers=2, dh=0.25)
         self.assertEqual(nll.n_params, 3)

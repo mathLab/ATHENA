@@ -40,6 +40,7 @@ class NonlinearLevelSet():
         :class:`ForwardNet` class in :py:mod:`nll` module.
     :cvar list loss_vec: list containg the loss at every epoch.
     """
+
     def __init__(self,
                  n_layers,
                  active_dim,
@@ -325,6 +326,7 @@ class ForwardNet(nn.Module):
         For example to keep the first two dimension `omega = slice(2)`. It is
         automatically set with `active_dim`.
     """
+
     def __init__(self, n_params, n_layers, dh, active_dim):
         super().__init__()
         self.n_params = n_params // 2
@@ -484,6 +486,7 @@ class BackwardNet(nn.Module):
     :param int n_layers: number of layers of the RevNet.
     :param float dh: so-called time step of the RevNet.
     """
+
     def __init__(self, n_params, n_layers, dh):
         super().__init__()
         self.n_params = n_params // 2

@@ -21,7 +21,7 @@ KEYWORDS = (
 )
 
 REQUIRED = [
-    'numpy', 'scipy', 'matplotlib', 'torch', 'GPyOpt', 'scikit-learn', 'scikit-learn-extra'
+    'numpy', 'scipy', 'matplotlib', 'torch', 'bayesian-optimization', 'scikit-learn', 'packaging'
 ]
 
 EXTRAS = {
@@ -29,6 +29,7 @@ EXTRAS = {
     'formatting': ['yapf'],
     'tutorials': ['pyro', 'pyhmc'],
     'test': ['pytest', 'pytest-cov'],
+    'sklearn-extra': ['scikit-learn-extra'],  # Optional for NumPy < 2.0
 }
 
 LDESCRIPTION = (

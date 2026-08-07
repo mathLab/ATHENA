@@ -8,6 +8,7 @@ class classproperty():
     """
     Custom decorator.
     """
+
     def __init__(self, f):
         self.f = f
         self.__doc__ = f.__doc__
@@ -31,6 +32,7 @@ class ProjectionFactory():
         >>> for pname in ProjectionFactory.projections:
         >>>     y = ProjectionFactory(pname)(input_dim, n_features, params)
     """
+
     @staticmethod
     def beta(input_dim, n_features, params):
         """

@@ -4,6 +4,7 @@ from athena.subspaces import Subspaces
 
 
 class TestUtils(TestCase):
+
     def test_init_W1(self):
         ss = Subspaces(dim=1)
         self.assertIsNone(ss.W1)

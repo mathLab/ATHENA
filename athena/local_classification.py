@@ -33,6 +33,7 @@ plt.rcParams.update({'font.size': 14})
 class SpectralClassification(metaclass=abc.ABCMeta):
     """Evaluate the connected components from X, n_neighbours, features and custom
     distance that must be defined in concrete class."""
+
     def __init__(self):
         self.X = None
         self.features = None
@@ -158,6 +159,7 @@ class ClassifyAS(SpectralClassification):
     the AS dimension of the n_neighbours neighbouring samples with a resampling
     of neighbour_resampling. The local_as_criterion can be 'min' or 'average'
     over the batches of neighbouring samples."""
+
     def __init__(self):
         super().__init__()
 

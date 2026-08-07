@@ -21,7 +21,8 @@ jobs:
     - name: Install Python dependencies
       run: |
         python3 -m pip install --upgrade pip
-        python3 -m pip install numpy scipy matplotlib pytest pytest-cov future torch gpyopt scikit-learn scikit-learn-extra 
+        python3 -m pip install numpy scipy matplotlib pytest pytest-cov future torch bayesian-optimization scikit-learn packaging
+        python3 -m pip install scikit-learn-extra || echo "scikit-learn-extra installation failed but it's optional"
 
     - name: Test with pytest
       env:

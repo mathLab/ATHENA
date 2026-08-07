@@ -41,11 +41,13 @@
 ## Description
 **ATHENA** is a Python package for reduction of high dimensional parameter spaces in the context of numerical analysis. It allows the use of several dimensionality reduction techniques such as Active Subspaces (AS), Kernel-based Active Subspaces (KAS), and Nonlinear Level-set Learning (NLL). It is particularly suited for the study of parametric PDEs, for sensitivity analysis, and for the approximation of engineering quantities of interest. It can handle both scalar and vectorial high dimensional functions, making it a useful tool also to reduce the burden of computational intensive optimization tasks.
 
+As of version 0.1.3, ATHENA uses the `bayesian-optimization` package instead of `GPyOpt` for Bayesian stochastic optimization in the feature map tuning process.
+
 See the [**Examples and Tutorials**](#examples-and-tutorials) section below and the [**tutorials folder**](tutorials/README.md) to have an idea of the potential of this package. Check also out the SISSA mathLab [medium publication](https://medium.com/sissa-mathlab) where you can find stories about ATHENA (search within the publication page).
 
 
 ## Dependencies and installation
-**ATHENA** requires `numpy`, `matplotlib`, `scipy`, `torch`, `GPyOpt`,
+**ATHENA** requires `numpy`, `matplotlib`, `scipy`, `torch`, `bayesian-optimization`,
 `scikit-learn`, `scikit-learn-extra`, `sphinx` (for the documentation) and `pytest` (for local test).
 The code is compatible with Python 3.8 and above. It can be installed directly
 from the source code or via pip.

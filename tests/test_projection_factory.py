@@ -4,6 +4,7 @@ from athena import ProjectionFactory
 
 
 class TestProjectionFactory(TestCase):
+
     def test_beta(self):
         np.random.seed(42)
         projection = ProjectionFactory('beta')

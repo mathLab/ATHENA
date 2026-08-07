@@ -6,6 +6,7 @@ from athena.local_classification import ClassifyAS
 from contextlib import contextmanager
 import matplotlib.pyplot as plt
 
+
 @contextmanager
 def assert_plot_figures_added():
     """
@@ -16,7 +17,9 @@ def assert_plot_figures_added():
     num_figures_after = plt.gcf().number
     assert num_figures_before < num_figures_after
 
+
 class TestLocalAS(TestCase):
+
     def test_init_local_AS(self):
         las = TopDownHierarchicalAS()
         self.assertIsNone(las.inputs)
